@@ -7,8 +7,6 @@ import * as serverStatusActions from '../actions/serverStatusAction'
 class ServerStatus extends React.Component {
   constructor(props) {
     super(props);
-    this.props.serverStatusActions.addNode({ XD: "XD" })
-    console.log(this.props)
   }
 
   componentDidMount(){
