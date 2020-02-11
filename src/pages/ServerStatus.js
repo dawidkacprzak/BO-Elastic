@@ -11,6 +11,10 @@ class ServerStatus extends React.Component {
     console.log(this.props)
   }
 
+  componentDidMount(){
+    
+  }
+
   render() {
     return <h1>Server Status</h1>;
   }

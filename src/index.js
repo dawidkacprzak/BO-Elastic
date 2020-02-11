@@ -5,16 +5,17 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import ServerStatus from "./pages/ServerStatus";
 import "./style/shared.css";
 import Template from "./template/Template";
-import { createStore } from "redux";
-import rootReducer from "./reducers/rootReducer";
 import { Provider } from "react-redux";
 import Logs from "./pages/Logs";
 import RequestManager from "./core/RequestManager";
+import ServerStatusController from "./core/ServerStatus/ServerStatusController";
+import store from "./store/index";
 
-const store = createStore(
-  rootReducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
+
+const initialize = () => {
+  RequestManager.clusterIp = "http://10.10.1.214:9201";
+  ServerStatusController.beginRefreshState();
+};
 
 const Navigation = () => {
   return (
@@ -41,3 +42,4 @@ ReactDOM.render(
 );
 
 serviceWorker.unregister();
+initialize();

@@ -1,4 +1,9 @@
 export const addNode = nodeObject => ({
   type: "ADD_NODE",
-  node: nodeObject
+  data: nodeObject
 });
+
+export const setNodeTree = nodeTree => ({
+  type: "SET_NODES",
+  data: nodeTree
+})

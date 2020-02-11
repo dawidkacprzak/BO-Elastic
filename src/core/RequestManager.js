@@ -1,25 +1,25 @@
-import request from 'request'
+import request from "request";
 
-export default class RequestManager{
-    static clusterIp;
+export default class RequestManager {
+  static clusterIp;
+  static setClusterIp = ip => {
+    RequestManager.clusterIp = ip;
+  };
 
-    constructor(clusterIp){
-        RequestManager.clusterIp = clusterIp;
-    }
-
-    setClusterIp = (ip) => {
-        RequestManager.clusterIp = ip;
-    }
-
-    clusterGetPromise = (endpoint) => {
-        return new Promise((resolve,reject) => {
-            request(RequestManager.clusterIp, (error, response, body) => {
-                if(error){
-                    reject(error);
-                }else{
-                    resolve(JSON.parse(body))
-                }
-            })
-        });
-    }
+  static clusterGetPromise = endpoint => {
+    if (this.clusterIp)
+      return new Promise((resolve, reject) => {
+        request(
+          RequestManager.clusterIp + endpoint,
+          (error, response, body) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(JSON.parse(body));
+            }
+          }
+        );
+      });
+    else throw "Cluster ip is not set!";
+  };
 }
