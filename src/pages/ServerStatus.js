@@ -1,10 +1,30 @@
 import React from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
+import { bindActionCreators } from "redux";
+import * as serverStatusActions from '../actions/serverStatusAction'
+ 
 class ServerStatus extends React.Component {
+  constructor(props) {
+    super(props);
+    this.props.serverStatusActions.addNode({ XD: "XD" })
+    console.log(this.props)
+  }
+
   render() {
     return <h1>Server Status</h1>;
   }
 }
 
-export default withRouter(connect()(ServerStatus));
+
+function mapStateToProps(state) {
+  return { state }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    serverStatusActions: bindActionCreators(serverStatusActions, dispatch),
+  }
+}
+
+export default withRouter(connect(mapStateToProps,mapDispatchToProps)(ServerStatus));
