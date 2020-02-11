@@ -9,9 +9,9 @@ import { createStore } from "redux";
 import rootReducer from "./reducers/rootReducer";
 import { Provider } from "react-redux";
 import Logs from "./pages/Logs";
+import RequestManager from './core/RequestManager'
 
 const store = createStore(rootReducer);
-
 const Navigation = () => {
   return (
     <Router>
