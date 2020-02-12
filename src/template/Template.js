@@ -1,9 +1,13 @@
+//@ts-check
 import React from "react";
 import { Link } from "react-router-dom";
 import "../style/template.css";
-const path = require("path");
 
-export default class Template extends React.Component {
+/**
+ * Podstawowy szablon aplikacji, każdy komponent główny z routingu jest w niego opatrzony
+ * @type {React.Component}
+ */
+class Template extends React.Component {
   render() {
     return (
       <div id="template-container">
@@ -20,3 +24,5 @@ export default class Template extends React.Component {
     );
   }
 }
+
+export default Template;
