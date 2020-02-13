@@ -11,9 +11,14 @@ import * as serverStatusActions from '../actions/serverStatusAction'
  */
 class ServerStatus extends React.Component {
 
+  componentDidMount(){
+
+  }
+  
   render() {
     return <h1>Server Status</h1>;
   }
+
 }
 
 /**

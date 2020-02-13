@@ -15,9 +15,9 @@ export default class ServerStatusController {
    */
   static beginRefreshState = async () => {
     if (RequestManager.clusterIp) {
-      RequestManager.clusterGetPromise("/_nodes/_all/attributes")
+      RequestManager.clusterGetPromise("/_cat/nodes?format=json")
         .then(data => {
-          store.dispatch(actions.setNodeTree(data.nodes));
+          store.dispatch(actions.setNodeTree(data));
           setTimeout(ServerStatusController.beginRefreshState, 5000);
         })
         .catch(err => {
