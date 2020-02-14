@@ -187,6 +187,12 @@ class ServerStatus extends React.Component {
             alt="crown node"
           />
           <Typography variant="h6">{clusterHealth.cluster_name}</Typography>
+          <div
+            style={{
+              backgroundColor: clusterHealth.status
+            }}
+            className="cluster-status-circle"
+          ></div>
         </div>
         <div className="flex-row">
           {this.nodeImageElement(
