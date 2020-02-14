@@ -3,7 +3,7 @@
  *  Zawiera się w nim określenie zasad renderowania/nawigacji po oknach (w tym ścieżki - routing)
  *  a także podstawowa konfiguracja aplikacji wraz z wystartowaniem podstawowych zadań działających w tle
  * @module Main
-*/
+ */
 
 import React from "react";
 import ReactDOM from "react-dom";
@@ -26,24 +26,18 @@ import store from "./store/index";
 const initialize = () => {
   RequestManager.clusterIp = "http://10.10.1.214:9201";
   ServerStatusController.beginRefreshState();
-}
+};
 
 /**
  * Tutaj następuje rozpoczęcie renderowania aplikacji, utworzenie routingu ('podstron') i dołączenie podstawowego szablonu
  */
-
- class x {
-  static serverStatusView = <ServerStatus />;
-
- }
-
 ReactDOM.render(
   <Provider store={store}>
     <Router>
       <Template>
         <Switch>
           <Route exact path="/">
-          {x.serverStatusView}
+            <ServerStatus />
           </Route>
           <Route exact path="/Logs">
             <Logs />

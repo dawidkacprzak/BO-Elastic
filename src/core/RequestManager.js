@@ -20,6 +20,6 @@ export default class RequestManager {
           }
         );
       });
-    else throw "Cluster ip is not set!";
+    else throw Error("Cluster ip is not set!");
   };
 }
