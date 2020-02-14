@@ -31,15 +31,21 @@ const initialize = () => {
 /**
  * Tutaj następuje rozpoczęcie renderowania aplikacji, utworzenie routingu ('podstron') i dołączenie podstawowego szablonu
  */
+
+ class x {
+  static serverStatusView = <ServerStatus />;
+
+ }
+
 ReactDOM.render(
   <Provider store={store}>
     <Router>
       <Template>
         <Switch>
           <Route exact path="/">
-            <ServerStatus />
+          {x.serverStatusView}
           </Route>
-          <Route path="/Logs">
+          <Route exact path="/Logs">
             <Logs />
           </Route>
         </Switch>

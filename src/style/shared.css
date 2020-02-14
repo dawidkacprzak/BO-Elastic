@@ -15,3 +15,20 @@ html {
     transition: 0.3s;
   }
   
+.flex-row
+{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.flex-column
+{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.space-right-15
+{
+  padding-right: 15px;
+}

@@ -1,0 +1,34 @@
+.server-status-row
+{
+    height: 60px;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.node-master-rectangle
+{
+    height: 50px;
+    width: 50px;
+    margin-left: 20px;
+    margin-right: 10px;
+}
+
+.node-row-image
+{
+    height: 50px;
+    width: 50px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.node-row-element
+{
+    border: 1px solid black;
+    margin-left: 5px;
+    margin-Right: 5px;
+    min-width: 120px;
+    padding-left: 5px;
+}

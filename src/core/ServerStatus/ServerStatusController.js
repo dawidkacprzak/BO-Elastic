@@ -18,13 +18,18 @@ export default class ServerStatusController {
       RequestManager.clusterGetPromise("/_cat/nodes?format=json")
         .then(data => {
           store.dispatch(actions.setNodeTree(data));
-          setTimeout(ServerStatusController.beginRefreshState, 5000);
+          RequestManager.clusterGetPromise("/_cluster/health").then(clusterData => {
+            store.dispatch(actions.setClusterHealthInfo(clusterData))
+            setTimeout(ServerStatusController.beginRefreshState, 5000);
+          }).catch((err)=>{
+            alert(err);
+            setTimeout(ServerStatusController.beginRefreshState, 15000);
+          })
         })
         .catch(err => {
           alert(err);
           setTimeout(ServerStatusController.beginRefreshState, 15000);
-        })
-        .finally(() => {});
+        });
     }
   };
 }
