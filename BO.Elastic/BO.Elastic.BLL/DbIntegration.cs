@@ -2,7 +2,7 @@
 
 namespace BO.Elastic.BLL
 {
-    public class Class1
+    public class DbIntegration
     {
     }
 }

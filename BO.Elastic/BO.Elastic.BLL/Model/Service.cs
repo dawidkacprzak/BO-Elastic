@@ -8,7 +8,6 @@ namespace BO.Elastic.BLL.Model
         public Service()
         {
             ClusterNodeCluster = new HashSet<ClusterNode>();
-            ClusterNodeNode = new HashSet<ClusterNode>();
         }
 
         public int Id { get; set; }
@@ -17,7 +16,7 @@ namespace BO.Elastic.BLL.Model
         public string Port { get; set; }
 
         public virtual ServiceType ServiceTypeNavigation { get; set; }
+        public virtual ClusterNode ClusterNodeNode { get; set; }
         public virtual ICollection<ClusterNode> ClusterNodeCluster { get; set; }
-        public virtual ICollection<ClusterNode> ClusterNodeNode { get; set; }
     }
 }

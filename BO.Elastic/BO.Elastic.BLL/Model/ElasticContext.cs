@@ -32,6 +32,10 @@ namespace BO.Elastic.BLL.Model
         {
             modelBuilder.Entity<ClusterNode>(entity =>
             {
+                entity.HasIndex(e => e.NodeId)
+                    .HasName("XI_NodeId")
+                    .IsUnique();
+
                 entity.HasOne(d => d.Cluster)
                     .WithMany(p => p.ClusterNodeCluster)
                     .HasForeignKey(d => d.ClusterId)
@@ -39,8 +43,8 @@ namespace BO.Elastic.BLL.Model
                     .HasConstraintName("FK_ServiceIdCluster");
 
                 entity.HasOne(d => d.Node)
-                    .WithMany(p => p.ClusterNodeNode)
-                    .HasForeignKey(d => d.NodeId)
+                    .WithOne(p => p.ClusterNodeNode)
+                    .HasForeignKey<ClusterNode>(d => d.NodeId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ServiceIdNode");
             });
