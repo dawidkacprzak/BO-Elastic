@@ -13,16 +13,23 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace BO.Elastic.Panel
+namespace BO.Elastic.Panel.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class LoadingWindow : Window
     {
-        public MainWindow()
+        public LoadingWindow()
         {
-            InitializeComponent();
+            try
+            {
+                WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
+                InitializeComponent();
+            }catch(Exception ex)
+            {
+                throw ex.InnerException;
+            }
         }
     }
 }
