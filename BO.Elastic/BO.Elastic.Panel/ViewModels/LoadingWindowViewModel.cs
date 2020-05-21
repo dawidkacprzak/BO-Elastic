@@ -51,15 +51,15 @@ namespace BO.Elastic.Panel.ViewModels
 
         public void RunApplication(Action<string> changeStatusEvent)
         {
-            DeleteOldFiles();
-            if (!IsUpdateAvailable())
+            if (IsUpdateAvailable())
             {
                 try
                 {
                     changeStatusEvent("Aktualizacja dostępna - trwa pobieranie.");
                     UpdateApplication();
                     ForceRestartApplication();
-                }catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show("Błąd podczasz aktualizacji aplikacji " + ex.Message);
                 }
@@ -78,10 +78,10 @@ namespace BO.Elastic.Panel.ViewModels
 
         private void ForceRestartApplication()
         {
-            System.Diagnostics.Process p = new System.Diagnostics.Process();
-            p.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), Process.GetCurrentProcess().ProcessName);
-            if (!p.Start()) MessageBox.Show("Błąd podczas restartu aktualizacji");
-            CloseApplication();
+            //System.Diagnostics.Process p = new System.Diagnostics.Process();
+            //p.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), Process.GetCurrentProcess().ProcessName);
+            //if (!p.Start()) MessageBox.Show("Błąd podczas restartu aktualizacji");
+           //CloseApplication();
         }
 
         private void DeleteOldFiles()
@@ -97,7 +97,8 @@ namespace BO.Elastic.Panel.ViewModels
                     {
                         File.Delete(file);
                     }
-                }catch(Exception ex)
+                }
+                catch (Exception ex)
                 {
                     MessageBox.Show("Błąd podczas usuwania plików tymczasowych starej aktualizacji " + ex.Message);
                 }
@@ -109,7 +110,7 @@ namespace BO.Elastic.Panel.ViewModels
                 {
                     if (Directory.Exists(file))
                     {
-                        Directory.Delete(file,true);
+                        Directory.Delete(file, true);
                     }
                 }
                 catch (Exception ex)
@@ -121,7 +122,7 @@ namespace BO.Elastic.Panel.ViewModels
 
         private void UpdateApplication()
         {
-            string downloadedFileName = Guid.NewGuid().ToString()+".zip";
+            string downloadedFileName = Guid.NewGuid().ToString() + ".zip";
             string downloadedFileFullPath = Path.Join(Path.GetTempPath(), downloadedFileName);
             string[] filesInAppDirectory = Directory.GetFiles(Directory.GetCurrentDirectory());
             string[] directoriesInAppDirectory = Directory.GetDirectories(Directory.GetCurrentDirectory());
@@ -134,7 +135,7 @@ namespace BO.Elastic.Panel.ViewModels
                 webClient.DownloadFile("http://213.32.122.228/Bo.Elastic.Panel/build.zip", downloadedFileFullPath);
             }
 
-            string tempUpdateDirectory = Path.Join(Path.GetTempPath(),Guid.NewGuid().ToString());
+            string tempUpdateDirectory = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
 
             if (!Directory.Exists(tempUpdateDirectory))
             {
@@ -154,6 +155,10 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (File.Exists(file))
                 {
+                    if (File.Exists(file + ".old")){
+                        File.Delete(file + ".old");
+                    }
+
                     File.Move(file, file + ".old");
                 }
             }
@@ -162,6 +167,10 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (Directory.Exists(directory))
                 {
+                    if (Directory.Exists(directory + ".old"))
+                    {
+                        Directory.Delete(directory + ".old", true);
+                    }
                     Directory.Move(directory, directory + ".old");
                 }
             }
@@ -180,7 +189,7 @@ namespace BO.Elastic.Panel.ViewModels
                 {
                     string directoryName = new DirectoryInfo(directory).Name;
                     string newDirectory = Path.Join(Directory.GetCurrentDirectory(), directoryName);
-                    Directory.Move(directory, newDirectory); 
+                    Directory.Move(directory, newDirectory);
                 }
             }
 
@@ -194,7 +203,7 @@ namespace BO.Elastic.Panel.ViewModels
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://213.32.122.228/Bo.Elastic.Panel/version");
 
                 int version;
-                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 using (Stream stream = response.GetResponseStream())
                 using (StreamReader reader = new StreamReader(stream))
                 {
@@ -229,7 +238,7 @@ namespace BO.Elastic.Panel.ViewModels
                     }
                 }
             }
-            catch(WebException)
+            catch (WebException)
             {
                 throw new Exception("Błąd podczas komunikacji z serwerem.");
             }
