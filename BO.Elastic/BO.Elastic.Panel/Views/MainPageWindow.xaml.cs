@@ -29,5 +29,20 @@ namespace BO.Elastic.Panel.Views
                 throw ex.InnerException;
             }
         }
+
+        private void BtnPower_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void BtnResize_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnMinimize_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

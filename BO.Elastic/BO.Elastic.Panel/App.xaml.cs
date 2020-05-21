@@ -33,7 +33,7 @@ namespace BO.Elastic.Panel
         {
             try
             {
-                Views.LoadingWindow w = Container.Resolve<Views.LoadingWindow>();
+                Views.MainPageWindow w = Container.Resolve<Views.MainPageWindow>();
                 return w;
             }catch(Exception ex)
             {
