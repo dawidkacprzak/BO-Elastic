@@ -1,16 +1,17 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
+﻿
 using System.Windows.Input;
 using System.Windows;
+using BO.Elastic.Panel.Command;
+using System;
 
 namespace BO.Elastic.Panel.ViewModels
 {
-    public class MainPageWindowViewModel : BindableBase
+    public class MainPageWindowViewModel
     {
-        public ICommand CloseAppEvent =>
-            closeAppEvent ?? (closeAppEvent = new DelegateCommand(CloseApplication));
-
-        private DelegateCommand closeAppEvent = null;
+        public ICommand CloseAppEvent => new BasicCommand(new Action(() =>
+        {
+            CloseApplication();
+        }));
 
         public void CloseApplication()
         {

@@ -1,11 +1,9 @@
-﻿<Window x:Class="BO.Elastic.Panel.Views.MainPageWindow"
+﻿<Window x:Class="BO.Elastic.Panel.MainPageWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:prism="http://prismlibrary.com/"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        prism:ViewModelLocator.AutoWireViewModel="True"
         mc:Ignorable="d" Height="480" Width="640" ResizeMode="CanMinimize" WindowState="Normal" WindowStartupLocation="CenterScreen" Visibility="Visible" WindowStyle="None">
     <Grid>
         <Grid.ColumnDefinitions>
