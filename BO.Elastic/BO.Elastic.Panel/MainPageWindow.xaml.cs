@@ -10,7 +10,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace BO.Elastic.Panel.Views
+namespace BO.Elastic.Panel
 {
     /// <summary>
     /// Interaction logic for MainPageWindow.xaml

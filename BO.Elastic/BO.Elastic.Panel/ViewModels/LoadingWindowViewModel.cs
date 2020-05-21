@@ -1,8 +1,9 @@
-﻿using BO.Elastic.Panel.Exceptions;
-using Prism.Commands;
-using Prism.Mvvm;
+﻿using BO.Elastic.Panel.Command;
+using BO.Elastic.Panel.Exceptions;
+
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
@@ -19,25 +20,36 @@ using System.Windows.Input;
 
 namespace BO.Elastic.Panel.ViewModels
 {
-    public class LoadingWindowViewModel : BindableBase
+    public class LoadingWindowViewModel : INotifyPropertyChanged
     {
         public string LoadingStatus
         {
             get => loadingStatus;
             set
             {
-                SetProperty<string>(ref loadingStatus, value);
+                if (value != this.loadingStatus)
+                {
+                    this.loadingStatus = value;
+                    NotifyPropertyChanged();
+                }
             }
         }
 
-        public ICommand CloseAppEvent =>
-            closeAppEvent ?? (closeAppEvent = new DelegateCommand(CloseApplication));
+        public ICommand CloseAppEvent => new BasicCommand(new Action(() =>
+        {
+            CloseApplication();
+        }));
 
-        private DelegateCommand closeAppEvent = null;
         private string loadingStatus;
         private Action<string> updateStatusThreadSafeUI;
 
-        public LoadingWindowViewModel()
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public LoadingWindowViewModel(Action loadingCallback)
         {
             loadingStatus = "Sprawdzanie dostępnych aktualizacji";
 
@@ -46,14 +58,14 @@ namespace BO.Elastic.Panel.ViewModels
                 LoadingStatus = parameter;
             });
 
-            new Thread(() => RunApplication(updateStatusThreadSafeUI)).Start();
+            new Thread(() => RunApplication(updateStatusThreadSafeUI,loadingCallback)).Start();
         }
 
-        public void RunApplication(Action<string> changeStatusEvent)
+        public void RunApplication(Action<string> changeStatusEvent, Action loadingCallback)
         {
+            Thread.Sleep(1000);
             if (IsUpdateAvailable())
             {
-                Thread.Sleep(1000);
                 DeleteOldFiles();
                 try
                 {
@@ -70,8 +82,10 @@ namespace BO.Elastic.Panel.ViewModels
             }
             else
             {
-            }
                 changeStatusEvent("Aplikacja jest aktualna. Trwa uruchamianie.");
+                Thread.Sleep(1000);
+                App.Current.Dispatcher.Invoke(loadingCallback);
+            }
         }
 
         public void CloseApplication()
@@ -84,6 +98,10 @@ namespace BO.Elastic.Panel.ViewModels
             System.Diagnostics.Process p = new System.Diagnostics.Process();
             p.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), "BO.Elastic.Panel.exe");
             if (!p.Start()) MessageBox.Show("Błąd podczas restartu aktualizacji");
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                System.Windows.Application.Current.Shutdown();
+            }));
         }
 
         private void DeleteOldFiles()
@@ -157,7 +175,8 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (File.Exists(file))
                 {
-                    if (File.Exists(file + ".old")){
+                    if (File.Exists(file + ".old"))
+                    {
                         File.Delete(file + ".old");
                     }
 

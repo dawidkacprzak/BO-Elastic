@@ -1,11 +1,10 @@
-﻿<Window x:Class="BO.Elastic.Panel.Views.MainPageWindow"
+﻿<Window x:Class="BO.Elastic.Panel.MainPageWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:prism="http://prismlibrary.com/"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        mc:Ignorable="d" Height="480" Width="640" ResizeMode="CanMinimize" WindowState="Normal" WindowStartupLocation="Manual" Visibility="Visible" WindowStyle="None">
+        mc:Ignorable="d" Height="480" Width="640" ResizeMode="CanMinimize" WindowState="Normal" WindowStartupLocation="CenterScreen" Visibility="Visible" WindowStyle="None">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="250"/>
@@ -30,7 +29,7 @@
                 <Button x:Name="BtnResize" Width="50" Height="50" Background="{x:Null}" Foreground="White" Click="BtnResize_Click">
                     <materialDesign:PackIcon Kind="ImageFilterNone"/>
                 </Button>
-                <Button Command="{Binding CloseAppEvent}" x:Name="BtnPower" Width="50" Height="50" Background="{x:Null}" Foreground="White">
+                <Button x:Name="BtnPower" Width="50" Height="50" Background="{x:Null}" Foreground="White" Click="BtnPower_Click">
                     <materialDesign:PackIcon Kind="Power"/>
                 </Button>
             </StackPanel>
