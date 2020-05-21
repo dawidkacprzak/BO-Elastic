@@ -1,5 +1,6 @@
 using BO.Elastic.BLL.Extension;
 using BO.Elastic.BLL.Model;
+using BO.Elastic.BLL.ServiceExtenstionModel;
 using BO.Elastic.BLL.Types;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -29,8 +30,38 @@ namespace BO.Elastic.BLL.Test
             ConfigurationController controller = new ConfigurationController();
             List<Service> configuration = controller.DownloadConfiguration();
             Service firstNode = configuration.First().ClusterNodeCluster.First().Node;
-            firstNode.GetServiceAddionalParameters();
-            int x = 0x0;
+            ServiceAddionalParameters nodeParameters = firstNode.GetServiceAddionalParameters();
+            Assert.IsTrue(nodeParameters.ServiceStatus == EServiceStatus.Online);
+            Assert.IsTrue(!string.IsNullOrEmpty(nodeParameters.IP));
+            Assert.IsTrue(!string.IsNullOrEmpty(nodeParameters.Port));
+            Assert.IsTrue(nodeParameters.ActionList != null);
+        }
+
+        [Test]
+        public void GetAddionalParametersFromNodeServiceFail()
+        {
+            ConfigurationController controller = new ConfigurationController();
+            List<Service> configuration = controller.DownloadConfiguration();
+            Service firstNode = new Service()
+            {
+                Ip = "10.10.1.1",
+                Port = "25565",
+                ClusterNodeNode = new ClusterNode()
+                {
+                    Cluster = new Service()
+                    {
+                        Ip = "10.10.1.1",
+                        Port = "25565"
+                    }
+                },
+                ServiceType = (int)EServiceType.Node
+            };
+
+            ServiceAddionalParameters nodeParameters = firstNode.GetServiceAddionalParameters();
+            Assert.IsTrue(nodeParameters.ServiceStatus == EServiceStatus.Offline);
+            Assert.IsTrue(!string.IsNullOrEmpty(nodeParameters.IP));
+            Assert.IsTrue(!string.IsNullOrEmpty(nodeParameters.Port));
+            Assert.IsTrue(nodeParameters.ActionList != null);
         }
     }
 }

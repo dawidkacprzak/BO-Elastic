@@ -31,6 +31,10 @@ namespace BO.Elastic.BLL.Extension
                     {
                         addionalParameters.ServiceStatus = EServiceStatus.Offline;
                     }
+                    catch (ClusterNotConnectedException)
+                    {
+                        addionalParameters.ServiceStatus = EServiceStatus.Offline;
+                    }
 
                     break;
                 case EServiceType.Cluster:
