@@ -58,7 +58,8 @@ namespace BO.Elastic.Panel.ViewModels
                 try
                 {
                     changeStatusEvent("Aktualizacja dostępna - trwa pobieranie.");
-                    UpdateApplication();
+                    UpdateApplication(changeStatusEvent);
+                    changeStatusEvent("Restart aplikacji...");
                     ForceRestartApplication();
                 }
                 catch (Exception ex)
@@ -121,7 +122,7 @@ namespace BO.Elastic.Panel.ViewModels
             }
         }
 
-        private void UpdateApplication()
+        private void UpdateApplication(Action<string> changeStatusEvent)
         {
             string downloadedFileName = Guid.NewGuid().ToString() + ".zip";
             string downloadedFileFullPath = Path.Join(Path.GetTempPath(), downloadedFileName);
@@ -178,6 +179,7 @@ namespace BO.Elastic.Panel.ViewModels
 
             foreach (string file in filesInDownloadedBuild)
             {
+                changeStatusEvent("Aktualizacja pliku " + file);
                 if (File.Exists(file))
                 {
                     File.Move(file, Path.Join(Directory.GetCurrentDirectory(), Path.GetFileName(file)));
@@ -186,6 +188,7 @@ namespace BO.Elastic.Panel.ViewModels
 
             foreach (string directory in directoriesInDownloadedBuild)
             {
+                changeStatusEvent("Aktualizacja folderu " + directory);
                 if (Directory.Exists(directory))
                 {
                     string directoryName = new DirectoryInfo(directory).Name;
