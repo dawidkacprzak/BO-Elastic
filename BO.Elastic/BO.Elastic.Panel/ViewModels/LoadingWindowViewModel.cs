@@ -52,7 +52,7 @@ namespace BO.Elastic.Panel.ViewModels
         public void RunApplication(Action<string> changeStatusEvent)
         {
             DeleteOldFiles();
-            if (IsUpdateAvailable())
+            if (!IsUpdateAvailable())
             {
                 try
                 {

@@ -30,7 +30,7 @@
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Image Margin="0,20,0,0" Grid.Row="1" Source="pack://application:,,,/Bo.Elastic.ImageRepository;component/Assets/elastic.png"/>
+        <Image Margin="0,20,0,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png"/>
         <Label Grid.Row="2" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold">Bo.Elastic.Panel</Label>
         <Label Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{Binding LoadingStatus}"/>
     </Grid>
