@@ -8,24 +8,12 @@
 
   <ItemGroup>
     <None Remove="Assets\elastic.png" />
-    <None Remove="Assets\loading.gif" />
-    <None Remove="Assets\oponeo.png" />
-    <None Remove="Assets\pirelli.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\elastic.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\loading.gif">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\oponeo.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Assets\pirelli.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="Assets\elastic.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

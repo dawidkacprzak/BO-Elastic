@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
@@ -16,9 +17,16 @@ namespace BO.Elastic.Panel
     /// </summary>
     public partial class App : PrismApplication
     {
-
+        Mutex oneInstanceMutes;
         public App()
         {
+            bool aIsNewInstance = false;
+            oneInstanceMutes = new Mutex(true,"Bo.Elastic.Panel", out aIsNewInstance);
+            if (!aIsNewInstance)
+            {
+                App.Current.Shutdown();
+            }
+
             DispatcherUnhandledException += App_DispatcherUnhandledException;
         }
         protected override Window CreateShell()

@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BO.Elastic.Panel", "BO.Elas
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BO.Elastic.BLL", "BO.Elastic.BLL\BO.Elastic.BLL.csproj", "{3A9E7344-C9E1-4605-AB2B-48A6BA8F33BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BO.Elastic.BLL.Test", "BO.Elastic.BLL.Test\BO.Elastic.BLL.Test.csproj", "{47BF7EF3-8069-419A-8968-8D1B4534D20F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BO.Elastic.BLL.Test", "BO.Elastic.BLL.Test\BO.Elastic.BLL.Test.csproj", "{47BF7EF3-8069-419A-8968-8D1B4534D20F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
