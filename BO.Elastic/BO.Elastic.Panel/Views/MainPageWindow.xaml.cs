@@ -30,6 +30,13 @@ namespace BO.Elastic.Panel.Views
             }
         }
 
+        private void GridOfToolbar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Grid move = sender as System.Windows.Controls.Grid;
+            Window window = Window.GetWindow(move);
+            window.DragMove();
+        }
+
         private void BtnPower_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
@@ -37,10 +44,34 @@ namespace BO.Elastic.Panel.Views
 
         private void BtnResize_Click(object sender, RoutedEventArgs e)
         {
-
+            if (this.WindowState == WindowState.Normal)
+            {
+                this.WindowState = WindowState.Maximized;
+            }
+            else if (this.WindowState == WindowState.Maximized)
+            {
+                this.WindowState = WindowState.Normal;
+            }
         }
 
         private void BtnMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void BtnMenuToolbar_Click(object sender, RoutedEventArgs e)
+        {
+            if (Logs.Visibility == Visibility.Hidden)
+            {
+                Logs.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                Logs.Visibility = Visibility.Hidden;
+            }
+        }
+
+        private void BtnLogs_Click(object sender, RoutedEventArgs e)
         {
 
         }

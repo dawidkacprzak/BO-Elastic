@@ -5,27 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:prism="http://prismlibrary.com/"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        prism:ViewModelLocator.AutoWireViewModel="True"
-        mc:Ignorable="d" Height="480" Width="640" ResizeMode="CanMinimize" WindowState="Normal" WindowStartupLocation="CenterScreen" Visibility="Visible" WindowStyle="None">
+        mc:Ignorable="d" Height="480" Width="640" ResizeMode="CanMinimize" WindowState="Normal" WindowStartupLocation="Manual" Visibility="Visible" WindowStyle="None">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="390"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="380"/>
         </Grid.RowDefinitions>
 
-        <Grid Grid.Row="1">
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
-        </Grid>
-        
-        <Grid Grid.ColumnSpan="2" Background="#262626">
+        <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" Grid.ColumnSpan="2" Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Button Width="50" Height="50" Background="{x:Null}" Foreground="White">
+                <Button Width="50" Height="50" Background="{x:Null}" Foreground="White" Click="BtnMenuToolbar_Click">
                     <materialDesign:PackIcon Kind="ViewWeek"/>
                 </Button>
             </StackPanel>
@@ -40,6 +34,32 @@
                     <materialDesign:PackIcon Kind="Power"/>
                 </Button>
             </StackPanel>
+        </Grid>
+
+        <Grid x:Name="GridOfMenu" Grid.Row="1" Background="#e68a00">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Button x:Name="Logs" Width="50" Height="50" Background="{x:Null}" Foreground="White" Click="BtnLogs_Click">
+                    <materialDesign:PackIcon Kind="File"/>
+                </Button>
+                <Button x:Name="xxx"  Width="50" Height="50" Background="{x:Null}" Foreground="White">
+                    <materialDesign:PackIcon Kind="File"/>
+                </Button>
+                <Button x:Name="yyy" Visibility="Hidden" Width="50" Height="50" Background="{x:Null}" Foreground="White">
+                    <materialDesign:PackIcon Kind="File"/>
+                </Button>
+                <Button x:Name="zzz" Visibility="Hidden" Width="50" Height="50" Background="{x:Null}" Foreground="White" >
+                    <materialDesign:PackIcon Kind="File"/>
+                </Button>
+                <Button x:Name="vvv" Visibility="Hidden" Width="50" Height="50" Background="{x:Null}" Foreground="White">
+                    <materialDesign:PackIcon Kind="File"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Grid x:Name="GridOfSideBar" Grid.Row="2" Background="#e68a00" Margin="0,0,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="360"/>
+            </Grid.RowDefinitions>
         </Grid>
     </Grid>
 </Window>
