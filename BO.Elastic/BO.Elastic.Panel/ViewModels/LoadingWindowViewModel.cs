@@ -51,6 +51,7 @@ namespace BO.Elastic.Panel.ViewModels
 
         public void RunApplication(Action<string> changeStatusEvent)
         {
+            DeleteOldFiles();
             if (IsUpdateAvailable())
             {
                 try
@@ -61,7 +62,7 @@ namespace BO.Elastic.Panel.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Błąd podczasz aktualizacji aplikacji " + ex.Message);
+                    MessageBox.Show("Błąd podczas aktualizacji aplikacji " + ex.Message + ex.StackTrace);
                 }
 
             }
@@ -78,10 +79,9 @@ namespace BO.Elastic.Panel.ViewModels
 
         private void ForceRestartApplication()
         {
-            //System.Diagnostics.Process p = new System.Diagnostics.Process();
-            //p.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), Process.GetCurrentProcess().ProcessName);
-            //if (!p.Start()) MessageBox.Show("Błąd podczas restartu aktualizacji");
-           //CloseApplication();
+            System.Diagnostics.Process p = new System.Diagnostics.Process();
+            p.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), "BO.Elastic.Panel.exe");
+            if (!p.Start()) MessageBox.Show("Błąd podczas restartu aktualizacji");
         }
 
         private void DeleteOldFiles()
