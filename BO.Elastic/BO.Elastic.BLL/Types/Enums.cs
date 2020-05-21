@@ -10,4 +10,12 @@ namespace BO.Elastic.BLL.Types
         Node = 2,
         Kibana = 3
     }
+
+    public enum EServiceStatus
+    {
+        Online,
+        Moderate,
+        Danger,
+        Offline
+    }
 }
