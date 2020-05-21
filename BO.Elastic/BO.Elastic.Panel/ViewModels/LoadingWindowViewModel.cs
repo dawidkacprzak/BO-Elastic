@@ -51,9 +51,10 @@ namespace BO.Elastic.Panel.ViewModels
 
         public void RunApplication(Action<string> changeStatusEvent)
         {
-            DeleteOldFiles();
             if (IsUpdateAvailable())
             {
+                Thread.Sleep(1000);
+                DeleteOldFiles();
                 try
                 {
                     changeStatusEvent("Aktualizacja dostępna - trwa pobieranie.");
@@ -62,14 +63,14 @@ namespace BO.Elastic.Panel.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Błąd podczas aktualizacji aplikacji " + ex.Message + ex.StackTrace);
+                    MessageBox.Show("Błąd podczasz aktualizacji aplikacji " + ex.Message);
                 }
 
             }
             else
             {
-                changeStatusEvent("Aplikacja jest aktualna. Trwa uruchamianie.");
             }
+                changeStatusEvent("Aplikacja jest aktualna. Trwa uruchamianie.");
         }
 
         public void CloseApplication()
