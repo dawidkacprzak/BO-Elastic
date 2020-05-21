@@ -34,7 +34,7 @@
                 <Button x:Name="BtnResize" Width="50" Height="50" Background="{x:Null}" Foreground="White" Click="BtnResize_Click">
                     <materialDesign:PackIcon Kind="ImageFilterNone"/>
                 </Button>
-                <Button Command="{Binding CloseAppEvent}" x:Name="BtnPower" Width="50" Height="50" Background="{x:Null}" Foreground="White">
+                <Button x:Name="BtnPower" Width="50" Height="50" Background="{x:Null}" Foreground="White" Click="BtnPower_Click">
                     <materialDesign:PackIcon Kind="Power"/>
                 </Button>
             </StackPanel>

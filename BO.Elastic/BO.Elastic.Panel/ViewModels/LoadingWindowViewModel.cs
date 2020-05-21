@@ -98,6 +98,10 @@ namespace BO.Elastic.Panel.ViewModels
             System.Diagnostics.Process p = new System.Diagnostics.Process();
             p.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), "BO.Elastic.Panel.exe");
             if (!p.Start()) MessageBox.Show("Błąd podczas restartu aktualizacji");
+            App.Current.Dispatcher.Invoke(new Action(() =>
+            {
+                System.Windows.Application.Current.Shutdown();
+            }));
         }
 
         private void DeleteOldFiles()
