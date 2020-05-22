@@ -10,7 +10,6 @@ namespace BO.Elastic.BLL
 {
     public class ConfigurationController
     {
-
         /// <summary>
         /// Fetch configuration contains clusters with iherited nodes.
         /// </summary>
