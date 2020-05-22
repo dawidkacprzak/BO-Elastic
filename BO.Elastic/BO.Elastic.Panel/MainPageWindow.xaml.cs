@@ -61,14 +61,7 @@ namespace BO.Elastic.Panel
 
         private void BtnMenuToolbar_Click(object sender, RoutedEventArgs e)
         {
-            if (Logs.Visibility == Visibility.Hidden)
-            {
-                Logs.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                Logs.Visibility = Visibility.Hidden;
-            }
+
         }
 
         private void BtnLogs_Click(object sender, RoutedEventArgs e)

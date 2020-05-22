@@ -14,6 +14,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
+        <Border Grid.Row="1" Background="Gray"/>
+
         <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" Grid.ColumnSpan="2" Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <Image Margin="0,0,0,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png"/>
@@ -27,7 +29,7 @@
                     <materialDesign:PackIcon Kind="ImageFilterNone"/>
                 </Button>
                 <Button x:Name="BtnPower" BorderThickness="0" Width="70" Height="80" Background="{x:Null}" Foreground="White" Click="BtnPower_Click">
-                    <materialDesign:PackIcon Kind="Power" />
+                    <materialDesign:PackIcon Kind="Power"/>
                 </Button>
             </StackPanel>
         </Grid>
