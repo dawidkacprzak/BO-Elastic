@@ -17,6 +17,7 @@ namespace BO.Elastic.BLL.ElasticCore
             try
             {
                 ConnectionSettings settings = new ConnectionSettings(new Uri(clusterAddress));
+                settings.PingTimeout(new TimeSpan(3000));
                 elasticClient = new ElasticClient(settings);
                 PingResponse pr = elasticClient.Ping();
                 if (pr.ApiCall.HttpStatusCode != 200)

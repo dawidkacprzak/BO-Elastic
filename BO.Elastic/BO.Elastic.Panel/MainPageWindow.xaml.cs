@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BO.Elastic.Panel.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
@@ -21,6 +22,8 @@ namespace BO.Elastic.Panel
         {
             try
             {
+                MainPageWindowViewModel viewModel = new MainPageWindowViewModel();
+                this.DataContext = viewModel;
                 WindowStartupLocation = System.Windows.WindowStartupLocation.CenterScreen;
                 InitializeComponent();
             }
@@ -59,17 +62,6 @@ namespace BO.Elastic.Panel
             WindowState = WindowState.Minimized;
         }
 
-        private void BtnMenuToolbar_Click(object sender, RoutedEventArgs e)
-        {
-            if (Logs.Visibility == Visibility.Hidden)
-            {
-                Logs.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                Logs.Visibility = Visibility.Hidden;
-            }
-        }
 
         private void BtnLogs_Click(object sender, RoutedEventArgs e)
         {

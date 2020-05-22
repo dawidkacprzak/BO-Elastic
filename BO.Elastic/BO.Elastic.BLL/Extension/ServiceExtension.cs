@@ -39,25 +39,32 @@ namespace BO.Elastic.BLL.Extension
 
                     break;
                 case EServiceType.Cluster:
-                    addionalParameters.NextWrap = new NextWrap("http://" + service.Ip + ":" + service.Port);
-                    ClusterHealthResponse clusterHealth = addionalParameters.NextWrap.GetClusterHealth();
-                    if (clusterHealth.IsValid)
+                    try
                     {
-                        if (clusterHealth.Status == Elasticsearch.Net.Health.Green)
+                        addionalParameters.NextWrap = new NextWrap("http://" + service.Ip + ":" + service.Port);
+                        ClusterHealthResponse clusterHealth = addionalParameters.NextWrap.GetClusterHealth();
+                        if (clusterHealth.IsValid)
                         {
-                            addionalParameters.ServiceStatus = EServiceStatus.Online;
+                            if (clusterHealth.Status == Elasticsearch.Net.Health.Green)
+                            {
+                                addionalParameters.ServiceStatus = EServiceStatus.Online;
+                            }
+                            else if (clusterHealth.Status == Elasticsearch.Net.Health.Red)
+                            {
+                                addionalParameters.ServiceStatus = EServiceStatus.Danger;
+                            }
+                            else if (clusterHealth.Status == Elasticsearch.Net.Health.Yellow)
+                            {
+                                addionalParameters.ServiceStatus = EServiceStatus.Moderate;
+                            }
+                            else throw new Exception("Błąd podczas pobrania statusu zdrowia klastra");
                         }
-                        else if (clusterHealth.Status == Elasticsearch.Net.Health.Red)
+                        else
                         {
-                            addionalParameters.ServiceStatus = EServiceStatus.Danger;
+                            addionalParameters.ServiceStatus = EServiceStatus.Offline;
                         }
-                        else if (clusterHealth.Status == Elasticsearch.Net.Health.Yellow)
-                        {
-                            addionalParameters.ServiceStatus = EServiceStatus.Moderate;
-                        }
-                        else throw new Exception("Błąd podczas pobrania statusu zdrowia klastra");
                     }
-                    else
+                    catch (ClusterNotConnectedException)
                     {
                         addionalParameters.ServiceStatus = EServiceStatus.Offline;
                     }

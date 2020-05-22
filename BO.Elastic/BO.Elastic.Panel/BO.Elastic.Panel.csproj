@@ -24,4 +24,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\BO.Elastic.BLL\BO.Elastic.BLL.csproj" />
+  </ItemGroup>
+
 </Project>
