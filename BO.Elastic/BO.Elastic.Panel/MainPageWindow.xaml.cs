@@ -51,7 +51,7 @@ namespace BO.Elastic.Panel
             {
                 this.WindowState = WindowState.Maximized;
             }
-            else if (this.WindowState == WindowState.Maximized)
+            else
             {
                 this.WindowState = WindowState.Normal;
             }
