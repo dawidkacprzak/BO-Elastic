@@ -14,8 +14,6 @@
             <RowDefinition Height="400*"/>
         </Grid.RowDefinitions>
 
-
-
         <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" Grid.ColumnSpan="2" Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <Image Margin="0,0,0,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png"/>
@@ -34,11 +32,6 @@
             </StackPanel>
         </Grid>
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> serviceextension
         <Grid x:Name="GridOfMenu" Grid.Row="1" Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <Button x:Name="Add" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White" Click="BtnLogs_Click">
@@ -47,11 +40,7 @@
                 <Button x:Name="Delete" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White" Click="BtnLogs_Click">
                     <materialDesign:PackIcon Kind="Minus"/>
                 </Button>
-<<<<<<< HEAD
                 <Button x:Name="Refresh" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White">
-=======
-                <Button Command="{Binding RefreshEvent}" x:Name="Refresh" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White">
->>>>>>> serviceextension
                     <materialDesign:PackIcon Kind="Refresh"/>
                 </Button>
                 <Button x:Name="Download" BorderThickness="0"  Width="30" Height="30" Background="Transparent" Foreground="White">
@@ -60,18 +49,22 @@
             </StackPanel>
         </Grid>
 
-<<<<<<< HEAD
         <Grid x:Name="DataGridMenu" Grid.Row="2">
-            <DataGrid ItemsSource="{Binding Clusters}" Background="Yellow"></DataGrid>
+
+            <DataGrid Name="Clusters" CanUserAddRows="False" ItemsSource="{Binding Clusters}" AutoGenerateColumns="False" Background="Gold" Margin="0,0,460,0">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Cluser Ip" Binding="{Binding Ip}"/>
+                    <DataGridTextColumn Header="Cluser Port" Binding="{Binding Port}"/>
+                </DataGrid.Columns>
+
+
+            </DataGrid>
+
+
+            <DataGrid Background="Aquamarine" Margin="180,0,0,0"/>
+
         </Grid>
-        
-=======
 
 
-        <Grid x:Name="DataGridMenu" Grid.Row="2">
-            <DataGrid ItemsSource="{Binding Clusters}" Background="gold"></DataGrid>
-        </Grid>
-
->>>>>>> serviceextension
     </Grid>
 </Window>

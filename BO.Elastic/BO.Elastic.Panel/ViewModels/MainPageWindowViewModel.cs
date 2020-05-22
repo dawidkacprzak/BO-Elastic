@@ -56,7 +56,6 @@ namespace BO.Elastic.Panel.ViewModels
             Refresh();
         }));
 
->>>>>>> serviceextension
         public ICommand CloseAppEvent => new BasicCommand(new Action(() =>
         {
             CloseApplication();

@@ -62,14 +62,6 @@ namespace BO.Elastic.Panel
             WindowState = WindowState.Minimized;
         }
 
-<<<<<<< HEAD
-        private void BtnMenuToolbar_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-=======
->>>>>>> serviceextension
-
         private void BtnLogs_Click(object sender, RoutedEventArgs e)
         {
 
