@@ -11,7 +11,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="400*"/>
         </Grid.RowDefinitions>
 
         <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" Grid.ColumnSpan="2" Background="#262626">
@@ -48,5 +48,10 @@
                 </Button>
             </StackPanel>
         </Grid>
+
+        <Grid x:Name="DataGridMenu" Grid.Row="2">
+            <DataGrid ItemsSource="{Binding Clusters}" Background="Yellow"></DataGrid>
+        </Grid>
+        
     </Grid>
 </Window>
