@@ -58,11 +58,15 @@ namespace BO.Elastic.Panel.ViewModels
                 LoadingStatus = parameter;
             });
 
-            new Thread(() => RunApplication(updateStatusThreadSafeUI,loadingCallback)).Start();
+            new Thread(() => RunApplication(updateStatusThreadSafeUI, loadingCallback)).Start();
         }
 
         public void RunApplication(Action<string> changeStatusEvent, Action loadingCallback)
         {
+#if DEBUG
+                App.Current.Dispatcher.Invoke(loadingCallback);
+#endif
+#if RELEASE
             Thread.Sleep(1000);
             if (IsUpdateAvailable())
             {
@@ -86,6 +90,8 @@ namespace BO.Elastic.Panel.ViewModels
                 Thread.Sleep(1000);
                 App.Current.Dispatcher.Invoke(loadingCallback);
             }
+#endif
+
         }
 
         public void CloseApplication()

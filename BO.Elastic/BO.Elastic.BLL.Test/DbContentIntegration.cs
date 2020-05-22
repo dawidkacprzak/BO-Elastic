@@ -63,5 +63,44 @@ namespace BO.Elastic.BLL.Test
             Assert.IsTrue(!string.IsNullOrEmpty(nodeParameters.Port));
             Assert.IsTrue(nodeParameters.ActionList != null);
         }
+
+        [Test]
+        public void GetAddionalParametersFromClusterService()
+        {
+            ConfigurationController controller = new ConfigurationController();
+            List<Service> configuration = controller.DownloadConfiguration();
+            Service firstCluster = configuration.First();
+            ServiceAddionalParameters nodeParameters = firstCluster.GetServiceAddionalParameters();
+            Assert.IsTrue(nodeParameters.ServiceStatus == EServiceStatus.Online || nodeParameters.ServiceStatus == EServiceStatus.Moderate);
+            Assert.IsTrue(!string.IsNullOrEmpty(nodeParameters.IP));
+            Assert.IsTrue(!string.IsNullOrEmpty(nodeParameters.Port));
+            Assert.IsTrue(nodeParameters.ActionList != null);
+        }
+
+        [Test]
+        public void GetAddionalParametersFromClusterServiceFail()
+        {
+            ConfigurationController controller = new ConfigurationController();
+            Service cluster = new Service()
+            {
+                Ip = "10.10.1.1",
+                Port = "25565",
+                ClusterNodeNode = new ClusterNode()
+                {
+                    Cluster = new Service()
+                    {
+                        Ip = "10.10.1.1",
+                        Port = "25565"
+                    }
+                },
+                ServiceType = (int)EServiceType.Node
+            };
+
+            ServiceAddionalParameters nodeParameters = cluster.GetServiceAddionalParameters();
+            Assert.IsTrue(nodeParameters.ServiceStatus == EServiceStatus.Offline);
+            Assert.IsTrue(!string.IsNullOrEmpty(nodeParameters.IP));
+            Assert.IsTrue(!string.IsNullOrEmpty(nodeParameters.Port));
+            Assert.IsTrue(nodeParameters.ActionList != null);
+        }
     }
 }
