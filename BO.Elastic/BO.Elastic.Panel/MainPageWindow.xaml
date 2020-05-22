@@ -16,7 +16,7 @@
 
         <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" Grid.ColumnSpan="2" Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Image Margin="0,0,0,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png"/>
+                <Image Margin="5,5,5,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png"/>
                 <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White" FontWeight="Bold">Bo.Elastic.Panel</Label>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
@@ -50,22 +50,22 @@
         </Grid>
 
         <Grid x:Name="DataGridMenu" Grid.Row="2">
-
-            <DataGrid Name="Clusters" CanUserAddRows="False" ItemsSource="{Binding Clusters}" AutoGenerateColumns="False" Background="Gold" Margin="0,0,460,0">
-                <DataGrid.Columns>
-                    <DataGridTextColumn Header="Cluser Ip" Binding="{Binding IP}"/>
-                    <DataGridTextColumn Header="Cluser Port" Binding="{Binding Port}"/>
-                    <DataGridTextColumn Header="Status" Binding="{Binding ServiceStatus}"/>
-                </DataGrid.Columns>
-
-
-            </DataGrid>
-
-
-            <DataGrid Background="Aquamarine" Margin="180,0,0,0"/>
-
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <DataGrid Grid.Column="0" Name="Clusters" CanUserAddRows="False" ItemsSource="{Binding Clusters}" AutoGenerateColumns="False" Background="Gold">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Cluser Ip" Binding="{Binding IP}"/>
+                        <DataGridTextColumn Header="Cluser Port" Binding="{Binding Port}"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding ServiceStatus}"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+                <DataGrid Grid.Column="2" Background="Aquamarine"/>
+                <GridSplitter Grid.Column="0" Width="5"/>
+            </Grid>
         </Grid>
-
 
     </Grid>
 </Window>
