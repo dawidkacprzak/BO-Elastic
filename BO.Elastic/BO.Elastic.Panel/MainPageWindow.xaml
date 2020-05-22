@@ -9,12 +9,10 @@
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="80"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-
-        <Border Grid.Row="1" Background="Gray"/>
 
         <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" Grid.ColumnSpan="2" Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
@@ -22,13 +20,13 @@
                 <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White" FontWeight="Bold">Bo.Elastic.Panel</Label>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-                <Button x:Name="BtnMinimize" BorderThickness="0" Width="70" Height="80" Background="{x:Null}" Foreground="White" Click="BtnMinimize_Click">
+                <Button x:Name="BtnMinimize" BorderThickness="0" Width="50" Height="50" Background="Transparent" Foreground="White" Click="BtnMinimize_Click">
                     <materialDesign:PackIcon Kind="WindowMinimize"/>
                 </Button>
-                <Button x:Name="BtnResize" BorderThickness="0" Width="70" Height="80" Background="{x:Null}" Foreground="White" Click="BtnResize_Click">
+                <Button x:Name="BtnResize" BorderThickness="0" Width="50" Height="50" Background="Transparent" Foreground="White" Click="BtnResize_Click">
                     <materialDesign:PackIcon Kind="ImageFilterNone"/>
                 </Button>
-                <Button x:Name="BtnPower" BorderThickness="0" Width="70" Height="80" Background="{x:Null}" Foreground="White" Click="BtnPower_Click">
+                <Button x:Name="BtnPower" BorderThickness="0" Width="50" Height="50" Background="Transparent" Foreground="White" Click="BtnPower_Click">
                     <materialDesign:PackIcon Kind="Power"/>
                 </Button>
             </StackPanel>
@@ -36,16 +34,16 @@
 
         <Grid x:Name="GridOfMenu" Grid.Row="1" Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Button x:Name="Add" BorderThickness="0" Width="30" Height="30" Background="{x:Null}" Foreground="White" Click="BtnLogs_Click">
+                <Button x:Name="Add" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White" Click="BtnLogs_Click">
                     <materialDesign:PackIcon Kind="Add"/>
                 </Button>
-                <Button x:Name="Delete" BorderThickness="0" Width="30" Height="30" Background="{x:Null}" Foreground="White" Click="BtnLogs_Click">
+                <Button x:Name="Delete" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White" Click="BtnLogs_Click">
                     <materialDesign:PackIcon Kind="Minus"/>
                 </Button>
-                <Button x:Name="Refresh" BorderThickness="0" Width="30" Height="30" Background="{x:Null}" Foreground="White">
+                <Button x:Name="Refresh" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White">
                     <materialDesign:PackIcon Kind="Refresh"/>
                 </Button>
-                <Button x:Name="Download" BorderThickness="0"  Width="30" Height="30" Background="{x:Null}" Foreground="White">
+                <Button x:Name="Download" BorderThickness="0"  Width="30" Height="30" Background="Transparent" Foreground="White">
                     <materialDesign:PackIcon Kind="Download"/>
                 </Button>
             </StackPanel>
