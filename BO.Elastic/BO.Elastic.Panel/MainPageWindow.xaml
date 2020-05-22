@@ -7,58 +7,28 @@
         mc:Ignorable="d" Height="480" Width="640" ResizeMode="CanMinimize" WindowState="Normal" WindowStartupLocation="CenterScreen" Visibility="Visible" WindowStyle="None">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250*"/>
-            <ColumnDefinition Width="390*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="380*"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" Grid.ColumnSpan="2" Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Button Width="50" Height="50" Background="{x:Null}" Foreground="White" Click="BtnMenuToolbar_Click">
-                    <materialDesign:PackIcon Kind="ViewWeek"/>
-                </Button>
+                <Image Margin="0,0,0,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png"/>
+                <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White" FontWeight="Bold">Bo.Elastic.Panel</Label>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-                <Button x:Name="BtnMinimize" Width="50" Height="50" Background="{x:Null}" Foreground="White" Click="BtnMinimize_Click">
+                <Button x:Name="BtnMinimize" BorderThickness="0" Width="70" Height="80" Background="{x:Null}" Foreground="White" Click="BtnMinimize_Click">
                     <materialDesign:PackIcon Kind="WindowMinimize"/>
                 </Button>
-                <Button x:Name="BtnResize" Width="50" Height="50" Background="{x:Null}" Foreground="White" Click="BtnResize_Click">
+                <Button x:Name="BtnResize" BorderThickness="0" Width="70" Height="80" Background="{x:Null}" Foreground="White" Click="BtnResize_Click">
                     <materialDesign:PackIcon Kind="ImageFilterNone"/>
                 </Button>
-                <Button x:Name="BtnPower" Width="50" Height="50" Background="{x:Null}" Foreground="White" Click="BtnPower_Click">
-                    <materialDesign:PackIcon Kind="Power"/>
+                <Button x:Name="BtnPower" BorderThickness="0" Width="70" Height="80" Background="{x:Null}" Foreground="White" Click="BtnPower_Click">
+                    <materialDesign:PackIcon Kind="Power" />
                 </Button>
             </StackPanel>
-        </Grid>
-
-        <Grid x:Name="GridOfMenu" Grid.Row="1" Background="#e68a00">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Button x:Name="Logs" Width="50" Height="50" Background="{x:Null}" Foreground="White" Click="BtnLogs_Click">
-                    <materialDesign:PackIcon Kind="File"/>
-                </Button>
-                <Button x:Name="xxx"  Width="50" Height="50" Background="{x:Null}" Foreground="White">
-                    <materialDesign:PackIcon Kind="File"/>
-                </Button>
-                <Button x:Name="yyy" Visibility="Hidden" Width="50" Height="50" Background="{x:Null}" Foreground="White">
-                    <materialDesign:PackIcon Kind="File"/>
-                </Button>
-                <Button x:Name="zzz" Visibility="Hidden" Width="50" Height="50" Background="{x:Null}" Foreground="White" >
-                    <materialDesign:PackIcon Kind="File"/>
-                </Button>
-                <Button x:Name="vvv" Visibility="Hidden" Width="50" Height="50" Background="{x:Null}" Foreground="White">
-                    <materialDesign:PackIcon Kind="File"/>
-                </Button>
-            </StackPanel>
-        </Grid>
-
-        <Grid x:Name="GridOfSideBar" Grid.Row="2" Background="#e68a00" Margin="0,0,0,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="360"/>
-            </Grid.RowDefinitions>
         </Grid>
     </Grid>
 </Window>
