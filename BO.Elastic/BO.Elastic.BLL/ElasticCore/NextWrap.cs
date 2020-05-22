@@ -38,6 +38,11 @@ namespace BO.Elastic.BLL.ElasticCore
             return GetNodesFromIpAndPort(ip, port).First().Value;
         }
 
+        public ClusterHealthResponse GetClusterHealth()
+        {
+            return elasticClient.Cluster.Health();
+        }
+
         private bool NodeExists(string ip, string port)
         {
             IEnumerable<KeyValuePair<string, NodeInfo>> nodes = GetNodesFromIpAndPort(ip, port);
