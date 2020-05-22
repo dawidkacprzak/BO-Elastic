@@ -56,13 +56,13 @@
                     <DataGridTextColumn Header="Cluser Ip" Binding="{Binding Ip}"/>
                     <DataGridTextColumn Header="Cluser Port" Binding="{Binding Port}"/>
                 </DataGrid.Columns>
-                
-                
+
+
             </DataGrid>
-            
-            
+
+
             <DataGrid Background="Aquamarine" Margin="180,0,0,0"/>
-            
+
         </Grid>
 
 

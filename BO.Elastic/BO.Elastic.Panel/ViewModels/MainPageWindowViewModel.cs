@@ -8,16 +8,20 @@ using BO.Elastic.BLL.Model;
 using BO.Elastic.BLL;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
+using BO.Elastic.BLL.ServiceExtenstionModel;
+using BO.Elastic.BLL.Extension;
 
 namespace BO.Elastic.Panel.ViewModels
 {
     public class MainPageWindowViewModel : INotifyPropertyChanged
     {
-        private ObservableCollection<Service> clusters;
-
-        public ObservableCollection<Service> Clusters
+        private ObservableCollection<ServiceAddionalParameters> clusters;
+        private ConfigurationController configurationController;
+        public ObservableCollection<ServiceAddionalParameters> Clusters
         {
-            get => clusters; set
+            get => clusters; 
+            set
             {
                 if (value != null)
                 {
@@ -30,10 +34,27 @@ namespace BO.Elastic.Panel.ViewModels
 
         public MainPageWindowViewModel()
         {
-
-            ConfigurationController configurationController = new ConfigurationController();
-            Clusters = new ObservableCollection<Service>(configurationController.DownloadConfiguration());
+            configurationController = new ConfigurationController();
+            Clusters = new ObservableCollection<ServiceAddionalParameters>(GetAddionalClusterParameters(configurationController.DownloadConfiguration()));
         }
+
+        private void Refresh()
+        {
+            Clusters = new ObservableCollection<ServiceAddionalParameters>(GetAddionalClusterParameters(configurationController.DownloadConfiguration()));
+        }
+
+        private IEnumerable<ServiceAddionalParameters> GetAddionalClusterParameters(List<Service> services)
+        {
+            foreach(var item in services)
+            {
+                yield return item.GetServiceAddionalParameters();
+            }
+        }
+
+        public ICommand RefreshEvent => new BasicCommand(new Action(() =>
+        {
+            Refresh();
+        }));
 
         public ICommand CloseAppEvent => new BasicCommand(new Action(() =>
         {

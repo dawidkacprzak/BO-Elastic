@@ -15,12 +15,13 @@ namespace BO.Elastic.BLL.Extension
         public static ServiceAddionalParameters GetServiceAddionalParameters(this Service service)
         {
             ServiceAddionalParameters addionalParameters = new ServiceAddionalParameters();
+            addionalParameters.IP = service.Ip;
+            addionalParameters.Port = service.Port;
             addionalParameters.ActionList = new List<KeyValuePair<string, Action>>();
             switch ((EServiceType)service.ServiceType)
             {
                 case EServiceType.Node:
-                    addionalParameters.IP = service.Ip;
-                    addionalParameters.Port = service.Port;
+
                     try
                     {
                         addionalParameters.NextWrap = new NextWrap("http://" + service.ClusterNodeNode.Cluster.Ip + ":" + service.ClusterNodeNode.Cluster.Port);
@@ -38,6 +39,36 @@ namespace BO.Elastic.BLL.Extension
 
                     break;
                 case EServiceType.Cluster:
+                    try
+                    {
+                        addionalParameters.NextWrap = new NextWrap("http://" + service.Ip + ":" + service.Port);
+                        ClusterHealthResponse clusterHealth = addionalParameters.NextWrap.GetClusterHealth();
+                        if (clusterHealth.IsValid)
+                        {
+                            if (clusterHealth.Status == Elasticsearch.Net.Health.Green)
+                            {
+                                addionalParameters.ServiceStatus = EServiceStatus.Online;
+                            }
+                            else if (clusterHealth.Status == Elasticsearch.Net.Health.Red)
+                            {
+                                addionalParameters.ServiceStatus = EServiceStatus.Danger;
+                            }
+                            else if (clusterHealth.Status == Elasticsearch.Net.Health.Yellow)
+                            {
+                                addionalParameters.ServiceStatus = EServiceStatus.Moderate;
+                            }
+                            else throw new Exception("Błąd podczas pobrania statusu zdrowia klastra");
+                        }
+                        else
+                        {
+                            addionalParameters.ServiceStatus = EServiceStatus.Offline;
+                        }
+                    }
+                    catch (ClusterNotConnectedException)
+                    {
+                        addionalParameters.ServiceStatus = EServiceStatus.Offline;
+                    }
+
                     break;
                 case EServiceType.Kibana:
                     break;
