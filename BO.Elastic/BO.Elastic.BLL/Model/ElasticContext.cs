@@ -8,11 +8,14 @@ namespace BO.Elastic.BLL.Model
     {
         public ElasticContext()
         {
+            Database.SetCommandTimeout(1);
+
         }
 
         public ElasticContext(DbContextOptions<ElasticContext> options)
             : base(options)
         {
+            Database.SetCommandTimeout(1);
         }
 
         public virtual DbSet<ClusterNode> ClusterNode { get; set; }
@@ -24,7 +27,7 @@ namespace BO.Elastic.BLL.Model
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=10.10.1.214;Database=Elastic; User Id=Panel; Password=qwerty;");
+                optionsBuilder.UseSqlServer("Server=10.10.1.214;Database=Elastic; User Id=Panel; Password=qwerty;Connection Timeout = 2");
             }
         }
 

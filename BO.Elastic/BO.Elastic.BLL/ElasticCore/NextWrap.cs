@@ -17,17 +17,26 @@ namespace BO.Elastic.BLL.ElasticCore
             try
             {
                 ConnectionSettings settings = new ConnectionSettings(new Uri(clusterAddress));
-                settings.PingTimeout(new TimeSpan(3000));
+                settings.PingTimeout(new TimeSpan(0, 0, 1));
+                settings.DeadTimeout(new TimeSpan(0, 0, 1));
+                settings.MaxRetryTimeout(new TimeSpan(0, 0, 1));
+                settings.MaximumRetries(1);
+                System.Diagnostics.Debug.WriteLine("Wrap - before");
                 elasticClient = new ElasticClient(settings);
                 PingResponse pr = elasticClient.Ping();
                 if (pr.ApiCall.HttpStatusCode != 200)
                 {
+
                     throw new Exception();
                 }
+                System.Diagnostics.Debug.WriteLine("Wrap - after");
+
 
             }
             catch (Exception)
             {
+                System.Diagnostics.Debug.WriteLine("Wrap - after");
+
                 throw new ClusterNotConnectedException(clusterAddress);
             }
         }

@@ -61,5 +61,54 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <SolidColorBrush x:Key="GotFocusColor" Color="Green" />
+        <SolidColorBrush x:Key="LostFocusColor" Color="Transparent" />
+
+        <Style TargetType="{x:Type DataGrid}">
+            <Setter Property="Foreground" Value="#FFB3B3B3"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="GridLinesVisibility" Value="None"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="ColumnHeaderStyle" Value="{DynamicResource ColumnHeaderStyle}"/>
+            <Setter Property="RowHeaderStyle" Value="{DynamicResource RowHeaderStyle}"/>
+            <Setter Property="CellStyle" Value="{DynamicResource CellStyle}" />
+            <Setter Property="RowBackground" Value="#FF343434"/>
+            <Setter Property="Background" Value="#FF404040"/>
+        </Style>
+
+        <Style x:Key="ColumnHeaderStyle" TargetType="DataGridColumnHeader">
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Background" Value="#FF2B2B2B"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="MinWidth" Value="80"/>
+            <Setter Property="BorderThickness" Value="0,0,1,0"></Setter>
+            <Setter Property="BorderBrush" Value="#333333"/>
+
+        </Style>
+        <Style x:Key="RowHeaderStyle" TargetType="DataGridRowHeader">
+            <Setter Property="Background" Value="#FF2B2B2B"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+        </Style>
+        <Style x:Key="CellStyle" TargetType="DataGridCell">
+            <Setter Property="Background" Value="#FF343434"/>
+            <Setter Property="Foreground" Value="#FFFFFF"/>
+            <Setter Property="BorderThickness" Value="0,0,5,0"></Setter>
+            <Setter Property="BorderBrush" Value="Red"/>
+            <Setter Property="MinHeight" Value="22"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridCell}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

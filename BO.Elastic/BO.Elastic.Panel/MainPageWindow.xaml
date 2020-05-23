@@ -4,7 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        mc:Ignorable="d" Height="480" Width="640" ResizeMode="CanMinimize" WindowState="Normal" WindowStartupLocation="CenterScreen" Visibility="Visible" WindowStyle="None">
+        AllowsTransparency="False"
+        mc:Ignorable="d" 
+        Height="480" Width="640" 
+        MinWidth="350"
+        MinHeight="60"
+        ResizeMode="CanResize" 
+        WindowState="Normal" 
+        WindowStartupLocation="CenterScreen"
+        Visibility="Visible" 
+        WindowStyle="None">
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
     <Grid>
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
@@ -12,6 +24,7 @@
             <RowDefinition Height="50"/>
             <RowDefinition Height="30"/>
             <RowDefinition Height="400*"/>
+            <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
 
         <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" Grid.ColumnSpan="2" Background="#262626">
@@ -52,20 +65,43 @@
         <Grid x:Name="DataGridMenu" Grid.Row="2">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="250" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <DataGrid Grid.Column="0" Name="Clusters" CanUserAddRows="False" ItemsSource="{Binding Clusters}" AutoGenerateColumns="False" Background="Gold">
+                <DataGrid HorizontalScrollBarVisibility="Disabled" Grid.Column="0" Name="Clusters" CanUserAddRows="False" ItemsSource="{Binding Clusters}" AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="Cluser Ip" Binding="{Binding IP}"/>
+                        <DataGridTextColumn  Header="Cluser Ip" Binding="{Binding IP}"/>
                         <DataGridTextColumn Header="Cluser Port" Binding="{Binding Port}"/>
-                        <DataGridTextColumn Header="Status" Binding="{Binding ServiceStatus}"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding ServiceStatus}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Style.Triggers>
+                                        <Trigger Property="Text" Value="Online">
+                                            <Setter Property="Foreground" Value="LightGreen"/>
+                                        </Trigger>
+                                        <Trigger Property="Text" Value="Offline">
+                                            <Setter Property="Foreground" Value="#FFCDCDCD"/>
+                                        </Trigger>
+                                        <Trigger Property="Text" Value="Moderate">
+                                            <Setter Property="Foreground" Value="#FFFBC637"/>
+                                        </Trigger>
+                                        <Trigger Property="Text" Value="Moderate">
+                                            <Setter Property="Foreground" Value="#FFFF4646"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
                     </DataGrid.Columns>
+
                 </DataGrid>
                 <DataGrid Grid.Column="2" Background="Aquamarine"/>
-                <GridSplitter Grid.Column="0" Width="5"/>
+                <GridSplitter Grid.Column="0" Width="3"/>
             </Grid>
-        </Grid>
 
+        </Grid>
+        <ProgressBar Background="#FF2B2B2B" Foreground="White" Grid.Row="3" Minimum="0" Maximum="100" Value="{Binding ProgressValue}" HorizontalAlignment="Stretch" BorderThickness="0" >
+
+        </ProgressBar>
     </Grid>
 </Window>
