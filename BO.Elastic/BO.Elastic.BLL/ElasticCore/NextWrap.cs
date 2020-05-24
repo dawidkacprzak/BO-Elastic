@@ -17,8 +17,9 @@ namespace BO.Elastic.BLL.ElasticCore
             try
             {
                 ConnectionSettings settings = new ConnectionSettings(new Uri(clusterAddress));
-                settings.PingTimeout(new TimeSpan(0, 0, 1));
+                settings.PingTimeout(TimeSpan.FromMilliseconds(1000));
                 settings.DeadTimeout(new TimeSpan(0, 0, 1));
+                settings.MaxDeadTimeout(TimeSpan.FromMilliseconds(1000));
                 settings.MaxRetryTimeout(new TimeSpan(0, 0, 1));
                 settings.MaximumRetries(1);
                 System.Diagnostics.Debug.WriteLine("Wrap - before");
@@ -30,8 +31,6 @@ namespace BO.Elastic.BLL.ElasticCore
                     throw new Exception();
                 }
                 System.Diagnostics.Debug.WriteLine("Wrap - after");
-
-
             }
             catch (Exception)
             {
