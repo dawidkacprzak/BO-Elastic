@@ -231,9 +231,7 @@ namespace BO.Elastic.Panel.ViewModels
                             BinaryFormatter formatter = new BinaryFormatter();
                             formatter.Serialize(fs, downloadedConfiguration);
                         }
-
                     }
-
                 }
                 catch (Exception e)
                 {
