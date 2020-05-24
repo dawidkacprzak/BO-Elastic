@@ -13,5 +13,6 @@ namespace BO.Elastic.BLL.ServiceExtenstionModel
         public string IP { get; set; }
         public string Port { get; set; }
         public List<KeyValuePair<string,Action>> ActionList { get; set; }
+        public EServiceType ServiceType;
     }
 }

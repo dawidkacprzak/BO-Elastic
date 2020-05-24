@@ -16,6 +16,7 @@ namespace BO.Elastic.BLL.Types
         Online,
         Moderate,
         Danger,
-        Offline
+        Offline,
+        Initializing
     }
 }

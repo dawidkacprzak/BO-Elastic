@@ -16,6 +16,9 @@ using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using System.Runtime.Serialization;
+using BO.Elastic.BLL.Types;
+using System.Windows.Threading;
+using System.Threading.Tasks;
 
 namespace BO.Elastic.Panel.ViewModels
 {
@@ -52,13 +55,6 @@ namespace BO.Elastic.Panel.ViewModels
             }
         }
 
-        public ICommand RefreshEvent => new BasicCommand(new Action(() =>
-        {
-            new Thread(() =>
-            {
-                RefreshWithProgressBar();
-            }).Start();
-        }));
 
         public ICommand CloseAppEvent => new BasicCommand(new Action(() =>
         {
@@ -70,7 +66,11 @@ namespace BO.Elastic.Panel.ViewModels
             RefreshAndSaveConfiguration();
         }));
 
-        private static bool updateFinished = false;
+        private static bool refreshState = false;
+
+        Task updateTask1;
+        Task updateTask2;
+        Task updateTask3;
 
         public MainPageWindowViewModel()
         {
@@ -82,10 +82,21 @@ namespace BO.Elastic.Panel.ViewModels
                 configurationController = new ConfigurationController();
                 SetCachedConfiguration();
                 SetProgressBarPercent(50);
-                Clusters = new ObservableCollection<ServiceAddionalParameters>(GetAddionalClusterParameters(downloadedConfiguration));
-                updateFinished = true;
+                Clusters = new ObservableCollection<ServiceAddionalParameters>();
+                foreach (var item in downloadedConfiguration)
+                {
+                    Clusters.Add(new ServiceAddionalParameters()
+                    {
+                        IP = item.Ip,
+                        Port = item.Port,
+                        ServiceStatus = EServiceStatus.Initializing,
+                        ServiceType = (EServiceType)item.ServiceType
+                    });
+                }
                 SetProgressBarPercent(70);
                 SetProgressBarPercent(0);
+                PrepareUpdateThreads();
+                RefreshTimerTick(null, null);
             }).Start();
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += RefreshTimerTick;
@@ -93,18 +104,162 @@ namespace BO.Elastic.Panel.ViewModels
             dispatcherTimer.Start();
         }
 
+        private void PrepareUpdateThreads()
+        {
+            if (downloadedConfiguration.Count == 0) return;
+            if (downloadedConfiguration.Count == 1)
+            {
+                updateTask1 = new Task(() =>
+                {
+
+                    ServiceAddionalParameters tempParam = GetAddionalClusterParameters(new List<Service>() { downloadedConfiguration.ElementAt(0) }).First();
+                    if (!refreshState)
+                        App.Current.Dispatcher.Invoke(() =>
+                    {
+                        if (!refreshState && 1 < Clusters.Count)
+                            Clusters[0] = tempParam;
+
+                    });
+                });
+            }
+            else if (downloadedConfiguration.Count == 2)
+            {
+                int clusterCount = downloadedConfiguration.Count / 2;
+
+                updateTask1 = new Task(() =>
+                {
+                    for (int i = 0; i < clusterCount; i++)
+                    {
+                        if (i < downloadedConfiguration.Count)
+                        {
+                            ServiceAddionalParameters tempParam = GetAddionalClusterParameters(new List<Service>() { downloadedConfiguration.ElementAt(i) }).First();
+                            if (!refreshState)
+                                App.Current.Dispatcher.Invoke(() =>
+                                {
+                                    if (!refreshState && i < Clusters.Count)
+                                        Clusters[i] = tempParam; Clusters[i] = tempParam;
+
+                                });
+                        }
+                    }
+                });
+
+                updateTask2 = new Task(() =>
+                {
+                    if (!refreshState)
+                        for (int i = clusterCount; i < downloadedConfiguration.Count; i++)
+                        {
+                            if (i < downloadedConfiguration.Count)
+                            {
+                                ServiceAddionalParameters tempParam = GetAddionalClusterParameters(new List<Service>() { downloadedConfiguration.ElementAt(i) }).First();
+                                if (!refreshState)
+                                    App.Current.Dispatcher.Invoke(() =>
+                                {
+                                    if (!refreshState && i < Clusters.Count)
+                                        Clusters[i] = tempParam;
+                                });
+                            }
+                        }
+                });
+            }
+            else
+            {
+                int clusterCount = downloadedConfiguration.Count / 3;
+
+                updateTask1 = new Task(() =>
+                {
+                    for (int i = 0; i < clusterCount; i++)
+                    {
+                        if (i < downloadedConfiguration.Count)
+                        {
+                            ServiceAddionalParameters tempParam = GetAddionalClusterParameters(new List<Service>() { downloadedConfiguration.ElementAt(i) }).First();
+                            if (!refreshState)
+
+                                App.Current.Dispatcher.Invoke(() =>
+                                {
+                                    if (!refreshState && i < Clusters.Count)
+                                        Clusters[i] = tempParam;
+
+                                });
+                        }
+
+                    }
+                });
+
+                updateTask2 = new Task(() =>
+                {
+                    if (!refreshState)
+                        for (int i = clusterCount; i < clusterCount * 2; i++)
+                        {
+                            if (i < downloadedConfiguration.Count)
+                            {
+                                ServiceAddionalParameters tempParam = GetAddionalClusterParameters(new List<Service>() { downloadedConfiguration.ElementAt(i) }).First();
+                                if (!refreshState)
+
+                                    App.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        if (!refreshState && i < Clusters.Count)
+                                            Clusters[i] = tempParam;
+                                    });
+                            }
+
+                        }
+                });
+                updateTask3 = new Task(() =>
+                {
+                    if (!refreshState)
+                        for (int i = clusterCount * 2; i < downloadedConfiguration.Count; i++)
+                        {
+                            if (i < downloadedConfiguration.Count)
+                            {
+                                ServiceAddionalParameters tempParam = GetAddionalClusterParameters(new List<Service>() { downloadedConfiguration.ElementAt(i) }).First();
+                                if (!refreshState)
+
+                                    App.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        if (!refreshState && i < Clusters.Count)
+                                            Clusters[i] = tempParam;
+                                    });
+                            }
+
+                        }
+                });
+            }
+        }
 
         private void RefreshAndSaveConfiguration()
         {
-            SetProgressBarPercent(30);
-            downloadedConfiguration = configurationController.DownloadConfiguration();
-            SetProgressBarPercent(60);
+            updateTask1 = null;
+            updateTask2 = null;
+            updateTask3 = null;
+            Task refreshTask = new Task(() =>
+            {
+                refreshState = true;
+                SetProgressBarPercent(30);
+                downloadedConfiguration = configurationController.DownloadConfiguration();
+                Clusters = new ObservableCollection<ServiceAddionalParameters>();
+                PrepareUpdateThreads();
+                foreach (var item in downloadedConfiguration)
+                {
+                    Clusters.Add(new ServiceAddionalParameters()
+                    {
+                        IP = item.Ip,
+                        Port = item.Port,
+                        ServiceStatus = EServiceStatus.Initializing,
+                        ServiceType = (EServiceType)item.ServiceType
+                    });
+                }
 
-            SaveConfiguration();
+                SetProgressBarPercent(60);
+                SaveConfiguration();
+                refreshState = false;
+            });
+            refreshTask.Start();
         }
 
         private void SetCachedConfiguration()
         {
+            refreshState = true;
             SetProgressBarPercent(30);
             try
             {
@@ -132,6 +287,7 @@ namespace BO.Elastic.Panel.ViewModels
             finally
             {
                 SetProgressBarPercent(0);
+                refreshState = false;
             }
         }
 
@@ -168,36 +324,38 @@ namespace BO.Elastic.Panel.ViewModels
 
         private void RefreshTimerTick(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine("ref att!");
-
-            if (updateFinished)
+            if (updateTask1 != null && updateTask2 == null && updateTask1.Status != TaskStatus.Running && updateTask1.Status != TaskStatus.RanToCompletion && !refreshState)
             {
-                updateFinished = false;
-                new Thread(() =>
-                {
-                    System.Diagnostics.Debug.WriteLine("go!");
-                    RefreshWithProgressBar();
-                    updateFinished = true;
-                }).Start();
+                PrepareUpdateThreads();
+                System.Diagnostics.Debug.WriteLine("updarw");
+                SetProgressBarPercent(50);
+                updateTask1.Start();
+            }
+            else if ((updateTask1 != null && updateTask2 != null && updateTask3 == null) 
+                && updateTask1.Status != TaskStatus.Running && updateTask1.Status != TaskStatus.RanToCompletion
+                && updateTask2.Status != TaskStatus.Running && updateTask2.Status != TaskStatus.RanToCompletion
+                && !refreshState)
+            {
+                PrepareUpdateThreads();
+                System.Diagnostics.Debug.WriteLine("updarw");
+                SetProgressBarPercent(50);
+                updateTask1.Start();
+                updateTask2.Start();
+            }
+            else if (((updateTask1 != null && updateTask2 != null && updateTask3 != null) 
+                && updateTask1.Status != TaskStatus.Running && updateTask1.Status != TaskStatus.RanToCompletion 
+                && updateTask2.Status != TaskStatus.Running && updateTask2.Status != TaskStatus.RanToCompletion
+                && updateTask3.Status != TaskStatus.Running && updateTask3.Status != TaskStatus.RanToCompletion && !refreshState))
+            {
+                PrepareUpdateThreads();
+                System.Diagnostics.Debug.WriteLine("updarw");
+                SetProgressBarPercent(50);
+                updateTask1.Start();
+                updateTask2.Start();
+                updateTask3.Start();
             }
         }
 
-        private void RefreshWithProgressBar()
-        {
-            SetProgressBarPercent(50);
-            Refresh();
-            updateFinished = true;
-            SetProgressBarPercent(0);
-
-        }
-
-        private void Refresh()
-        {
-            if (downloadedConfiguration != null)
-            {
-                Clusters = new ObservableCollection<ServiceAddionalParameters>(GetAddionalClusterParameters(downloadedConfiguration));
-            }
-        }
 
         private IEnumerable<ServiceAddionalParameters> GetAddionalClusterParameters(List<Service> services)
         {
@@ -206,7 +364,6 @@ namespace BO.Elastic.Panel.ViewModels
                 yield return item.GetServiceAddionalParameters();
             }
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
@@ -217,7 +374,15 @@ namespace BO.Elastic.Panel.ViewModels
 
         public void CloseApplication()
         {
-            Application.Current.Shutdown();
+            ThreadStart ts = delegate ()
+            {
+                Application.Current.Dispatcher.Invoke((Action)delegate ()
+                {
+                    Application.Current.Shutdown();
+                });
+            };
+            Thread t = new Thread(ts);
+            t.Start();
         }
     }
 }

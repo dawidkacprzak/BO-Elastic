@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -38,11 +39,6 @@ namespace BO.Elastic.Panel
             Grid move = sender as System.Windows.Controls.Grid;
             Window window = Window.GetWindow(move);
             window.DragMove();
-        }
-
-        private void BtnPower_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
         }
 
         private void BtnResize_Click(object sender, RoutedEventArgs e)

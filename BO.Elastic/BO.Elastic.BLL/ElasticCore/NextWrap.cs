@@ -4,6 +4,7 @@ using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 
 namespace BO.Elastic.BLL.ElasticCore
@@ -24,15 +25,21 @@ namespace BO.Elastic.BLL.ElasticCore
                 settings.MaximumRetries(1);
                 System.Diagnostics.Debug.WriteLine("Wrap - before");
                 elasticClient = new ElasticClient(settings);
-                PingResponse pr = elasticClient.Ping();
-                if (pr.ApiCall.HttpStatusCode != 200)
+                string ip = clusterAddress.Split(':')[1].Replace("/", string.Empty);
+                int port = int.Parse(clusterAddress.Split(':')[2]);
+                if (PingHost(ip, port)){
+                    PingResponse pr = elasticClient.Ping();
+                    if (pr.ApiCall.HttpStatusCode != 200)
+                    {
+                        throw new Exception();
+                    }
+                }
+                else
                 {
-
                     throw new Exception();
                 }
-                System.Diagnostics.Debug.WriteLine("Wrap - after");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("Wrap - after");
 
@@ -72,6 +79,21 @@ namespace BO.Elastic.BLL.ElasticCore
         private IEnumerable<KeyValuePair<string, NodeInfo>> GetNodesFromIpAndPort(string ip, string port)
         {
             return elasticClient.Nodes.Info().Nodes.Where(x => x.Value.Http.PublishAddress.Equals(ip + ":" + port));
+
+        }
+
+        public static bool PingHost(string hostUri, int portNumber)
+        {
+            var client = new TcpClient();
+            var result = client.BeginConnect(hostUri, portNumber, null, null);
+
+            var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
+
+            if (!success)
+            {
+                return false;
+            }
+            return true;
 
         }
     }
