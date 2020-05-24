@@ -97,10 +97,6 @@ namespace BO.Elastic.Panel.ViewModels
                 SetProgressBarPercent(0);
                 PrepareUpdateThreads();
                 RefreshTimerTick(null, null);
-                for (int i = 0; i < 100000; i++)
-                {
-                    SaveConfiguration();
-                }
             }).Start();
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += RefreshTimerTick;
@@ -224,8 +220,6 @@ namespace BO.Elastic.Panel.ViewModels
                     SetProgressBarPercent(80);
                     lock (saveConfigurationLock)
                     {
-   
-
                         using (FileStream fs = new FileStream(Path.Combine(Path.GetTempPath(), "boElasticConfiguration.dat"), FileMode.Create))
                         {
                             BinaryFormatter formatter = new BinaryFormatter();
