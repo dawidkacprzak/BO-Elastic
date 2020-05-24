@@ -179,10 +179,6 @@ namespace BO.Elastic.Panel.ViewModels
 
             foreach (string file in filesInAppDirectory)
             {
-                if (file.Contains("sni.dll"))
-                {
-                    continue;
-                }
                 if (File.Exists(file))
                 {
                     if (File.Exists(file + ".old"))
