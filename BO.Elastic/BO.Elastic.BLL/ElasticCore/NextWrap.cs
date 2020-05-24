@@ -39,10 +39,8 @@ namespace BO.Elastic.BLL.ElasticCore
                     throw new Exception();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                System.Diagnostics.Debug.WriteLine("Wrap - after");
-
                 throw new ClusterNotConnectedException(clusterAddress);
             }
         }

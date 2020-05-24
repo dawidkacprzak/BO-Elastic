@@ -62,7 +62,7 @@
         <Grid x:Name="DataGridMenu" Grid.Row="2">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="250" />
+                    <ColumnDefinition Width="240" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <DataGrid HorizontalScrollBarVisibility="Disabled" Grid.Column="0" Name="Clusters" CanUserAddRows="False" ItemsSource="{Binding Clusters}" AutoGenerateColumns="False">
@@ -92,8 +92,8 @@
                     </DataGrid.Columns>
 
                 </DataGrid>
-                <DataGrid Grid.Column="2" Background="Aquamarine"/>
-                <GridSplitter Grid.Column="0" Width="3"/>
+                <DataGrid Grid.Column="2"/>
+                <GridSplitter Margin="10,0,0,10" Background="#FF2B2B2B" Grid.Column="0" Width="3"/>
             </Grid>
 
         </Grid>
