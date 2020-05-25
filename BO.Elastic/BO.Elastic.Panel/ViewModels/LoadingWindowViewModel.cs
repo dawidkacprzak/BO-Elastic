@@ -87,7 +87,6 @@ namespace BO.Elastic.Panel.ViewModels
             else
             {
                 changeStatusEvent("Aplikacja jest aktualna. Trwa uruchamianie.");
-                Thread.Sleep(1000);
                 App.Current.Dispatcher.Invoke(loadingCallback);
             }
 #endif
@@ -190,18 +189,6 @@ namespace BO.Elastic.Panel.ViewModels
                 }
             }
 
-            foreach (string directory in directoriesInAppDirectory)
-            {
-                if (Directory.Exists(directory))
-                {
-                    if (Directory.Exists(directory + ".old"))
-                    {
-                        Directory.Delete(directory + ".old", true);
-                    }
-                    Directory.Move(directory, directory + ".old");
-                }
-            }
-
             foreach (string file in filesInDownloadedBuild)
             {
                 changeStatusEvent("Aktualizacja pliku " + file);
@@ -210,18 +197,6 @@ namespace BO.Elastic.Panel.ViewModels
                     File.Move(file, Path.Join(Directory.GetCurrentDirectory(), Path.GetFileName(file)));
                 }
             }
-
-            foreach (string directory in directoriesInDownloadedBuild)
-            {
-                changeStatusEvent("Aktualizacja folderu " + directory);
-                if (Directory.Exists(directory))
-                {
-                    string directoryName = new DirectoryInfo(directory).Name;
-                    string newDirectory = Path.Join(Directory.GetCurrentDirectory(), directoryName);
-                    Directory.Move(directory, newDirectory);
-                }
-            }
-
         }
 
         private bool IsUpdateAvailable()
