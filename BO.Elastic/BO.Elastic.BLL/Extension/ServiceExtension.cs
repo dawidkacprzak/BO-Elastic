@@ -17,6 +17,7 @@ namespace BO.Elastic.BLL.Extension
             ServiceAddionalParameters addionalParameters = new ServiceAddionalParameters();
             addionalParameters.IP = service.Ip;
             addionalParameters.Port = service.Port;
+            addionalParameters.Service = service;
             addionalParameters.ActionList = new List<KeyValuePair<string, Action>>();
             addionalParameters.ServiceType = (EServiceType)service.ServiceType;
             switch ((EServiceType)service.ServiceType)

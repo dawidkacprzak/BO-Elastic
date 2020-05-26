@@ -40,7 +40,7 @@ namespace BO.Elastic.Panel.ViewModels
                 }
             }
         }
-
+        public LoadedNodeController loadedNodeController;
         private int progressValue;
         public int ProgressValue
         {
@@ -85,14 +85,18 @@ namespace BO.Elastic.Panel.ViewModels
                 Clusters = new ObservableCollection<ServiceAddionalParameters>();
                 foreach (var item in downloadedConfiguration)
                 {
-                    Clusters.Add(new ServiceAddionalParameters()
+                    App.Current.Dispatcher.Invoke(() =>
                     {
-                        IP = item.Ip,
-                        Port = item.Port,
-                        ServiceStatus = EServiceStatus.Initializing,
-                        ServiceType = (EServiceType)item.ServiceType
+                        Clusters.Add(new ServiceAddionalParameters()
+                        {
+                            IP = item.Ip,
+                            Port = item.Port,
+                            ServiceStatus = EServiceStatus.Initializing,
+                            ServiceType = (EServiceType)item.ServiceType
+                        });
                     });
                 }
+                loadedNodeController = new LoadedNodeController(Clusters);
                 SetProgressBarPercent(70);
                 SetProgressBarPercent(0);
                 PrepareUpdateThreads();
@@ -169,7 +173,7 @@ namespace BO.Elastic.Panel.ViewModels
                         ServiceType = (EServiceType)item.ServiceType
                     });
                 }
-
+                loadedNodeController.RefreshServices(Clusters);
                 SetProgressBarPercent(60);
                 SaveConfiguration();
                 refreshState = false;
@@ -245,23 +249,26 @@ namespace BO.Elastic.Panel.ViewModels
 
         private void RefreshTimerTick(object sender, EventArgs e)
         {
-            if (downloadedConfiguration.Count == 1 && CheckTaskIsNotRunning(updateTask1))
+            if (downloadedConfiguration != null)
             {
-                PrepareUpdateThreads();
-                updateTask1.Start();
-            }
-            else if (downloadedConfiguration.Count == 2 && CheckTaskIsNotRunning(updateTask1) && CheckTaskIsNotRunning(updateTask2))
-            {
-                PrepareUpdateThreads();
-                updateTask1.Start();
-                updateTask2.Start();
-            }
-            else if (downloadedConfiguration.Count > 2 && CheckTaskIsNotRunning(updateTask1) && CheckTaskIsNotRunning(updateTask2) && CheckTaskIsNotRunning(updateTask3))
-            {
-                PrepareUpdateThreads();
-                updateTask1.Start();
-                updateTask2.Start();
-                updateTask3.Start();
+                if (downloadedConfiguration.Count == 1 && CheckTaskIsNotRunning(updateTask1))
+                {
+                    PrepareUpdateThreads();
+                    updateTask1.Start();
+                }
+                else if (downloadedConfiguration.Count == 2 && CheckTaskIsNotRunning(updateTask1) && CheckTaskIsNotRunning(updateTask2))
+                {
+                    PrepareUpdateThreads();
+                    updateTask1.Start();
+                    updateTask2.Start();
+                }
+                else if (downloadedConfiguration.Count > 2 && CheckTaskIsNotRunning(updateTask1) && CheckTaskIsNotRunning(updateTask2) && CheckTaskIsNotRunning(updateTask3))
+                {
+                    PrepareUpdateThreads();
+                    updateTask1.Start();
+                    updateTask2.Start();
+                    updateTask3.Start();
+                }
             }
         }
 
@@ -280,7 +287,7 @@ namespace BO.Elastic.Panel.ViewModels
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        public void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }

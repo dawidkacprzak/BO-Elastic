@@ -1,6 +1,9 @@
-﻿using BO.Elastic.Panel.ViewModels;
+﻿using BO.Elastic.BLL.Model;
+using BO.Elastic.BLL.ServiceExtenstionModel;
+using BO.Elastic.Panel.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows;
@@ -61,6 +64,27 @@ namespace BO.Elastic.Panel
         private void BtnLogs_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void Clusters_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (sender != null)
+            {
+
+                if (sender.GetType() == typeof(DataGrid))
+                {
+                    DataGrid senderGrid = (DataGrid)sender;
+                    if (senderGrid.SelectedItem != null)
+                    {
+                        if(senderGrid.SelectedItem.GetType() == typeof(ServiceAddionalParameters))
+                        {
+                            ServiceAddionalParameters cluster = (ServiceAddionalParameters)senderGrid.SelectedItem;
+                            List<int> selectedIds = cluster.Service.ClusterNodeCluster.Select(x => x.NodeId).ToList();
+                        }
+                    }
+                }
+
+            }
         }
     }
 }
