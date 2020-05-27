@@ -16,7 +16,7 @@ namespace BO.Elastic.BLL
         /// Fetch configuration contains clusters with iherited nodes.
         /// </summary>
         /// <returns>List of clusters with inherited nodes</returns>
-        public List<Service> DownloadConfiguration()
+        public List<Service> DownloadClustersConfiguration()
         {
             try
             {

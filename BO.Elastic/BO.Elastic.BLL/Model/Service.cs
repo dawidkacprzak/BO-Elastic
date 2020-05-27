@@ -5,11 +5,6 @@ namespace BO.Elastic.BLL.Model
 {
     public partial class Service
     {
-        public Service()
-        {
-            ClusterNodeCluster = new HashSet<ClusterNode>();
-        }
-
         public int Id { get; set; }
         public int ServiceType { get; set; }
         public string Ip { get; set; }

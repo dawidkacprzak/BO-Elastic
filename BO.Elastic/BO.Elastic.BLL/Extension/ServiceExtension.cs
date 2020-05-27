@@ -79,5 +79,10 @@ namespace BO.Elastic.BLL.Extension
 
             return addionalParameters;
         }
+
+        public static void RefreshAddionalParameters(ref ServiceAddionalParameters serviceAddionalParameters)
+        {
+            serviceAddionalParameters = serviceAddionalParameters.Service.GetServiceAddionalParameters();
+        }
     }
 }

@@ -1,41 +1,119 @@
-﻿using BO.Elastic.BLL.ServiceExtenstionModel;
+﻿using BO.Elastic.BLL.Extension;
+using BO.Elastic.BLL.Model;
+using BO.Elastic.BLL.ServiceExtenstionModel;
 using BO.Elastic.BLL.Types;
+using Nest;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Timers;
 
 namespace BO.Elastic.BLL
 {
     public class LoadedNodeController
     {
-        private ObservableCollection<ServiceAddionalParameters> loadedServices;
-        public List<int> SelectedNodeIds = new List<int>();
+        public Dictionary<int, List<ServiceAddionalParameters>> ClusterNodes { get; private set; }
+        private System.Timers.Timer myTimer = new System.Timers.Timer();
+        private List<Task> updateTasks = new List<Task>();
+        private const int updateTaskCount = 10;
+        private List<int> blockedNodesUpdate = new List<int>();
+        private static readonly object updateLock = new object();
 
-        public LoadedNodeController(ObservableCollection<ServiceAddionalParameters> Clusters)
+        public LoadedNodeController(List<Service> clusters)
         {
-            RefreshServices(Clusters);
-        }
-
-
-        public void RefreshServices(ObservableCollection<ServiceAddionalParameters> Clusters)
-        {
-            loadedServices = new ObservableCollection<ServiceAddionalParameters>();
-            foreach (var cluster in Clusters)
+            ClusterNodes = new Dictionary<int, List<ServiceAddionalParameters>>();
+            foreach (var item in clusters)
             {
-                if (cluster.Service != null && cluster.Service.ClusterNodeCluster != null)
+                foreach (var clusterFK in item.ClusterNodeCluster)
                 {
-                    foreach (var item in cluster.Service.ClusterNodeCluster)
+                    if (ClusterNodes.ContainsKey(item.Id))
                     {
-                        loadedServices.Add(new ServiceAddionalParameters()
+                        ClusterNodes[item.Id].Add(new ServiceAddionalParameters()
                         {
-                            Service = item.Node,
-                            IP = item.Node.Ip,
-                            Port = item.Node.Port,
+                            IP = clusterFK.Node.Ip,
+                            Port = clusterFK.Node.Port,
                             ServiceStatus = EServiceStatus.Initializing,
-                            ServiceType = (EServiceType)item.Node.ServiceType
+                            ServiceType = (EServiceType)clusterFK.Node.ServiceType,
+                            Service = clusterFK.Node
                         });
                     }
+                    else
+                    {
+                        ClusterNodes[item.Id] = new List<ServiceAddionalParameters>();
+                        ClusterNodes[item.Id].Add(new ServiceAddionalParameters()
+                        {
+                            IP = clusterFK.Node.Ip,
+                            Port = clusterFK.Node.Port,
+                            ServiceStatus = EServiceStatus.Initializing,
+                            ServiceType = (EServiceType)clusterFK.Node.ServiceType,
+                            Service = clusterFK.Node
+                        });
+                    }
+                }
+            }
+
+            for (int i = 0; i < updateTaskCount; i++)
+            {
+                AddUpdateTask();
+            }
+            myTimer.Elapsed += StartUpdate;
+            myTimer.Interval = 2000;
+            myTimer.Start();
+        }
+
+        private void AddUpdateTask()
+        {
+            updateTasks.Add(GetNewUpdateJob());
+        }
+
+        private Task GetNewUpdateJob()
+        {
+            return new Task(() =>
+            {
+                System.Diagnostics.Debug.WriteLine("Start new up task");
+                Random r = new Random();
+                int rand = r.Next(0, ClusterNodes.Count - 1);
+                if (blockedNodesUpdate.Contains(rand)) return;
+                System.Diagnostics.Debug.WriteLine("Task get random cluster: " + rand);
+
+                var item = ClusterNodes.ElementAt(rand);
+                int nodeIndex = -1;
+                ServiceAddionalParameters foundNode = null;
+                lock (updateLock)
+                {
+                    foundNode = item.Value.OrderBy(x => x.Service.LastUpdateTime).Where(x => !blockedNodesUpdate.Contains(x.Service.Id)).FirstOrDefault();
+                    if (foundNode == null)
+                    {
+                        System.Diagnostics.Debug.WriteLine("Dispose, found is null");
+                        return;
+                    }
+                    System.Diagnostics.Debug.WriteLine("Update task: update");
+
+                    nodeIndex = ClusterNodes.ElementAt(rand).Value.IndexOf(foundNode);
+                    blockedNodesUpdate.Add(foundNode.Service.Id);
+                    System.Diagnostics.Debug.WriteLine("Update task: add block service:" + foundNode.Service.Id);
+
+                }
+                foundNode = foundNode.Service.GetServiceAddionalParameters();
+                ClusterNodes.ElementAt(rand).Value[nodeIndex] = foundNode;
+                blockedNodesUpdate.Remove(foundNode.Service.Id);
+                System.Diagnostics.Debug.WriteLine("Update task: remove block service:" + foundNode.Service.Id);
+            });
+        }
+
+        private void StartUpdate(object sender, ElapsedEventArgs e)
+        {
+            for (int i = 0; i < updateTaskCount; i++)
+            {
+                if (updateTasks.ElementAt(i) != null &&
+                    updateTasks.ElementAt(i).Status != System.Threading.Tasks.TaskStatus.Running)
+                {
+                    updateTasks[i] = GetNewUpdateJob();
+                    updateTasks[i].Start();
                 }
             }
         }

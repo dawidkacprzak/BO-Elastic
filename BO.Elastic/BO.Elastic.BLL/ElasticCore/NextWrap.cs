@@ -23,7 +23,6 @@ namespace BO.Elastic.BLL.ElasticCore
                 settings.MaxDeadTimeout(TimeSpan.FromMilliseconds(1000));
                 settings.MaxRetryTimeout(new TimeSpan(0, 0, 1));
                 settings.MaximumRetries(1);
-                System.Diagnostics.Debug.WriteLine("Wrap - before");
                 elasticClient = new ElasticClient(settings);
                 string ip = clusterAddress.Split(':')[1].Replace("/", string.Empty);
                 int port = int.Parse(clusterAddress.Split(':')[2]);

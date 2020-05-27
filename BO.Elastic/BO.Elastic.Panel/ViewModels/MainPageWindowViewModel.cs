@@ -28,6 +28,26 @@ namespace BO.Elastic.Panel.ViewModels
         private ObservableCollection<ServiceAddionalParameters> clusters;
         private ConfigurationController configurationController;
         private List<Service> downloadedConfiguration;
+
+        public List<Service> DownloadedConfiguration
+        {
+            get
+            {
+                if (downloadedConfiguration == null)
+                {
+                    return new List<Service>();
+                }
+                else
+                {
+                    return downloadedConfiguration;
+                }
+            }
+            private set
+            {
+                downloadedConfiguration = value;
+                loadedNodeController = new LoadedNodeController(DownloadedConfiguration);
+            }
+        }
         public ObservableCollection<ServiceAddionalParameters> Clusters
         {
             get => clusters;
@@ -83,7 +103,7 @@ namespace BO.Elastic.Panel.ViewModels
                 SetCachedConfiguration();
                 SetProgressBarPercent(50);
                 Clusters = new ObservableCollection<ServiceAddionalParameters>();
-                foreach (var item in downloadedConfiguration)
+                foreach (var item in DownloadedConfiguration)
                 {
                     App.Current.Dispatcher.Invoke(() =>
                     {
@@ -96,7 +116,6 @@ namespace BO.Elastic.Panel.ViewModels
                         });
                     });
                 }
-                loadedNodeController = new LoadedNodeController(Clusters);
                 SetProgressBarPercent(70);
                 SetProgressBarPercent(0);
                 PrepareUpdateThreads();
@@ -110,24 +129,24 @@ namespace BO.Elastic.Panel.ViewModels
 
         private void PrepareUpdateThreads()
         {
-            if (downloadedConfiguration.Count == 0) return;
-            if (downloadedConfiguration.Count == 1)
+            if (DownloadedConfiguration.Count == 0) return;
+            if (DownloadedConfiguration.Count == 1)
             {
                 CreateUpdateThreadInstance(ref updateTask1, 0, 1);
             }
-            else if (downloadedConfiguration.Count == 2)
+            else if (DownloadedConfiguration.Count == 2)
             {
-                int clusterCount = downloadedConfiguration.Count / 2;
+                int clusterCount = DownloadedConfiguration.Count / 2;
 
                 CreateUpdateThreadInstance(ref updateTask1, 0, clusterCount);
-                CreateUpdateThreadInstance(ref updateTask2, clusterCount, downloadedConfiguration.Count);
+                CreateUpdateThreadInstance(ref updateTask2, clusterCount, DownloadedConfiguration.Count);
             }
             else
             {
-                int clusterCount = downloadedConfiguration.Count / 3;
+                int clusterCount = DownloadedConfiguration.Count / 3;
                 CreateUpdateThreadInstance(ref updateTask1, 0, clusterCount);
                 CreateUpdateThreadInstance(ref updateTask2, clusterCount, clusterCount * 2);
-                CreateUpdateThreadInstance(ref updateTask3, clusterCount * 2, downloadedConfiguration.Count);
+                CreateUpdateThreadInstance(ref updateTask3, clusterCount * 2, DownloadedConfiguration.Count);
             }
         }
 
@@ -138,9 +157,9 @@ namespace BO.Elastic.Panel.ViewModels
                 if (!refreshState)
                     for (int i = startIndex; i < endIndex; i++)
                     {
-                        if (i < downloadedConfiguration.Count)
+                        if (i < DownloadedConfiguration.Count)
                         {
-                            ServiceAddionalParameters tempParam = GetAddionalClusterParameters(new List<Service>() { downloadedConfiguration.ElementAt(i) }).First();
+                            ServiceAddionalParameters tempParam = GetAddionalClusterParameters(new List<Service>() { DownloadedConfiguration.ElementAt(i) }).First();
                             if (!refreshState)
 
                                 App.Current.Dispatcher.Invoke(() =>
@@ -160,10 +179,10 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 refreshState = true;
                 SetProgressBarPercent(30);
-                downloadedConfiguration = configurationController.DownloadConfiguration();
+                DownloadedConfiguration = configurationController.DownloadClustersConfiguration();
                 Clusters = new ObservableCollection<ServiceAddionalParameters>();
                 PrepareUpdateThreads();
-                foreach (var item in downloadedConfiguration)
+                foreach (var item in DownloadedConfiguration)
                 {
                     Clusters.Add(new ServiceAddionalParameters()
                     {
@@ -173,7 +192,6 @@ namespace BO.Elastic.Panel.ViewModels
                         ServiceType = (EServiceType)item.ServiceType
                     });
                 }
-                loadedNodeController.RefreshServices(Clusters);
                 SetProgressBarPercent(60);
                 SaveConfiguration();
                 refreshState = false;
@@ -190,7 +208,7 @@ namespace BO.Elastic.Panel.ViewModels
                 using (FileStream fs = new FileStream(Path.Combine(Path.GetTempPath(), "boElasticConfiguration.dat"), FileMode.Open))
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
-                    downloadedConfiguration = (List<Service>)formatter.Deserialize(fs);
+                    DownloadedConfiguration = (List<Service>)formatter.Deserialize(fs);
                 }
             }
             catch (SerializationException e)
@@ -199,9 +217,8 @@ namespace BO.Elastic.Panel.ViewModels
             }
             catch (FileNotFoundException)
             {
-                downloadedConfiguration = configurationController.DownloadConfiguration();
+                DownloadedConfiguration = configurationController.DownloadClustersConfiguration();
                 SetProgressBarPercent(60);
-
                 SaveConfiguration();
             }
             catch (Exception ex)
@@ -217,7 +234,7 @@ namespace BO.Elastic.Panel.ViewModels
 
         private void SaveConfiguration()
         {
-            if (downloadedConfiguration != null)
+            if (DownloadedConfiguration != null)
             {
                 try
                 {
@@ -227,7 +244,7 @@ namespace BO.Elastic.Panel.ViewModels
                         using (FileStream fs = new FileStream(Path.Combine(Path.GetTempPath(), "boElasticConfiguration.dat"), FileMode.Create))
                         {
                             BinaryFormatter formatter = new BinaryFormatter();
-                            formatter.Serialize(fs, downloadedConfiguration);
+                            formatter.Serialize(fs, DownloadedConfiguration);
                         }
                     }
                 }
@@ -249,20 +266,20 @@ namespace BO.Elastic.Panel.ViewModels
 
         private void RefreshTimerTick(object sender, EventArgs e)
         {
-            if (downloadedConfiguration != null)
+            if (DownloadedConfiguration != null)
             {
-                if (downloadedConfiguration.Count == 1 && CheckTaskIsNotRunning(updateTask1))
+                if (DownloadedConfiguration.Count == 1 && CheckTaskIsNotRunning(updateTask1))
                 {
                     PrepareUpdateThreads();
                     updateTask1.Start();
                 }
-                else if (downloadedConfiguration.Count == 2 && CheckTaskIsNotRunning(updateTask1) && CheckTaskIsNotRunning(updateTask2))
+                else if (DownloadedConfiguration.Count == 2 && CheckTaskIsNotRunning(updateTask1) && CheckTaskIsNotRunning(updateTask2))
                 {
                     PrepareUpdateThreads();
                     updateTask1.Start();
                     updateTask2.Start();
                 }
-                else if (downloadedConfiguration.Count > 2 && CheckTaskIsNotRunning(updateTask1) && CheckTaskIsNotRunning(updateTask2) && CheckTaskIsNotRunning(updateTask3))
+                else if (DownloadedConfiguration.Count > 2 && CheckTaskIsNotRunning(updateTask1) && CheckTaskIsNotRunning(updateTask2) && CheckTaskIsNotRunning(updateTask3))
                 {
                     PrepareUpdateThreads();
                     updateTask1.Start();

@@ -17,7 +17,7 @@ namespace BO.Elastic.BLL.Test
         public void TestDownloadedConfigurationCheckAllServicesFromFetchedClustersAreNodeType()
         {
             ConfigurationController controller = new ConfigurationController();
-            List<Service> configuration = controller.DownloadConfiguration();
+            List<Service> configuration = controller.DownloadClustersConfiguration();
             Assert.IsNotNull(configuration);
             Assert.IsTrue(configuration.All(x => x.ServiceType == (int)EServiceType.Cluster));
             Assert.IsTrue(configuration.Where(x => x.ClusterNodeCluster.Count > 0).Count() > 0);
@@ -28,7 +28,7 @@ namespace BO.Elastic.BLL.Test
         public void GetAddionalParametersFromNodeService()
         {
             ConfigurationController controller = new ConfigurationController();
-            List<Service> configuration = controller.DownloadConfiguration();
+            List<Service> configuration = controller.DownloadClustersConfiguration();
             Service firstNode = configuration.First().ClusterNodeCluster.First().Node;
             ServiceAddionalParameters nodeParameters = firstNode.GetServiceAddionalParameters();
             Assert.IsTrue(nodeParameters.ServiceStatus == EServiceStatus.Online);
@@ -41,7 +41,7 @@ namespace BO.Elastic.BLL.Test
         public void GetAddionalParametersFromNodeServiceFail()
         {
             ConfigurationController controller = new ConfigurationController();
-            List<Service> configuration = controller.DownloadConfiguration();
+            List<Service> configuration = controller.DownloadClustersConfiguration();
             Service firstNode = new Service()
             {
                 Ip = "10.10.1.1",
@@ -68,7 +68,7 @@ namespace BO.Elastic.BLL.Test
         public void GetAddionalParametersFromClusterService()
         {
             ConfigurationController controller = new ConfigurationController();
-            List<Service> configuration = controller.DownloadConfiguration();
+            List<Service> configuration = controller.DownloadClustersConfiguration();
             Service firstCluster = configuration.First();
             ServiceAddionalParameters nodeParameters = firstCluster.GetServiceAddionalParameters();
             Assert.IsTrue(nodeParameters.ServiceStatus == EServiceStatus.Online || nodeParameters.ServiceStatus == EServiceStatus.Moderate);
