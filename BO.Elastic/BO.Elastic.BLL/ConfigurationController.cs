@@ -34,7 +34,7 @@ namespace BO.Elastic.BLL
 
                 return new List<Service>();
             }
-            catch (SqlException)
+            catch (SqlException ex)
             {
                 System.Diagnostics.Debug.WriteLine("return empty conf");
 

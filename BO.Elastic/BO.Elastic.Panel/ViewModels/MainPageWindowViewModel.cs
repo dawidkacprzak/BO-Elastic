@@ -45,7 +45,10 @@ namespace BO.Elastic.Panel.ViewModels
             private set
             {
                 downloadedConfiguration = value;
-                loadedNodeController = new LoadedNodeController(DownloadedConfiguration);
+                LoadedNodeController = new LoadedNodeController(DownloadedConfiguration, new Action(()=>
+                {
+                    NotifyPropertyChanged("LoadedNodeController");
+                }));
             }
         }
         public ObservableCollection<ServiceAddionalParameters> Clusters
@@ -60,7 +63,20 @@ namespace BO.Elastic.Panel.ViewModels
                 }
             }
         }
-        public LoadedNodeController loadedNodeController;
+        private LoadedNodeController loadedNodeController;
+        public LoadedNodeController LoadedNodeController
+        {
+            get
+            {
+                return loadedNodeController;
+            }
+            set
+            {
+                loadedNodeController = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         private int progressValue;
         public int ProgressValue
         {

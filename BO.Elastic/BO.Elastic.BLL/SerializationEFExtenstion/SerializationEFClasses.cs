@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 using BO.Elastic.BLL.Model;
 
@@ -11,7 +12,9 @@ namespace BO.Elastic.BLL.Model
     [Serializable]
     public partial class Service
     {
+        [NotMapped]
         private DateTime lastUpdateTime;
+        [NotMapped]
         public DateTime LastUpdateTime
         {
             get

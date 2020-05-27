@@ -92,7 +92,32 @@
                     </DataGrid.Columns>
 
                 </DataGrid>
-                <DataGrid Grid.Column="2" ItemsSource="{Binding SelectedClusterServices}"/>
+                <DataGrid Grid.Column="2" ItemsSource="{Binding LoadedNodeController.SelectedNodes}" CanUserAddRows="False" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn  Header="Service Ip" Binding="{Binding IP}"/>
+                        <DataGridTextColumn Header="Service Port" Binding="{Binding Port}"/>
+                        <DataGridTextColumn Header="Status" Binding="{Binding ServiceStatus}">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="{x:Type TextBlock}">
+                                    <Style.Triggers>
+                                        <Trigger Property="Text" Value="Online">
+                                            <Setter Property="Foreground" Value="LightGreen"/>
+                                        </Trigger>
+                                        <Trigger Property="Text" Value="Offline">
+                                            <Setter Property="Foreground" Value="#FFCDCDCD"/>
+                                        </Trigger>
+                                        <Trigger Property="Text" Value="Moderate">
+                                            <Setter Property="Foreground" Value="#FFFBC637"/>
+                                        </Trigger>
+                                        <Trigger Property="Text" Value="Moderate">
+                                            <Setter Property="Foreground" Value="#FFFF4646"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
                 <GridSplitter Margin="10,0,0,10" Background="#FF2B2B2B" Grid.Column="0" Width="3"/>
             </Grid>
 

@@ -19,12 +19,32 @@ namespace BO.Elastic.BLL
         public Dictionary<int, List<ServiceAddionalParameters>> ClusterNodes { get; private set; }
         private System.Timers.Timer myTimer = new System.Timers.Timer();
         private List<Task> updateTasks = new List<Task>();
-        private const int updateTaskCount = 10;
+        private const int updateTaskCount = 5;
         private List<int> blockedNodesUpdate = new List<int>();
         private static readonly object updateLock = new object();
-
-        public LoadedNodeController(List<Service> clusters)
+        private int setSelectedClusterId = 0;
+        private Action updateCallback;
+        public ObservableCollection<ServiceAddionalParameters> SelectedNodes
         {
+            get
+            {
+                if (ClusterNodes.ContainsKey(setSelectedClusterId)){
+                    return new ObservableCollection<ServiceAddionalParameters>(ClusterNodes[setSelectedClusterId]);
+                }
+                else
+                {
+                    return new ObservableCollection<ServiceAddionalParameters>();
+                }
+            }
+        }
+        public LoadedNodeController()
+        {
+            ClusterNodes = new Dictionary<int, List<ServiceAddionalParameters>>();
+        }
+
+        public LoadedNodeController(List<Service> clusters, Action notifyCallback)
+        {
+            updateCallback = notifyCallback;
             ClusterNodes = new Dictionary<int, List<ServiceAddionalParameters>>();
             foreach (var item in clusters)
             {
@@ -55,14 +75,21 @@ namespace BO.Elastic.BLL
                     }
                 }
             }
+            if(ClusterNodes.Count > 0)
+                setSelectedClusterId = ClusterNodes.First().Key;
 
             for (int i = 0; i < updateTaskCount; i++)
             {
                 AddUpdateTask();
             }
             myTimer.Elapsed += StartUpdate;
-            myTimer.Interval = 2000;
+            myTimer.Interval = 5000;
             myTimer.Start();
+        }
+
+        public void SetSelectedClusterId(int id)
+        {
+            setSelectedClusterId = id;
         }
 
         private void AddUpdateTask()
@@ -76,6 +103,7 @@ namespace BO.Elastic.BLL
             {
                 System.Diagnostics.Debug.WriteLine("Start new up task");
                 Random r = new Random();
+                if (ClusterNodes.Count == 0) return;
                 int rand = r.Next(0, ClusterNodes.Count - 1);
                 if (blockedNodesUpdate.Contains(rand)) return;
                 System.Diagnostics.Debug.WriteLine("Task get random cluster: " + rand);
@@ -101,6 +129,7 @@ namespace BO.Elastic.BLL
                 foundNode = foundNode.Service.GetServiceAddionalParameters();
                 ClusterNodes.ElementAt(rand).Value[nodeIndex] = foundNode;
                 blockedNodesUpdate.Remove(foundNode.Service.Id);
+                updateCallback.Invoke();
                 System.Diagnostics.Debug.WriteLine("Update task: remove block service:" + foundNode.Service.Id);
             });
         }
