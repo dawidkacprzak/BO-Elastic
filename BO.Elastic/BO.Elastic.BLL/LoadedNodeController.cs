@@ -128,7 +128,7 @@ namespace BO.Elastic.BLL
                 }
                 foundNode = foundNode.Service.GetServiceAddionalParameters();
                 ClusterNodes.ElementAt(rand).Value[nodeIndex] = foundNode;
-                blockedNodesUpdate.Remove(foundNode.Service.Id);
+                blockedNodesUpdate = blockedNodesUpdate.Where(x => x != foundNode.Service.Id).ToList();
                 updateCallback.Invoke();
                 System.Diagnostics.Debug.WriteLine("Update task: remove block service:" + foundNode.Service.Id);
             });

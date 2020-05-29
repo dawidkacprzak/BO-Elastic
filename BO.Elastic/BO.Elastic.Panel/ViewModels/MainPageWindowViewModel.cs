@@ -308,7 +308,7 @@ namespace BO.Elastic.Panel.ViewModels
         private bool CheckTaskIsNotRunning(Task t)
         {
             if (t == null) return true;
-            return t.Status != TaskStatus.Running && t.Status != TaskStatus.RanToCompletion;
+            return t.Status != TaskStatus.Running;
         }
 
         private IEnumerable<ServiceAddionalParameters> GetAddionalClusterParameters(List<Service> services)

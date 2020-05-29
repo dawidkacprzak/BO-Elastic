@@ -79,8 +79,11 @@ namespace BO.Elastic.Panel
                         if(senderGrid.SelectedItem.GetType() == typeof(ServiceAddionalParameters))
                         {
                             ServiceAddionalParameters cluster = (ServiceAddionalParameters)senderGrid.SelectedItem;
-                            ((MainPageWindowViewModel)DataContext).LoadedNodeController.SetSelectedClusterId(cluster.Service.Id);
-                            ((MainPageWindowViewModel)DataContext).NotifyPropertyChanged("LoadedNodeController");
+                            if (cluster.Service != null)
+                            {
+                                ((MainPageWindowViewModel)DataContext).LoadedNodeController.SetSelectedClusterId(cluster.Service.Id);
+                                ((MainPageWindowViewModel)DataContext).NotifyPropertyChanged("LoadedNodeController");
+                            }
                         }
                     }
                 }
