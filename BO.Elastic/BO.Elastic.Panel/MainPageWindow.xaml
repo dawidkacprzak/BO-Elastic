@@ -65,7 +65,7 @@
                     <ColumnDefinition Width="240" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <DataGrid HorizontalScrollBarVisibility="Disabled" Grid.Column="0" PreviewMouseLeftButtonUp="Clusters_PreviewMouseLeftButtonUp" Name="Clusters" CanUserAddRows="False" ItemsSource="{Binding Clusters}" AutoGenerateColumns="False">
+                <DataGrid HorizontalScrollBarVisibility="Disabled" Grid.Column="0"  PreviewMouseRightButtonUp="OnClusterRightclick" PreviewMouseLeftButtonUp="Clusters_PreviewMouseLeftButtonUp" Name="Clusters" CanUserAddRows="False" ItemsSource="{Binding Clusters}" AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn  Header="Cluser Ip" Binding="{Binding IP}"/>
                         <DataGridTextColumn Header="Cluser Port" Binding="{Binding Port}"/>

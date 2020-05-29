@@ -50,25 +50,35 @@ namespace BO.Elastic.BLL.Extension
                             if (clusterHealth.Status == Elasticsearch.Net.Health.Green)
                             {
                                 addionalParameters.ServiceStatus = EServiceStatus.Online;
+                                addionalParameters.ActionList.Add(new KeyValuePair<string, Action>("Połącz przez SSH",new Action(()=> { })));
+                                addionalParameters.ActionList.Add(new KeyValuePair<string, Action>("Zatrzymaj", new Action(() => { })));
                             }
                             else if (clusterHealth.Status == Elasticsearch.Net.Health.Red)
                             {
                                 addionalParameters.ServiceStatus = EServiceStatus.Danger;
+                                addionalParameters.ActionList.Add(new KeyValuePair<string, Action>("Połącz przez SSH", new Action(() => { })));
+                                addionalParameters.ActionList.Add(new KeyValuePair<string, Action>("Zatrzymaj", new Action(() => { })));
                             }
                             else if (clusterHealth.Status == Elasticsearch.Net.Health.Yellow)
                             {
                                 addionalParameters.ServiceStatus = EServiceStatus.Moderate;
+                                addionalParameters.ActionList.Add(new KeyValuePair<string, Action>("Połącz przez SSH", new Action(() => { })));
+                                addionalParameters.ActionList.Add(new KeyValuePair<string, Action>("Zatrzymaj", new Action(() => { })));
                             }
                             else throw new Exception("Błąd podczas pobrania statusu zdrowia klastra");
                         }
                         else
                         {
                             addionalParameters.ServiceStatus = EServiceStatus.Offline;
+                            addionalParameters.ActionList.Add(new KeyValuePair<string, Action>("Połącz przez SSH", new Action(() => { })));
+                            addionalParameters.ActionList.Add(new KeyValuePair<string, Action>("Uruchom", new Action(() => { })));
                         }
                     }
                     catch (ClusterNotConnectedException)
                     {
                         addionalParameters.ServiceStatus = EServiceStatus.Offline;
+                        addionalParameters.ActionList.Add(new KeyValuePair<string, Action>("Połącz przez SSH", new Action(() => { })));
+                        addionalParameters.ActionList.Add(new KeyValuePair<string, Action>("Uruchom", new Action(() => { })));
                     }
 
                     break;

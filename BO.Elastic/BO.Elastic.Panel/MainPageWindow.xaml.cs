@@ -76,7 +76,7 @@ namespace BO.Elastic.Panel
                     DataGrid senderGrid = (DataGrid)sender;
                     if (senderGrid.SelectedItem != null)
                     {
-                        if(senderGrid.SelectedItem.GetType() == typeof(ServiceAddionalParameters))
+                        if (senderGrid.SelectedItem.GetType() == typeof(ServiceAddionalParameters))
                         {
                             ServiceAddionalParameters cluster = (ServiceAddionalParameters)senderGrid.SelectedItem;
                             if (cluster.Service != null)
@@ -89,6 +89,47 @@ namespace BO.Elastic.Panel
                 }
 
             }
+        }
+
+        private void OnClusterRightclick(object sender, MouseButtonEventArgs e)
+        {
+            var hit = VisualTreeHelper.HitTest((Visual)sender, e.GetPosition((IInputElement)sender));
+            DependencyObject cell = VisualTreeHelper.GetParent(hit.VisualHit);
+
+            while (cell != null && !(cell is System.Windows.Controls.DataGridCell)) cell = VisualTreeHelper.GetParent(cell);
+
+            System.Windows.Controls.DataGridCell targetCell = cell as System.Windows.Controls.DataGridCell;
+            if (targetCell != null && targetCell.DataContext != null && targetCell.DataContext.GetType() == typeof(ServiceAddionalParameters))
+            {
+                ServiceAddionalParameters clickedCluster = (ServiceAddionalParameters)targetCell.DataContext;
+                ContextMenu context = new ContextMenu();
+                context.Items.Clear();
+
+                MenuItem header = new MenuItem();
+                header.Header = "Cluster " + clickedCluster.IP;
+                header.IsEnabled = false;
+                context.Items.Add(header);
+
+                foreach (var item in clickedCluster.ActionList)
+                {
+                    MenuItem tempClick = new MenuItem();
+                    tempClick.Click += delegate { item.Value.Invoke(); };
+                    tempClick.Header = item.Key;
+
+                    context.Items.Add(tempClick);
+                }
+                if (context.Items.Count > 1)
+                {
+                    Clusters.ContextMenu = context;
+                    Clusters.ContextMenu.IsOpen = true;
+                }
+            }
+            else
+            {
+                Clusters.ContextMenu = null;
+            }
+
+
         }
     }
 }
