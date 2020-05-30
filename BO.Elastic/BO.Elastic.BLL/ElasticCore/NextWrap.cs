@@ -48,7 +48,13 @@ namespace BO.Elastic.BLL.ElasticCore
         public NodeInfo GetNodeInfo(string ip, string port)
         {
             NodeExists(ip, port);
+            IEnumerable<KeyValuePair<string, NodeInfo>> nodeinfos = GetNodesFromIpAndPort(ip, port);
+            if (nodeinfos == null || nodeinfos.Count() == 0)
+            {
+                throw new NodeNotConnectedException(ip + ":" + port);
+            }
             return GetNodesFromIpAndPort(ip, port).First().Value;
+
         }
 
         public ClusterHealthResponse GetClusterHealth()
