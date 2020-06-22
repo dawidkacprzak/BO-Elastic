@@ -157,7 +157,7 @@ namespace BO.Elastic.Panel.ViewModels
 
             using (WebClient webClient = new WebClient())
             {
-                webClient.DownloadFile("http://213.32.122.228/Bo.Elastic.Panel/build.zip", downloadedFileFullPath);
+                webClient.DownloadFile("http://213.32.122.228:81/Bo.Elastic.Panel/build.zip", downloadedFileFullPath);
             }
 
             string tempUpdateDirectory = Path.Join(Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -204,7 +204,7 @@ namespace BO.Elastic.Panel.ViewModels
             try
             {
                 HttpClient client = new HttpClient();
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://213.32.122.228/Bo.Elastic.Panel/version");
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://213.32.122.228:81/Bo.Elastic.Panel/version");
 
                 int version;
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
