@@ -1,4 +1,5 @@
 ﻿using BO.Elastic.BLL.Model;
+using BO.Elastic.BLL.ServiceConnection;
 using BO.Elastic.BLL.ServiceExtenstionModel;
 using BO.Elastic.Panel.ViewModels;
 using System;
@@ -93,40 +94,62 @@ namespace BO.Elastic.Panel
 
         private void OnClusterRightclick(object sender, MouseButtonEventArgs e)
         {
-            var hit = VisualTreeHelper.HitTest((Visual)sender, e.GetPosition((IInputElement)sender));
-            DependencyObject cell = VisualTreeHelper.GetParent(hit.VisualHit);
-
-            while (cell != null && !(cell is System.Windows.Controls.DataGridCell)) cell = VisualTreeHelper.GetParent(cell);
-
-            System.Windows.Controls.DataGridCell targetCell = cell as System.Windows.Controls.DataGridCell;
-            if (targetCell != null && targetCell.DataContext != null && targetCell.DataContext.GetType() == typeof(ServiceAddionalParameters))
+            try
             {
-                ServiceAddionalParameters clickedCluster = (ServiceAddionalParameters)targetCell.DataContext;
-                ContextMenu context = new ContextMenu();
-                context.Items.Clear();
+                var hit = VisualTreeHelper.HitTest((Visual)sender, e.GetPosition((IInputElement)sender));
+                DependencyObject cell = VisualTreeHelper.GetParent(hit.VisualHit);
 
-                MenuItem header = new MenuItem();
-                header.Header = "Cluster " + clickedCluster.IP;
-                header.IsEnabled = false;
-                context.Items.Add(header);
+                while (cell != null && !(cell is System.Windows.Controls.DataGridCell)) cell = VisualTreeHelper.GetParent(cell);
 
-                foreach (var item in clickedCluster.ActionList)
+                System.Windows.Controls.DataGridCell targetCell = cell as System.Windows.Controls.DataGridCell;
+                if (targetCell != null && targetCell.DataContext != null && targetCell.DataContext.GetType() == typeof(ServiceAddionalParameters))
                 {
-                    MenuItem tempClick = new MenuItem();
-                    tempClick.Click += delegate { item.Value.Invoke(); };
-                    tempClick.Header = item.Key;
+                    ServiceAddionalParameters clickedCluster = (ServiceAddionalParameters)targetCell.DataContext;
+                    ContextMenu context = new ContextMenu();
+                    context.Items.Clear();
 
-                    context.Items.Add(tempClick);
+                    MenuItem header = new MenuItem();
+                    header.Header = "Cluster " + clickedCluster.IP;
+                    header.IsEnabled = false;
+                    context.Items.Add(header);
+
+                    foreach (var item in clickedCluster.ActionList)
+                    {
+                        MenuItem tempClick = new MenuItem();
+                        tempClick.Click += delegate
+                        {
+                            SSHConnectionInfo info = new SSHConnectionInfo("10.10.1.216", "", new LoginData()
+                            {
+                                Login = "test",
+                                Password = "test1923"
+                            });
+                            ServiceRemoteManager manager = new ServiceRemoteManager(info);
+                            try
+                            {
+                                manager.StartElasticService(info);
+                            }catch(Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                        };
+                        tempClick.Header = item.Key;
+
+                        context.Items.Add(tempClick);
+                    }
+                    if (context.Items.Count > 1)
+                    {
+                        Clusters.ContextMenu = context;
+                        Clusters.ContextMenu.IsOpen = true;
+                    }
                 }
-                if (context.Items.Count > 1)
+                else
                 {
-                    Clusters.ContextMenu = context;
-                    Clusters.ContextMenu.IsOpen = true;
+                    Clusters.ContextMenu = null;
                 }
             }
-            else
+            catch (Exception)
             {
-                Clusters.ContextMenu = null;
+                throw;
             }
         }
 

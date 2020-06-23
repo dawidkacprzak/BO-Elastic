@@ -83,7 +83,7 @@ namespace BO.Elastic.BLL
                 AddUpdateTask();
             }
             myTimer.Elapsed += StartUpdate;
-            myTimer.Interval = 5000;
+            myTimer.Interval = 1000;
             myTimer.Start();
         }
 

@@ -6,21 +6,21 @@ namespace BO.Elastic.BLL.Model
 {
     public class SSHConnectionInfo : NetworkAddress
     {
-        private LoginData sshLoginData;
+        public LoginData SSHLoginData { get; private set; }
 
         public SSHConnectionInfo(string ip, string port, LoginData loginData) : base(ip, port)
         {
-            this.sshLoginData = loginData;
+            this.SSHLoginData = loginData;
         }
 
         public SSHConnectionInfo(string ip, int port, LoginData loginData) : base(ip, port)
         {
-            this.sshLoginData = loginData;
+            this.SSHLoginData = loginData;
         }
 
         public SSHConnectionInfo(NetworkAddress address, LoginData loginData) : base(address.IP, address.Port)
         {
-            this.sshLoginData = loginData;
+            this.SSHLoginData = loginData;
         }
     }
 }
