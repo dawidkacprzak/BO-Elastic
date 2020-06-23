@@ -325,7 +325,6 @@ namespace BO.Elastic.Panel.ViewModels
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-
         public void CloseApplication()
         {
             ThreadStart ts = delegate ()

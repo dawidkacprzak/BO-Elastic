@@ -19,4 +19,12 @@ namespace BO.Elastic.BLL.Types
         Offline,
         Initializing
     }
+
+    public enum Option
+    {
+        ConnectBySSH,
+        Start,
+        Stop,
+        Information
+    }
 }
