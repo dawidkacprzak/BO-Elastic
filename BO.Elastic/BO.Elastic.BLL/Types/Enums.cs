@@ -17,6 +17,7 @@ namespace BO.Elastic.BLL.Types
         Moderate,
         Danger,
         Offline,
+        ServiceDown,
         Initializing
     }
 
@@ -25,6 +26,7 @@ namespace BO.Elastic.BLL.Types
         ConnectBySSH,
         Start,
         Stop,
+        Restart,
         Information
     }
 }

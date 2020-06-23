@@ -65,7 +65,7 @@ namespace BO.Elastic.BLL.ServiceConnection
                 if (!client.IsConnected)
                     client.Connect();
 
-                var sh = client.RunCommand($"echo {connectionInfo.SSHLoginData.Password} | sudo -S {command}");
+                var sh = client.RunCommand($"echo {connectionInfo.SSHLoginData.Password} | sudo -S -k {command}");
                 if (sh.ExitStatus != 0)
                 {
                     throw new SSHCommandExecuteException(sh.Error.Replace(connectionInfo.SSHLoginData.Password, "<password>"));
@@ -85,6 +85,7 @@ namespace BO.Elastic.BLL.ServiceConnection
         {
             using (var SSHConnection = new SshClient(SSHNETConnectionInfo))
             {
+                SSHConnection.ConnectionInfo.Timeout = TimeSpan.FromSeconds(2);
                 return RunSudoCommand(command, SSHConnection);
             }
         }

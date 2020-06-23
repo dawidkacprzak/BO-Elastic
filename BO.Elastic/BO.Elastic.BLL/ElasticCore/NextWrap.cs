@@ -4,6 +4,7 @@ using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text;
 
@@ -59,7 +60,14 @@ namespace BO.Elastic.BLL.ElasticCore
 
         public ClusterHealthResponse GetClusterHealth()
         {
-            return elasticClient.Cluster.Health();
+            try
+            {
+                return elasticClient.Cluster.Health();
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                return new ClusterHealthResponse();
+            }
         }
 
         private bool NodeExists(string ip, string port)
@@ -87,17 +95,13 @@ namespace BO.Elastic.BLL.ElasticCore
 
         public static bool PingHost(string hostUri, int portNumber)
         {
-            var client = new TcpClient();
-            var result = client.BeginConnect(hostUri, portNumber, null, null);
+            PingReply pingReply = new Ping().Send(hostUri, 1000);
 
-            var success = result.AsyncWaitHandle.WaitOne(TimeSpan.FromSeconds(1));
-
-            if (!success)
+            if (pingReply.Status != IPStatus.Success)
             {
                 return false;
             }
             return true;
-
         }
     }
 }

@@ -34,11 +34,11 @@ namespace BO.Elastic.BLL.Extension
                     }
                     catch (NodeNotConnectedException)
                     {
-                        addionalParameters.ServiceStatus = EServiceStatus.Offline;
+                        addionalParameters.ServiceStatus = addionalParameters.GetProperFailServiceStatus();
                     }
                     catch (ClusterNotConnectedException)
                     {
-                        addionalParameters.ServiceStatus = EServiceStatus.Offline;
+                        addionalParameters.ServiceStatus = addionalParameters.GetProperFailServiceStatus();
                     }
 
                     break;
@@ -55,32 +55,36 @@ namespace BO.Elastic.BLL.Extension
                                 addionalParameters.ServiceStatus = EServiceStatus.Online;
                                 addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
                                 addionalParameters.ActionList.Add(EServiceAction.Stop);
+                                addionalParameters.ActionList.Add(EServiceAction.Restart);
                                 addionalParameters.ActionList.Add(EServiceAction.Information);
                             }
                             else if (clusterHealth.Status == Elasticsearch.Net.Health.Red)
                             {
                                 addionalParameters.ServiceStatus = EServiceStatus.Danger;
                                 addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
+                                addionalParameters.ActionList.Add(EServiceAction.Restart);
                                 addionalParameters.ActionList.Add(EServiceAction.Stop);
                             }
                             else if (clusterHealth.Status == Elasticsearch.Net.Health.Yellow)
                             {
                                 addionalParameters.ServiceStatus = EServiceStatus.Moderate;
                                 addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
+                                addionalParameters.ActionList.Add(EServiceAction.Restart);
                                 addionalParameters.ActionList.Add(EServiceAction.Stop);
                             }
                             else throw new Exception("Błąd podczas pobrania statusu zdrowia klastra");
                         }
                         else
                         {
-                            addionalParameters.ServiceStatus = EServiceStatus.Offline;
+                            addionalParameters.ServiceStatus = addionalParameters.GetProperFailServiceStatus();
                             addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
                             addionalParameters.ActionList.Add(EServiceAction.Start);
                         }
                     }
                     catch (ClusterNotConnectedException)
                     {
-                        addionalParameters.ServiceStatus = EServiceStatus.Offline;
+
+                        addionalParameters.ServiceStatus = addionalParameters.GetProperFailServiceStatus();
                         addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
                         addionalParameters.ActionList.Add(EServiceAction.Start);
                     }
@@ -93,10 +97,30 @@ namespace BO.Elastic.BLL.Extension
 
             return addionalParameters;
         }
+        
+        public static NetworkAddress GetSSHNetworkAddress(this ServiceAddionalParameters parameters)
+        {
+            return new NetworkAddress(parameters.IP, "");
+        }
+
+        public static NetworkAddress GetSSHNetworkAddress(this Service service)
+        {
+            return new NetworkAddress(service.Ip, "");
+        }
 
         public static void RefreshAddionalParameters(ref ServiceAddionalParameters serviceAddionalParameters)
         {
             serviceAddionalParameters = serviceAddionalParameters.Service.GetServiceAddionalParameters();
+        }
+
+        public static EServiceStatus GetProperFailServiceStatus(this ServiceAddionalParameters parameters)
+        {
+            EServiceStatus failStatus = EServiceStatus.Offline;
+            if (NextWrap.PingHost(parameters.IP, 80))
+            {
+                failStatus = EServiceStatus.ServiceDown;
+            }
+            return failStatus;
         }
     }
 }

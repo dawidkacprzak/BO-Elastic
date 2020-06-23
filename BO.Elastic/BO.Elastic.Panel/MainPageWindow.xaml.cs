@@ -26,7 +26,7 @@ namespace BO.Elastic.Panel
     /// </summary>
     public partial class MainPageWindow : Window
     {
-        
+
 
         public MainPageWindow()
         {
@@ -121,7 +121,10 @@ namespace BO.Elastic.Panel
                     foreach (var item in clickedCluster.ActionList)
                     {
                         MenuItem tempClick = new MenuItem();
-                        tempClick.Click += delegate { clickedCluster.GetActionParameters(item).Invoke(); };
+                        tempClick.Click += delegate
+                        {
+                            clickedCluster.GetActionParameters(item).Invoke();
+                        };
                         tempClick.Header = item.ToString();
 
                         context.Items.Add(tempClick);

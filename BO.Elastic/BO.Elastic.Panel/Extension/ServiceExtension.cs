@@ -1,6 +1,9 @@
-﻿using BO.Elastic.BLL.Model;
+﻿using BO.Elastic.BLL.Extension;
+using BO.Elastic.BLL.Model;
+using BO.Elastic.BLL.ServiceConnection;
 using BO.Elastic.BLL.ServiceExtenstionModel;
 using BO.Elastic.BLL.Types;
+using BO.Elastic.Panel.Helpers;
 using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
@@ -14,60 +17,73 @@ namespace BO.Elastic.Panel.ClassExtensions
     {
         public static Action GetActionParameters(this ServiceAddionalParameters parameters, EServiceAction eServiceAction)
         {
+            ServiceRemoteManager manager = new ServiceRemoteManager(
+                new SSHConnectionInfo(
+                    new NetworkAddress(parameters.IP, ""),
+                    SSHLoginDataContainer.LoginData)
+                );
 
-            switch (eServiceAction)
+            try
             {
-                case EServiceAction.ConnectBySSH:
+                switch (eServiceAction)
+                {
+                    case EServiceAction.ConnectBySSH:
+                        break;
 
-                    try
-                    {
-                        
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception("");
-                    }
-                    break;
+                    case EServiceAction.Start:
+                        return new Action(() =>
+                            {
+                                try
+                                {
+                                    manager.StartElasticService(parameters.GetSSHNetworkAddress());
+                                }
+                                catch (Exception ex)
+                                {
+                                    MessageBox.Show(ex.Message);
+                                }
+                            }
+                        );
 
-                case EServiceAction.Start:
+                    case EServiceAction.Stop:
+                        return new Action(() =>
+                        {
+                            try
+                            {
+                                manager.StopElasticService(parameters.GetSSHNetworkAddress());
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                        }
+                        );
 
-                    try
-                    {
-
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception("");
-                    }
-                    break;
-
-                case EServiceAction.Stop:
-
-                    try
-                    {
-
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception("");
-                    }
-                    break;
-
-                case EServiceAction.Information:
-
-                    try
-                    {
-                        return new Action(() => {
+                    case EServiceAction.Information:
+                        return new Action(() =>
+                        {
                             Window window = new Window();
-                            window.Show(); });
-                        
-                    }
-                    catch (Exception)
-                    {
-                        throw new Exception("");
-                    }
+                            window.Show();
+                        });
 
-                default: throw new NotImplementedException();
+                    case EServiceAction.Restart:
+                        return new Action(() =>
+                        {
+                            try
+                            {
+                                manager.RestartElasticService(parameters.GetSSHNetworkAddress());
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                        }
+);
+                    default: throw new NotImplementedException();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
             return new Action(() => { MessageBox.Show("Oj oj, coś poszło nie tak :/"); });
         }
