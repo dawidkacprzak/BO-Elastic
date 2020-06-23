@@ -1,5 +1,6 @@
 ﻿using BO.Elastic.BLL.Model;
 using BO.Elastic.BLL.ServiceExtenstionModel;
+using BO.Elastic.Panel.Helpers;
 using BO.Elastic.Panel.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,8 @@ namespace BO.Elastic.Panel
     /// </summary>
     public partial class MainPageWindow : Window
     {
+        
+
         public MainPageWindow()
         {
             try
@@ -133,7 +136,13 @@ namespace BO.Elastic.Panel
         private void SavePassword_Click(object sender, RoutedEventArgs e)
         {
             SavePasswordWindow savePasswordWindow = new SavePasswordWindow();
+            savePasswordWindow.Closed += SavePasswordWindow_Closed;
             savePasswordWindow.ShowDialog();
+        }
+
+        private void SavePasswordWindow_Closed(object sender, EventArgs e)
+        {
+            ((MainPageWindowViewModel)DataContext).LoginData = LoginDataHelper.GetCachedLoginData();
         }
     }
 }

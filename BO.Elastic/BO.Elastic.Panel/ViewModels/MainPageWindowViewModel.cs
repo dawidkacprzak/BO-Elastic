@@ -20,6 +20,7 @@ using BO.Elastic.BLL.Types;
 using System.Windows.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.WindowsRuntime;
+using BO.Elastic.Panel.Helpers;
 
 namespace BO.Elastic.Panel.ViewModels
 {
@@ -28,6 +29,7 @@ namespace BO.Elastic.Panel.ViewModels
         private ObservableCollection<ServiceAddionalParameters> clusters;
         private ConfigurationController configurationController;
         private List<Service> downloadedConfiguration;
+        private LoginData loginData;
 
         public List<Service> DownloadedConfiguration
         {
@@ -63,6 +65,17 @@ namespace BO.Elastic.Panel.ViewModels
                 }
             }
         }
+
+        public LoginData LoginData
+        {
+            get => loginData;
+            set
+            {
+                loginData = value;
+                NotifyPropertyChanged();
+            }
+        }
+
         private LoadedNodeController loadedNodeController;
         public LoadedNodeController LoadedNodeController
         {
@@ -132,6 +145,7 @@ namespace BO.Elastic.Panel.ViewModels
                         });
                     });
                 }
+                loginData = LoginDataHelper.GetCachedLoginData();
                 SetProgressBarPercent(70);
                 SetProgressBarPercent(0);
                 PrepareUpdateThreads();
