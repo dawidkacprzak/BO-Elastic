@@ -9,7 +9,17 @@ namespace BO.Elastic.BLL.Model
     {
         public string IP { get; set; }
         public string Port { get; set; }
-
+        public string IPPortMerge
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Port))
+                {
+                    throw new ArgumentException("Port nie został zdefiniownay");
+                }
+                return IP + ":" + Port;
+            }
+        }
         public int NumerPort
         {
             get

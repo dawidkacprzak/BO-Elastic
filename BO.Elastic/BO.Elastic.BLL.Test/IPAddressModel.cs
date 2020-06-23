@@ -91,6 +91,18 @@ namespace BO.Elastic.BLL.Test
             {
                 NetworkAddress addressWithinvalidData = new NetworkAddress("", 0);
             });
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                NetworkAddress addressWithValidData = new NetworkAddress("192.168.1.1", "");
+                string ipPort = addressWithValidData.IPPortMerge;
+            });
+
+            Assert.DoesNotThrow(() =>
+            {
+                NetworkAddress addressWithValidData = new NetworkAddress("192.168.1.1", "3");
+                string ipPort = addressWithValidData.IPPortMerge;
+            });
         }
     }
 }
