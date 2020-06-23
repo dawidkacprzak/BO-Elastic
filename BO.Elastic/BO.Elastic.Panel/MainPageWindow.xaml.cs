@@ -128,8 +128,12 @@ namespace BO.Elastic.Panel
             {
                 Clusters.ContextMenu = null;
             }
+        }
 
-
+        private void SavePassword_Click(object sender, RoutedEventArgs e)
+        {
+            SavePasswordWindow savePasswordWindow = new SavePasswordWindow();
+            savePasswordWindow.ShowDialog();
         }
     }
 }
