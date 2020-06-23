@@ -104,5 +104,61 @@ namespace BO.Elastic.BLL.Test
                 string ipPort = addressWithValidData.IPPortMerge;
             });
         }
+
+        [Test]
+        public void CreateSSHConnectionInfo()
+        {
+            NetworkAddress addressWithoutPort = new NetworkAddress("192.168.1.1", "");
+            LoginData testData = new LoginData()
+            {
+                Login = "test",
+                Password = "test"
+            };
+
+            Assert.DoesNotThrow(() =>
+            {
+                SSHConnectionInfo info = new SSHConnectionInfo(addressWithoutPort, testData);
+            });
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                SSHConnectionInfo addressWithinvalidData = new SSHConnectionInfo("192.168.1.1", "abc", testData);
+            });
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                SSHConnectionInfo addressWithinvalidData = new SSHConnectionInfo("abc", "123", testData);
+            });
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                SSHConnectionInfo addressWithinvalidData = new SSHConnectionInfo("192..1.1", "123", testData);
+            });
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                SSHConnectionInfo addressWithinvalidData = new SSHConnectionInfo("192..1.1", "123", testData);
+            });
+
+            Assert.Throws<ArgumentException>(() =>
+            {
+                SSHConnectionInfo addressWithinvalidData = new SSHConnectionInfo("192.1.1", "123", testData);
+            });
+
+            Assert.DoesNotThrow(() =>
+            {
+                SSHConnectionInfo validData = new SSHConnectionInfo("192.1.1.1", "123", testData);
+            });
+
+            Assert.DoesNotThrow(() =>
+            {
+                SSHConnectionInfo validData = new SSHConnectionInfo("192.1.1.1", 4, testData);
+            });
+
+            Assert.DoesNotThrow(() =>
+            {
+                SSHConnectionInfo validData = new SSHConnectionInfo("192.1.1.1", "4", testData);
+            });
+        }
     }
 }
