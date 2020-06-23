@@ -37,8 +37,8 @@
         </Grid>
         <Grid x:Name="GridOfLogin" Grid.Row="1" Background="#FF233334">
             <TextBlock HorizontalAlignment="Center" Height="25" Text="Login" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="top" Width="100" Margin="20" FontSize="14" Foreground="White"/>
-            <StackPanel VerticalAlignment="Top" Margin="40,50,40,40">
-                <TextBox x:Name="tbLogin"></TextBox>
+            <StackPanel VerticalAlignment="Top" Margin="40,50,40,40" DataContext="{Binding LoginData}">
+                <TextBox x:Name="tbLogin" Text="{Binding Login}"></TextBox>
             </StackPanel>
             <TextBlock HorizontalAlignment="Center" Height="25" Text="Password" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="top" Width="100" Margin="0,80" FontSize="14" Foreground="White"/>
             <StackPanel VerticalAlignment="Top" Margin="40,110,40,0">

@@ -14,8 +14,12 @@ namespace BO.Elastic.Panel.Helpers
         public static readonly object saveLoginDataLock = new object();
         public static void SaveLoginData(LoginData loginData)
         {
-            if (!string.IsNullOrWhiteSpace(loginData.Login) && !string.IsNullOrWhiteSpace(loginData.Password))
+            if (!string.IsNullOrWhiteSpace(loginData.Login))
             {
+                if (string.IsNullOrEmpty(loginData.Password))
+                {
+                    loginData.Password = "";
+                }
                 try
                 {
                     lock (saveLoginDataLock)
@@ -27,14 +31,10 @@ namespace BO.Elastic.Panel.Helpers
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     throw;
                 }
-            }
-            else
-            {
-                MessageBox.Show("Podaj login i hasło.");
             }
         }
 
@@ -49,7 +49,7 @@ namespace BO.Elastic.Panel.Helpers
                     loginData = (LoginData)formatter.Deserialize(fs);
                 }
             }
-            catch (SerializationException e)
+            catch (SerializationException)
             {
                 MessageBox.Show("Błąd podczas wczytywania konfiguracji. Pobieram ponownie.");
             }

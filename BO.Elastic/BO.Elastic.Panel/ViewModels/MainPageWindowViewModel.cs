@@ -29,7 +29,6 @@ namespace BO.Elastic.Panel.ViewModels
         private ObservableCollection<ServiceAddionalParameters> clusters;
         private ConfigurationController configurationController;
         private List<Service> downloadedConfiguration;
-        private LoginData loginData;
 
         public List<Service> DownloadedConfiguration
         {
@@ -63,16 +62,6 @@ namespace BO.Elastic.Panel.ViewModels
                     this.clusters = value;
                     NotifyPropertyChanged();
                 }
-            }
-        }
-
-        public LoginData LoginData
-        {
-            get => loginData;
-            set
-            {
-                loginData = value;
-                NotifyPropertyChanged();
             }
         }
 
@@ -145,7 +134,7 @@ namespace BO.Elastic.Panel.ViewModels
                         });
                     });
                 }
-                loginData = LoginDataHelper.GetCachedLoginData();
+                SSHLoginDataContainer.LoginData = LoginDataHelper.GetCachedLoginData();
                 SetProgressBarPercent(70);
                 SetProgressBarPercent(0);
                 PrepareUpdateThreads();
@@ -241,7 +230,7 @@ namespace BO.Elastic.Panel.ViewModels
                     DownloadedConfiguration = (List<Service>)formatter.Deserialize(fs);
                 }
             }
-            catch (SerializationException e)
+            catch (SerializationException)
             {
                 MessageBox.Show("Błąd podczas wczytywania konfiguracji. Pobieram ponownie.");
             }
@@ -278,7 +267,7 @@ namespace BO.Elastic.Panel.ViewModels
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     throw;
                 }

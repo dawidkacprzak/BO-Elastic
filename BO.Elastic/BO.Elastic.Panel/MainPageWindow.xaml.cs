@@ -142,7 +142,7 @@ namespace BO.Elastic.Panel
 
         private void SavePasswordWindow_Closed(object sender, EventArgs e)
         {
-            ((MainPageWindowViewModel)DataContext).LoginData = LoginDataHelper.GetCachedLoginData();
+            SSHLoginDataContainer.LoginData = LoginDataHelper.GetCachedLoginData();
         }
     }
 }
