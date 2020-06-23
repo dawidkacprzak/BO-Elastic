@@ -1,7 +1,9 @@
 ﻿using BO.Elastic.BLL.Model;
 using BO.Elastic.BLL.ServiceConnection;
 using BO.Elastic.BLL.ServiceExtenstionModel;
+using BO.Elastic.Panel.ClassExtensions;
 using BO.Elastic.Panel.ViewModels;
+using Elasticsearch.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,23 +118,8 @@ namespace BO.Elastic.Panel
                     foreach (var item in clickedCluster.ActionList)
                     {
                         MenuItem tempClick = new MenuItem();
-                        tempClick.Click += delegate
-                        {
-                            SSHConnectionInfo info = new SSHConnectionInfo("10.10.1.216", "", new LoginData()
-                            {
-                                Login = "test",
-                                Password = "test1923"
-                            });
-                            ServiceRemoteManager manager = new ServiceRemoteManager(info);
-                            try
-                            {
-                                manager.StartElasticService(info);
-                            }catch(Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
-                        };
-                        tempClick.Header = item.Key;
+                        tempClick.Click += delegate { clickedCluster.GetActionParameters(item).Invoke(); };
+                        tempClick.Header = item.ToString();
 
                         context.Items.Add(tempClick);
                     }
@@ -151,12 +138,6 @@ namespace BO.Elastic.Panel
             {
                 throw;
             }
-        }
-
-        private void SavePassword_Click(object sender, RoutedEventArgs e)
-        {
-            SavePasswordWindow savePasswordWindow = new SavePasswordWindow();
-            savePasswordWindow.ShowDialog();
         }
     }
 }
