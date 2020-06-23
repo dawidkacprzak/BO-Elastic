@@ -14,14 +14,14 @@ namespace BO.Elastic.BLL.ServiceExtenstionModel
         public EServiceStatus ServiceStatus { get; set; }
         public string IP { get; set; }
         public string Port { get; set; }
-        private List<Option> actionList;
-        public List<Option> ActionList
+        private List<EServiceAction> actionList;
+        public List<EServiceAction> ActionList
         {
             get
             {
                 if (actionList == null)
                 {
-                    return new List<Option>();
+                    return new List<EServiceAction>();
                 }
                 return actionList;
             }

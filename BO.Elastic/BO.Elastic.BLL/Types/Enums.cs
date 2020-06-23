@@ -20,7 +20,7 @@ namespace BO.Elastic.BLL.Types
         Initializing
     }
 
-    public enum Option
+    public enum EServiceAction
     {
         ConnectBySSH,
         Start,

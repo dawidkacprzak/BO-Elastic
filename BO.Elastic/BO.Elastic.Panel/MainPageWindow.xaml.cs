@@ -1,5 +1,6 @@
 ﻿using BO.Elastic.BLL.Model;
 using BO.Elastic.BLL.ServiceExtenstionModel;
+using BO.Elastic.Panel.ClassExtensions;
 using BO.Elastic.Panel.ViewModels;
 using Elasticsearch.Net;
 using System;
@@ -114,7 +115,7 @@ namespace BO.Elastic.Panel
                 foreach (var item in clickedCluster.ActionList)
                 {
                     MenuItem tempClick = new MenuItem();
-                    tempClick.Click += delegate {};
+                    tempClick.Click += delegate { clickedCluster.GetActionParameters(item).Invoke(); };
                     tempClick.Header = item.ToString();
 
                     context.Items.Add(tempClick);
@@ -130,6 +131,5 @@ namespace BO.Elastic.Panel
                 Clusters.ContextMenu = null;
             }
         }
-
     }
 }

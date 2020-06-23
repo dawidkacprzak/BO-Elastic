@@ -20,7 +20,7 @@ namespace BO.Elastic.BLL.Extension
             addionalParameters.IP = service.Ip;
             addionalParameters.Port = service.Port;
             addionalParameters.Service = service;
-            addionalParameters.ActionList = new List<Option>();
+            addionalParameters.ActionList = new List<EServiceAction>();
             addionalParameters.ServiceType = (EServiceType)service.ServiceType;
             switch ((EServiceType)service.ServiceType)
             {
@@ -53,36 +53,36 @@ namespace BO.Elastic.BLL.Extension
                             if (clusterHealth.Status == Elasticsearch.Net.Health.Green)
                             {
                                 addionalParameters.ServiceStatus = EServiceStatus.Online;
-                                addionalParameters.ActionList.Add(Option.ConnectBySSH);
-                                addionalParameters.ActionList.Add(Option.Stop);
-                                addionalParameters.ActionList.Add(Option.Information);
+                                addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
+                                addionalParameters.ActionList.Add(EServiceAction.Stop);
+                                addionalParameters.ActionList.Add(EServiceAction.Information);
                             }
                             else if (clusterHealth.Status == Elasticsearch.Net.Health.Red)
                             {
                                 addionalParameters.ServiceStatus = EServiceStatus.Danger;
-                                addionalParameters.ActionList.Add(Option.ConnectBySSH);
-                                addionalParameters.ActionList.Add(Option.Stop);
+                                addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
+                                addionalParameters.ActionList.Add(EServiceAction.Stop);
                             }
                             else if (clusterHealth.Status == Elasticsearch.Net.Health.Yellow)
                             {
                                 addionalParameters.ServiceStatus = EServiceStatus.Moderate;
-                                addionalParameters.ActionList.Add(Option.ConnectBySSH);
-                                addionalParameters.ActionList.Add(Option.Stop);
+                                addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
+                                addionalParameters.ActionList.Add(EServiceAction.Stop);
                             }
                             else throw new Exception("Błąd podczas pobrania statusu zdrowia klastra");
                         }
                         else
                         {
                             addionalParameters.ServiceStatus = EServiceStatus.Offline;
-                            addionalParameters.ActionList.Add(Option.ConnectBySSH);
-                            addionalParameters.ActionList.Add(Option.Start);
+                            addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
+                            addionalParameters.ActionList.Add(EServiceAction.Start);
                         }
                     }
                     catch (ClusterNotConnectedException)
                     {
                         addionalParameters.ServiceStatus = EServiceStatus.Offline;
-                        addionalParameters.ActionList.Add(Option.ConnectBySSH);
-                        addionalParameters.ActionList.Add(Option.Start);
+                        addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
+                        addionalParameters.ActionList.Add(EServiceAction.Start);
                     }
 
                     break;
