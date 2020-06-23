@@ -20,6 +20,7 @@ using BO.Elastic.BLL.Types;
 using System.Windows.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices.WindowsRuntime;
+using BO.Elastic.Panel.Helpers;
 
 namespace BO.Elastic.Panel.ViewModels
 {
@@ -63,6 +64,7 @@ namespace BO.Elastic.Panel.ViewModels
                 }
             }
         }
+
         private LoadedNodeController loadedNodeController;
         public LoadedNodeController LoadedNodeController
         {
@@ -132,6 +134,7 @@ namespace BO.Elastic.Panel.ViewModels
                         });
                     });
                 }
+                SSHLoginDataContainer.LoginData = LoginDataHelper.GetCachedLoginData();
                 SetProgressBarPercent(70);
                 SetProgressBarPercent(0);
                 PrepareUpdateThreads();
@@ -227,7 +230,7 @@ namespace BO.Elastic.Panel.ViewModels
                     DownloadedConfiguration = (List<Service>)formatter.Deserialize(fs);
                 }
             }
-            catch (SerializationException e)
+            catch (SerializationException)
             {
                 MessageBox.Show("Błąd podczas wczytywania konfiguracji. Pobieram ponownie.");
             }
@@ -264,7 +267,7 @@ namespace BO.Elastic.Panel.ViewModels
                         }
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     throw;
                 }

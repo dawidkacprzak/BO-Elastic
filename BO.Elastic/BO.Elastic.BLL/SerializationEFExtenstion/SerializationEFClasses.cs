@@ -40,4 +40,7 @@ namespace BO.Elastic.BLL.Model
 
     [Serializable]
     public partial class ServiceType { }
+
+    [Serializable]
+    public partial class LoginData { }
 }
