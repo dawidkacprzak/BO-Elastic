@@ -45,7 +45,7 @@
                 <PasswordBox x:Name="tbPassword"></PasswordBox>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,140,0,0">
-                <Button x:Name="BtnClear" Width="60" BorderThickness="0" Height="30" Foreground="White" Content="CLEAR" Background="#262626" Click="BtnClear_Click"></Button>
+                <Button x:Name="BtnClear" Width="60" BorderThickness="0" Height="30" Foreground="White" Content="CLEAR" Background="#262626" Command="{Binding ClearCachedLoginDataCommand}" Click="BtnClear_Click"></Button>
                 <Button x:Name="BtnSave" Width="60" BorderThickness="0" Height="30" Foreground="White" Content="SAVE" Background="#262626" Click="BtnSave_Click"></Button>
             </StackPanel>
             

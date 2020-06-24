@@ -12,6 +12,8 @@ namespace BO.Elastic.Panel.Helpers
     public static class LoginDataHelper
     {
         public static readonly object saveLoginDataLock = new object();
+        public static string FilePath = Path.Combine(System.IO.Path.GetTempPath(), "boElasticLoginData.dat");
+
         public static void SaveLoginData(LoginData loginData)
         {
             if (!string.IsNullOrWhiteSpace(loginData.Login))
@@ -24,17 +26,21 @@ namespace BO.Elastic.Panel.Helpers
                 {
                     lock (saveLoginDataLock)
                     {
-                        using (FileStream fs = new FileStream(Path.Combine(Path.GetTempPath(), "boElasticLoginData.dat"), FileMode.Create))
+                        using (FileStream fs = new FileStream(FilePath, FileMode.Create))
                         {
                             BinaryFormatter formatter = new BinaryFormatter();
                             formatter.Serialize(fs, loginData);
                         }
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw ex;
                 }
+            }
+            else
+            {
+                throw new ArgumentException();
             }
         }
 
@@ -43,7 +49,7 @@ namespace BO.Elastic.Panel.Helpers
             LoginData loginData = new LoginData();
             try
             {
-                using (FileStream fs = new FileStream(Path.Combine(Path.GetTempPath(), "boElasticLoginData.dat"), FileMode.Open))
+                using (FileStream fs = new FileStream(FilePath, FileMode.Open))
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
                     loginData = (LoginData)formatter.Deserialize(fs);
@@ -51,7 +57,7 @@ namespace BO.Elastic.Panel.Helpers
             }
             catch (SerializationException)
             {
-                MessageBox.Show("Błąd podczas wczytywania konfiguracji. Pobieram ponownie.");
+                MessageBox.Show("Błąd podczas wczytywania danych logowania.");
             }
             catch (FileNotFoundException)
             {
@@ -64,6 +70,23 @@ namespace BO.Elastic.Panel.Helpers
             }
 
             return loginData;
+        }
+
+        public static bool ClearCachedLoginData()
+        {
+            try
+            {
+                if (File.Exists(FilePath))
+                {
+                    File.Delete(FilePath);
+                    return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
