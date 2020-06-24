@@ -28,8 +28,8 @@ namespace BO.Elastic.BLL.Extension
 
                     try
                     {
-                        addionalParameters.NextWrap = new NextWrap("http://" + service.ClusterNodeNode.Cluster.Ip + ":" + service.ClusterNodeNode.Cluster.Port);
-                        NodeInfo nodeInfo = addionalParameters.NextWrap.GetNodeInfo(service.Ip, service.Port);
+                        addionalParameters.NextWrap = new NextWrap(addionalParameters.GetSSHNetworkAddress());
+                        NodeInfo nodeInfo = addionalParameters.NextWrap.GetNodeInfo(addionalParameters.GetSSHNetworkAddress());
                         addionalParameters.ServiceStatus = EServiceStatus.Online;
                     }
                     catch (NodeNotConnectedException)
@@ -45,7 +45,7 @@ namespace BO.Elastic.BLL.Extension
                 case EServiceType.Cluster:
                     try
                     {
-                        addionalParameters.NextWrap = new NextWrap("http://" + service.Ip + ":" + service.Port);
+                        addionalParameters.NextWrap = new NextWrap(addionalParameters.GetSSHNetworkAddress());
                         ClusterHealthResponse clusterHealth = addionalParameters.NextWrap.GetClusterHealth();
                         
                         if (clusterHealth.IsValid)
@@ -100,12 +100,12 @@ namespace BO.Elastic.BLL.Extension
         
         public static NetworkAddress GetSSHNetworkAddress(this ServiceAddionalParameters parameters)
         {
-            return new NetworkAddress(parameters.IP, "");
+            return new NetworkAddress(parameters.IP, parameters.Port);
         }
 
         public static NetworkAddress GetSSHNetworkAddress(this Service service)
         {
-            return new NetworkAddress(service.Ip, "");
+            return new NetworkAddress(service.Ip, service.Port);
         }
 
         public static void RefreshAddionalParameters(ref ServiceAddionalParameters serviceAddionalParameters)
@@ -116,7 +116,7 @@ namespace BO.Elastic.BLL.Extension
         public static EServiceStatus GetProperFailServiceStatus(this ServiceAddionalParameters parameters)
         {
             EServiceStatus failStatus = EServiceStatus.Offline;
-            if (NextWrap.PingHost(parameters.IP, 80))
+            if (NextWrap.PingHost(parameters.IP))
             {
                 failStatus = EServiceStatus.ServiceDown;
             }

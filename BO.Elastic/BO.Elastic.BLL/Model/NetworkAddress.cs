@@ -32,6 +32,28 @@ namespace BO.Elastic.BLL.Model
             }
         }
 
+        public string HTTPAddress
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Port))
+                {
+                    return "http://" + IP;
+                }
+                else
+                {
+                    return "http://" + IP + ":" + Port;
+                }
+            }
+        }
+
+        public string HTTPSAddress
+        {
+            get
+            {
+                return HTTPAddress.Replace("http", "https");
+            }
+        }
         public NetworkAddress(string ip, string port)
         {
             ValidateIP(ip);
@@ -49,21 +71,9 @@ namespace BO.Elastic.BLL.Model
 
         private void ValidateIP(string ip)
         {
-            if (ip.Count(x => x == '.') != 3)
+            if(ip.Length == 0)
             {
                 throw new ArgumentException("Adres IP jest nieprawidłowy");
-            }
-            string[] splittedIp = ip.Split('.');
-            foreach (string octet in splittedIp)
-            {
-                if (octet.Length == 0 || octet.Length > 3)
-                {
-                    throw new ArgumentException("Adres IP jest nieprawidłowy");
-                }
-                if (!int.TryParse(octet, out _))
-                {
-                    throw new ArgumentException("Adres IP jest nieprawidłowy");
-                }
             }
         }
 

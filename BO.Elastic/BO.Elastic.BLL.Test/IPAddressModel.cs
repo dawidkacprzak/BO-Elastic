@@ -29,22 +29,7 @@ namespace BO.Elastic.BLL.Test
 
             Assert.Throws<ArgumentException>(() =>
             {
-                NetworkAddress addressWithinvalidData = new NetworkAddress("abc", "123");
-            });
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                NetworkAddress addressWithinvalidData = new NetworkAddress("192..1.1", "123");
-            });
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                NetworkAddress addressWithinvalidData = new NetworkAddress("192..1.1", "123");
-            });
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                NetworkAddress addressWithinvalidData = new NetworkAddress("192.1.1", "123");
+                NetworkAddress addressWithinvalidData = new NetworkAddress("", "9");
             });
 
             Assert.Throws<ArgumentException>(() =>
@@ -70,21 +55,6 @@ namespace BO.Elastic.BLL.Test
             Assert.DoesNotThrow(() =>
             {
                 NetworkAddress addressWithValidData = new NetworkAddress("192.168.1.1", 80);
-            });
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                NetworkAddress addressWithinvalidData = new NetworkAddress("192..1.1", 123);
-            });
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                NetworkAddress addressWithinvalidData = new NetworkAddress("192..1.1", 123);
-            });
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                NetworkAddress addressWithinvalidData = new NetworkAddress("192.1.1", 123);
             });
 
             Assert.Throws<ArgumentException>(() =>
@@ -125,26 +95,6 @@ namespace BO.Elastic.BLL.Test
                 SSHConnectionInfo addressWithinvalidData = new SSHConnectionInfo("192.168.1.1", "abc", testData);
             });
 
-            Assert.Throws<ArgumentException>(() =>
-            {
-                SSHConnectionInfo addressWithinvalidData = new SSHConnectionInfo("abc", "123", testData);
-            });
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                SSHConnectionInfo addressWithinvalidData = new SSHConnectionInfo("192..1.1", "123", testData);
-            });
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                SSHConnectionInfo addressWithinvalidData = new SSHConnectionInfo("192..1.1", "123", testData);
-            });
-
-            Assert.Throws<ArgumentException>(() =>
-            {
-                SSHConnectionInfo addressWithinvalidData = new SSHConnectionInfo("192.1.1", "123", testData);
-            });
-
             Assert.DoesNotThrow(() =>
             {
                 SSHConnectionInfo validData = new SSHConnectionInfo("192.1.1.1", "123", testData);
@@ -159,6 +109,41 @@ namespace BO.Elastic.BLL.Test
             {
                 SSHConnectionInfo validData = new SSHConnectionInfo("192.1.1.1", "4", testData);
             });
+        }
+
+        [Test]
+        [TestCase("192.168.1.1","2")]
+        [TestCase("192.168.1.4", "24")]
+        [TestCase("192.168.1.78", "2")]
+        [TestCase("1.2.3.4", "242")]
+        public void HttpHttpsConvertWithPort(string ip,string port)
+        {
+            NetworkAddress addressWithValidData = new NetworkAddress(ip,port);
+
+            Assert.AreEqual(addressWithValidData.HTTPAddress, "http://" + ip + ":" + port);
+        }
+        [Test]
+        [TestCase("192.168.1.1", 2)]
+        [TestCase("192.168.1.4", 24)]
+        [TestCase("192.168.1.78", 2)]
+        [TestCase("1.2.3.4", 242)]
+        public void HttpHttpsConvertWithPort(string ip, int port)
+        {
+            NetworkAddress addressWithValidData = new NetworkAddress(ip, port);
+
+            Assert.AreEqual(addressWithValidData.HTTPAddress, "http://" + ip + ":" + port);
+        }
+
+        [Test]
+        [TestCase("192.168.1.1", "")]
+        [TestCase("192.168.1.4", "")]
+        [TestCase("192.168.1.78", "")]
+        [TestCase("192.168.1.12", "")]
+        public void HttpHttpsConvertWithoutPort(string ip, string port)
+        {
+            NetworkAddress addressWithValidData = new NetworkAddress(ip, port);
+
+            Assert.AreEqual(addressWithValidData.HTTPAddress, "http://" + ip);
         }
     }
 }

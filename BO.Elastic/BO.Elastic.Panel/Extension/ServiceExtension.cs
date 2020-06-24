@@ -77,7 +77,7 @@ namespace BO.Elastic.Panel.ClassExtensions
                                 MessageBox.Show(ex.Message);
                             }
                         }
-);
+                    );
                     default: throw new NotImplementedException();
                 }
             }

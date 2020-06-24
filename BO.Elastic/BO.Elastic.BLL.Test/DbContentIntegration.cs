@@ -44,13 +44,13 @@ namespace BO.Elastic.BLL.Test
             List<Service> configuration = controller.DownloadClustersConfiguration();
             Service firstNode = new Service()
             {
-                Ip = "10.10.1.1",
+                Ip = "0.0.0.0",
                 Port = "25565",
                 ClusterNodeNode = new ClusterNode()
                 {
                     Cluster = new Service()
                     {
-                        Ip = "10.10.1.1",
+                        Ip = "localhost",
                         Port = "25565"
                     }
                 },
@@ -83,17 +83,9 @@ namespace BO.Elastic.BLL.Test
             ConfigurationController controller = new ConfigurationController();
             Service cluster = new Service()
             {
-                Ip = "10.10.1.1",
-                Port = "25565",
-                ClusterNodeNode = new ClusterNode()
-                {
-                    Cluster = new Service()
-                    {
-                        Ip = "10.10.1.1",
-                        Port = "25565"
-                    }
-                },
-                ServiceType = (int)EServiceType.Node
+                Ip = "98.14.75.177",
+                Port = "80",
+                ServiceType = (int)EServiceType.Cluster
             };
 
             ServiceAddionalParameters nodeParameters = cluster.GetServiceAddionalParameters();

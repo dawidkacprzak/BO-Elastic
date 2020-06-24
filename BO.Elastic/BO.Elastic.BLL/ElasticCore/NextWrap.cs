@@ -1,4 +1,5 @@
 ﻿using BO.Elastic.BLL.Exceptions;
+using BO.Elastic.BLL.Model;
 using Elasticsearch.Net;
 using Nest;
 using System;
@@ -14,20 +15,18 @@ namespace BO.Elastic.BLL.ElasticCore
     {
         private ElasticClient elasticClient;
 
-        public NextWrap(string clusterAddress)
+        public NextWrap(NetworkAddress address)
         {
             try
             {
-                ConnectionSettings settings = new ConnectionSettings(new Uri(clusterAddress));
+                ConnectionSettings settings = new ConnectionSettings(new Uri(address.HTTPAddress));
                 settings.PingTimeout(TimeSpan.FromMilliseconds(1000));
                 settings.DeadTimeout(new TimeSpan(0, 0, 1));
                 settings.MaxDeadTimeout(TimeSpan.FromMilliseconds(1000));
                 settings.MaxRetryTimeout(new TimeSpan(0, 0, 1));
                 settings.MaximumRetries(1);
                 elasticClient = new ElasticClient(settings);
-                string ip = clusterAddress.Split(':')[1].Replace("/", string.Empty);
-                int port = int.Parse(clusterAddress.Split(':')[2]);
-                if (PingHost(ip, port)){
+                if (PingHost(address.IP)){
                     PingResponse pr = elasticClient.Ping();
                     if (pr.ApiCall.HttpStatusCode != 200)
                     {
@@ -41,20 +40,20 @@ namespace BO.Elastic.BLL.ElasticCore
             }
             catch (Exception)
             {
-                throw new ClusterNotConnectedException(clusterAddress);
+                throw new ClusterNotConnectedException(address.IPPortMerge);
             }
         }
 
 
-        public NodeInfo GetNodeInfo(string ip, string port)
+        public NodeInfo GetNodeInfo(NetworkAddress address)
         {
-            NodeExists(ip, port);
-            IEnumerable<KeyValuePair<string, NodeInfo>> nodeinfos = GetNodesFromIpAndPort(ip, port);
+            NodeExists(address);
+            IEnumerable<KeyValuePair<string, NodeInfo>> nodeinfos = GetNodesFromIpAndPort(address);
             if (nodeinfos == null || nodeinfos.Count() == 0)
             {
-                throw new NodeNotConnectedException(ip + ":" + port);
+                throw new NodeNotConnectedException(address.IPPortMerge);
             }
-            return GetNodesFromIpAndPort(ip, port).First().Value;
+            return GetNodesFromIpAndPort(address).First().Value;
 
         }
 
@@ -70,12 +69,12 @@ namespace BO.Elastic.BLL.ElasticCore
             }
         }
 
-        private bool NodeExists(string ip, string port)
+        private bool NodeExists(NetworkAddress address)
         {
-            IEnumerable<KeyValuePair<string, NodeInfo>> nodes = GetNodesFromIpAndPort(ip, port);
+            IEnumerable<KeyValuePair<string, NodeInfo>> nodes = GetNodesFromIpAndPort(address);
             if (nodes.Count() == 0)
             {
-                throw new NodeNotConnectedException(ip + ":" + port);
+                throw new NodeNotConnectedException(address.IPPortMerge);
             }
             else if (nodes.Count() > 1)
             {
@@ -87,21 +86,27 @@ namespace BO.Elastic.BLL.ElasticCore
             }
         }
 
-        private IEnumerable<KeyValuePair<string, NodeInfo>> GetNodesFromIpAndPort(string ip, string port)
+        private IEnumerable<KeyValuePair<string, NodeInfo>> GetNodesFromIpAndPort(NetworkAddress address)
         {
-            return elasticClient.Nodes.Info().Nodes.Where(x => x.Value.Http.PublishAddress.Equals(ip + ":" + port));
+            return elasticClient.Nodes.Info().Nodes.Where(x => x.Value.Http.PublishAddress.Equals(address.IPPortMerge));
 
         }
 
-        public static bool PingHost(string hostUri, int portNumber)
+        public static bool PingHost(string hostUri)
         {
-            PingReply pingReply = new Ping().Send(hostUri, 1000);
+            try
+            {
+                PingReply pingReply = new Ping().Send(hostUri, 1000);
 
-            if (pingReply.Status != IPStatus.Success)
+                if (pingReply.Status != IPStatus.Success)
+                {
+                    return false;
+                }
+                return true;
+            }catch(Exception)
             {
                 return false;
             }
-            return true;
         }
     }
 }

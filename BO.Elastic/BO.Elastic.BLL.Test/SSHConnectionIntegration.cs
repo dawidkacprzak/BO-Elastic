@@ -35,7 +35,7 @@ namespace BO.Elastic.BLL.Test
         }
 
         [Test]
-        public void InvokeSSHActionWithInvalidAddress()
+        public void InvokeSSHStartWithInvalidAddress()
         {
             SSHConnectionInfo info = new SSHConnectionInfo("10.10.1.116", "", new LoginData()
             {
@@ -48,10 +48,34 @@ namespace BO.Elastic.BLL.Test
             {
                 manager.StartElasticService(info);
             });
+        }
+
+        [Test]
+        public void InvokeSSHStopWithInvalidAddress()
+        {
+            SSHConnectionInfo info = new SSHConnectionInfo("10.10.1.116", "", new LoginData()
+            {
+                Login = "test",
+                Password = "test123"
+            });
+            ServiceRemoteManager manager = new ServiceRemoteManager(info);
+
             Assert.Throws<SSHCommandExecuteException>(() =>
             {
                 manager.StopElasticService(info);
             });
+        }
+
+        [Test]
+        public void InvokeSSHRestartWithInvalidAddress()
+        {
+            SSHConnectionInfo info = new SSHConnectionInfo("10.10.1.116", "", new LoginData()
+            {
+                Login = "test",
+                Password = "test123"
+            });
+            ServiceRemoteManager manager = new ServiceRemoteManager(info);
+
             Assert.Throws<SSHCommandExecuteException>(() =>
             {
                 manager.RestartElasticService(info);
