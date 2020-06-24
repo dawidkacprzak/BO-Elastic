@@ -1,0 +1,67 @@
+[1mdiff --git a/BO.Elastic/BO.Elastic.Panel/Helpers/LoginDataHelper.cs b/BO.Elastic/BO.Elastic.Panel/Helpers/LoginDataHelper.cs[m
+[1mindex f658e5b..1efc12f 100644[m
+[1m--- a/BO.Elastic/BO.Elastic.Panel/Helpers/LoginDataHelper.cs[m
+[1m+++ b/BO.Elastic/BO.Elastic.Panel/Helpers/LoginDataHelper.cs[m
+[36m@@ -65,5 +65,33 @@[m [mnamespace BO.Elastic.Panel.Helpers[m
+ [m
+             return loginData;[m
+         }[m
+[32m+[m
+[32m+[m[32m        public static LoginData ClearCachedLoginData()[m
+[32m+[m[32m        {[m
+[32m+[m[32m            LoginData loginData = new LoginData();[m
+[32m+[m[32m            try[m
+[32m+[m[32m            {[m
+[32m+[m[32m                using (FileStream fs = new FileStream(Path.Combine(Path.GetTempPath(), "boElasticLoginData.dat"), FileMode.Open))[m
+[32m+[m[32m                {[m
+[32m+[m[32m                    BinaryFormatter formatter = new BinaryFormatter();[m
+[32m+[m[32m                    loginData = (LoginData)formatter.Deserialize(fs);[m
+[32m+[m[32m                }[m
+[32m+[m[32m            }[m
+[32m+[m[32m            catch (SerializationException)[m
+[32m+[m[32m            {[m
+[32m+[m[32m                MessageBox.Show("Błąd podczas wczytywania konfiguracji. Pobieram ponownie.");[m
+[32m+[m[32m            }[m
+[32m+[m[32m            catch (FileNotFoundException)[m
+[32m+[m[32m            {[m
+[32m+[m[32m                loginData.Login = string.Empty;[m
+[32m+[m[32m                loginData.Password = string.Empty;[m
+[32m+[m[32m            }[m
+[32m+[m[32m            catch (Exception ex)[m
+[32m+[m[32m            {[m
+[32m+[m[32m                throw ex;[m
+[32m+[m[32m            }[m
+[32m+[m
+[32m+[m[32m            return loginData;[m
+[32m+[m[32m        }[m
+     }[m
+ }[m
+[1mdiff --git a/BO.Elastic/BO.Elastic.Panel/ViewModels/SaveLoginDataWindowViewModel.cs b/BO.Elastic/BO.Elastic.Panel/ViewModels/SaveLoginDataWindowViewModel.cs[m
+[1mindex dcbb765..032e705 100644[m
+[1m--- a/BO.Elastic/BO.Elastic.Panel/ViewModels/SaveLoginDataWindowViewModel.cs[m
+[1m+++ b/BO.Elastic/BO.Elastic.Panel/ViewModels/SaveLoginDataWindowViewModel.cs[m
+[36m@@ -1,10 +1,12 @@[m
+ ﻿using BO.Elastic.BLL.Model;[m
+[32m+[m[32musing BO.Elastic.Panel.Command;[m
+ using BO.Elastic.Panel.Helpers;[m
+ using System;[m
+ using System.Collections.Generic;[m
+ using System.ComponentModel;[m
+ using System.Runtime.CompilerServices;[m
+ using System.Text;[m
+[32m+[m[32musing System.Windows.Input;[m
+ [m
+ namespace BO.Elastic.Panel.ViewModels[m
+ {[m
+[36m@@ -33,6 +35,11 @@[m [mnamespace BO.Elastic.Panel.ViewModels[m
+             }[m
+         }[m
+ [m
+[32m+[m[32m        public ICommand ClearCachedLoginDataCommand => new BasicCommand(new Action(() =>[m
+[32m+[m[32m        {[m
+[32m+[m[32m            LoginDataHelper.ClearCachedLoginData();[m
+[32m+[m[32m        }));[m
+[32m+[m
+         public event PropertyChangedEventHandler PropertyChanged;[m
+         public void NotifyPropertyChanged([CallerMemberName] String propertyName = "")[m
+         {[m
