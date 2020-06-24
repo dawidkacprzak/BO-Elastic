@@ -69,6 +69,30 @@ namespace BO.Elastic.BLL.ElasticCore
             }
         }
 
+        public ClusterStateResponse GetClusterState()
+        {
+            try
+            {
+                return elasticClient.Cluster.State();
+            }
+            catch(UnexpectedElasticsearchClientException)
+            {
+                return new ClusterStateResponse();
+            }
+        }
+
+        public ClusterStatsResponse GetClusterStats()
+        {
+            try
+            {
+                return elasticClient.Cluster.Stats();
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                return new ClusterStatsResponse();
+            }
+        }
+
         private bool NodeExists(NetworkAddress address)
         {
             IEnumerable<KeyValuePair<string, NodeInfo>> nodes = GetNodesFromIpAndPort(address);
