@@ -149,13 +149,7 @@ namespace BO.Elastic.Panel
         private void SavePassword_Click(object sender, RoutedEventArgs e)
         {
             SavePasswordWindow savePasswordWindow = new SavePasswordWindow();
-            savePasswordWindow.Closed += SavePasswordWindow_Closed;
             savePasswordWindow.ShowDialog();
-        }
-
-        private void SavePasswordWindow_Closed(object sender, EventArgs e)
-        {
-            SSHLoginDataContainer.LoginData = LoginDataHelper.GetCachedLoginData();
         }
     }
 }
