@@ -28,7 +28,11 @@ namespace BO.Elastic.Panel.ViewModels
                 clusterAttributes = new ObservableCollection<KeyValuePair<string, string>>() {
                     new KeyValuePair<string, string>("Status",ClusterStatus),
                     new KeyValuePair<string, string>("UUID",(string)GetNextWrapClusterData(EClusterAttributes.UUID)),
-
+                    new KeyValuePair<string, string>("HTTP URI",(string)GetNextWrapClusterData(EClusterAttributes.HTTPUri)),
+                    new KeyValuePair<string, string>("CPU",(string)GetNextWrapClusterData(EClusterAttributes.CPU)),
+                    new KeyValuePair<string, string>("RAM",(string)GetNextWrapClusterData(EClusterAttributes.RAM)),
+                    new KeyValuePair<string, string>("OS",(string)GetNextWrapClusterData(EClusterAttributes.OS)),
+                    new KeyValuePair<string, string>("ROLES",(string)GetNextWrapClusterData(EClusterAttributes.Roles))
                     };
 
                 return clusterAttributes;
@@ -42,7 +46,7 @@ namespace BO.Elastic.Panel.ViewModels
 
         private object GetValueIfNextWrapIsInitialized(EClusterAttributes value)
         {
-            if(nextWrap == null)
+            if (nextWrap == null)
             {
                 return null;
             }
@@ -69,19 +73,55 @@ namespace BO.Elastic.Panel.ViewModels
             switch (value)
             {
                 case EClusterAttributes.UUID:
-                    if (clusterStatsResponse != null)
+                    if (ClusterStateResponse != null)
                     {
-                        return clusterStateResponse.ClusterUUID;
+                        return ClusterStateResponse.ClusterUUID;
                     }
                     else return "...";
+
                 case EClusterAttributes.ClusterName:
-                    if (clusterStatsResponse != null)
+                    if (ClusterStateResponse != null)
                     {
-                        return clusterStateResponse.ClusterName;
+                        return ClusterStateResponse.ClusterName;
+                    }
+                    else return string.Empty;
+
+                case EClusterAttributes.HTTPUri:
+                    if (ClusterStateResponse != null)
+                    {
+                        return ClusterStateResponse.ApiCall.Uri.AbsoluteUri;
+                    }
+                    else return string.Empty;
+
+                case EClusterAttributes.CPU:
+                    if (ClusterStatsResponse != null)
+                    {
+                        return ClusterStatsResponse.Nodes.Process.Cpu.Percent + "%";
+                    }
+                    else return string.Empty;
+
+                case EClusterAttributes.RAM:
+                    if (ClusterStatsResponse != null)
+                    {
+                        return ClusterStatsResponse.Nodes.Jvm.Memory.HeapUsedInBytes / 1024 + "/" + ClusterStatsResponse.Nodes.Jvm.Memory.HeapMaxInBytes / 1024;
+                    }
+                    else return string.Empty;
+
+                case EClusterAttributes.OS:
+                    if (NodeInfo != null)
+                    {
+                        return NodeInfo.OperatingSystem.PrettyName;
+                    }
+                    else return string.Empty;
+
+                case EClusterAttributes.Roles:
+                    if (NodeInfo != null)
+                    {
+                        return "[" + string.Join("] [", NodeInfo.Roles) + "]";
                     }
                     else return string.Empty;
             }
-            return null;
+            throw new NotImplementedException("Brak definicji dla atrybutu klastra");
         }
 
         public ClusterStatsResponse ClusterStatsResponse
@@ -239,8 +279,7 @@ namespace BO.Elastic.Panel.ViewModels
         private ObservableCollection<KeyValuePair<string, string>> clusterAttributes;
         private System.Timers.Timer myTimer = new System.Timers.Timer();
 
-
-        public ClusterStatsWindowViewModel(NetworkAddress networkAddress)
+        public ClusterStatsWindowViewModel(NetworkAddress networkAddress, bool startUpdateThread = false)
         {
             try
             {
@@ -253,9 +292,12 @@ namespace BO.Elastic.Panel.ViewModels
                 ClusterStatus = "Offline";
             }
 
-            myTimer.Elapsed += SetClusterStats; ;
-            myTimer.Interval = 1000;
-            myTimer.Start();
+            if (startUpdateThread)
+            {
+                myTimer.Elapsed += SetClusterStats;
+                myTimer.Interval = 1000;
+                myTimer.Start();
+            }
         }
 
         private void SetClusterStats(object sender, System.Timers.ElapsedEventArgs e)
