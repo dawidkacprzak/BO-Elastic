@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 
 namespace BO.Elastic.BLL.ElasticCore
@@ -117,6 +118,46 @@ namespace BO.Elastic.BLL.ElasticCore
                 return new GetMappingResponse();
             }
         }
+
+        public CreateIndexResponse CreateIndex<T>(string indexName, IndexState indexState, T typeObject) where T: class
+        {
+            try
+            {
+                if (!elasticClient.Indices.Exists(indexName).Exists)
+                {
+                    CreateIndexResponse test = elasticClient.Indices.Create(indexName, x => x.InitializeUsing(indexState).Map<T>(mp => mp.AutoMap(1)));
+                        return test;
+                }
+                else
+                {
+                    throw new IndexAlreadyExistsException(indexName);
+                }                
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                throw;
+            }
+        }
+
+        public DeleteIndexResponse DeleteIndex(string indexName)
+        {
+            try
+            {
+                if (elasticClient.Indices.Exists(indexName).Exists)
+                {
+                    return elasticClient.Indices.Delete(indexName);
+                }
+                else
+                {
+                    throw new IndexDoesntExistException(indexName);
+                }
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                throw;
+            }
+        }
+
 
         private bool NodeExists(NetworkAddress address)
         {
