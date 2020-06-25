@@ -1,12 +1,9 @@
-﻿using BO.Elastic.BLL.Model;
+﻿using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows.Input;
+using BO.Elastic.BLL.Model;
 using BO.Elastic.Panel.Command;
 using BO.Elastic.Panel.Helpers;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Windows.Input;
 
 namespace BO.Elastic.Panel.ViewModels
 {
@@ -16,30 +13,26 @@ namespace BO.Elastic.Panel.ViewModels
         {
             get
             {
-
-                if(SSHLoginDataContainer.LoginData == null)
-                {
-                    SSHLoginDataContainer.LoginData = new LoginData();
-                }
-                return SSHLoginDataContainer.LoginData;
+                if (SshLoginDataContainer.LoginData == null) SshLoginDataContainer.LoginData = new LoginData();
+                return SshLoginDataContainer.LoginData;
             }
             set
             {
-                SSHLoginDataContainer.LoginData = value;
+                SshLoginDataContainer.LoginData = value;
                 NotifyPropertyChanged();
             }
         }
 
-        public ICommand ClearCachedLoginDataCommand => new BasicCommand(new Action(() =>
+        public ICommand ClearCachedLoginDataCommand => new BasicCommand(() =>
         {
             LoginDataHelper.ClearCachedLoginData();
-        }));
+        });
 
         public event PropertyChangedEventHandler PropertyChanged;
-        public void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+
+        public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
     }
 }

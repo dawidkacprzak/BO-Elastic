@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BO.Elastic.BLL.Model
+﻿namespace BO.Elastic.BLL.Model
 {
-    public class SSHConnectionInfo : NetworkAddress
+    public class SshConnectionInfo : NetworkAddress
     {
-        public LoginData SSHLoginData { get; private set; }
-
-        public SSHConnectionInfo(string ip, string port, LoginData loginData) : base(ip, port)
+        public SshConnectionInfo(string ip, string port, LoginData loginData) : base(ip, port)
         {
-            this.SSHLoginData = loginData;
+            SshLoginData = loginData;
         }
 
-        public SSHConnectionInfo(string ip, int port, LoginData loginData) : base(ip, port)
+        public SshConnectionInfo(string ip, int port, LoginData loginData) : base(ip, port)
         {
-            this.SSHLoginData = loginData;
+            SshLoginData = loginData;
         }
 
-        public SSHConnectionInfo(NetworkAddress address, LoginData loginData) : base(address.IP, address.Port)
+        public SshConnectionInfo(NetworkAddress address, LoginData loginData) : base(address.Ip, address.Port)
         {
-            this.SSHLoginData = loginData;
+            SshLoginData = loginData;
         }
+
+        public LoginData SshLoginData { get; }
     }
 }

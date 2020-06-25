@@ -1,21 +1,20 @@
-﻿using BO.Elastic.BLL.Model;
+﻿using System;
+using BO.Elastic.BLL.Model;
 using BO.Elastic.Panel.ViewModels;
 using Nest;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BO.Elastic.BLL.Test
 {
     public class ClusterStatsIntegration
     {
-        string validClusterIP = "10.10.1.214";
-        string validClusterPort = "9201";
-        string invalidClusterIP = "10.1.1.214";
-        string invalidClusterPort = "9001";
+        private const string invalidClusterIp = "10.1.1.214";
+        private const string invalidClusterPort = "9001";
+        private const string validClusterIp = "10.10.1.214";
+        private const string validClusterPort = "9201";
+
         [Test]
-        [TestCase("192.168.1.1","43")]
+        [TestCase("192.168.1.1", "43")]
         [TestCase("21.43.4.1", "4")]
         [TestCase("22.5.1.13", "25565")]
         [TestCase("21.168.1.1", "11111")]
@@ -23,7 +22,7 @@ namespace BO.Elastic.BLL.Test
         {
             Assert.DoesNotThrow(() =>
             {
-                new ClusterStatsWindowViewModel(new NetworkAddress(ip, port), false);
+                ClusterStatsWindowViewModel clusterStatsWindowViewModel = new ClusterStatsWindowViewModel(new NetworkAddress(ip, port),false);
             });
         }
 
@@ -36,7 +35,7 @@ namespace BO.Elastic.BLL.Test
         {
             Assert.Throws<ArgumentException>(() =>
             {
-                new ClusterStatsWindowViewModel(new NetworkAddress(ip, port), false);
+                ClusterStatsWindowViewModel clusterStatsWindowViewModel = new ClusterStatsWindowViewModel(new NetworkAddress(ip, port),false);
             });
         }
 
@@ -45,11 +44,10 @@ namespace BO.Elastic.BLL.Test
         {
             Assert.DoesNotThrow(() =>
             {
-                ClusterHealthResponse response = new ClusterStatsWindowViewModel(new NetworkAddress(validClusterIP, validClusterPort)).ClusterHealthResponse;
-                if (!response.IsValid)
-                {
-                    Assert.Fail();
-                }
+                ClusterHealthResponse response =
+                    new ClusterStatsWindowViewModel(new NetworkAddress(validClusterIp, validClusterPort),false)
+                        .ClusterHealthResponse;
+                if (!response.IsValid) Assert.Fail();
             });
         }
 
@@ -59,11 +57,10 @@ namespace BO.Elastic.BLL.Test
         {
             Assert.DoesNotThrow(() =>
             {
-                ClusterHealthResponse response = new ClusterStatsWindowViewModel(new NetworkAddress(invalidClusterIP, invalidClusterPort)).ClusterHealthResponse;
-                if (response != null)
-                {
-                    Assert.Fail();
-                }
+                ClusterHealthResponse response =
+                    new ClusterStatsWindowViewModel(new NetworkAddress(invalidClusterIp, invalidClusterPort),false)
+                        .ClusterHealthResponse;
+                if (response != null) Assert.Fail();
             });
         }
 
@@ -73,11 +70,10 @@ namespace BO.Elastic.BLL.Test
         {
             Assert.DoesNotThrow(() =>
             {
-                ClusterStatsResponse response = new ClusterStatsWindowViewModel(new NetworkAddress(validClusterIP, validClusterPort)).ClusterStatsResponse;
-                if (!response.IsValid)
-                {
-                    Assert.Fail();
-                }
+                ClusterStatsResponse response =
+                    new ClusterStatsWindowViewModel(new NetworkAddress(validClusterIp, validClusterPort),false)
+                        .ClusterStatsResponse;
+                if (!response.IsValid) Assert.Fail();
             });
         }
 
@@ -87,11 +83,10 @@ namespace BO.Elastic.BLL.Test
         {
             Assert.DoesNotThrow(() =>
             {
-                ClusterStatsResponse response = new ClusterStatsWindowViewModel(new NetworkAddress(invalidClusterIP, invalidClusterPort)).ClusterStatsResponse;
-                if (response != null)
-                {
-                    Assert.Fail();
-                }
+                ClusterStatsResponse response =
+                    new ClusterStatsWindowViewModel(new NetworkAddress(invalidClusterIp, invalidClusterPort),false)
+                        .ClusterStatsResponse;
+                if (response != null) Assert.Fail();
             });
         }
 
@@ -101,11 +96,10 @@ namespace BO.Elastic.BLL.Test
         {
             Assert.DoesNotThrow(() =>
             {
-                ClusterStateResponse response = new ClusterStatsWindowViewModel(new NetworkAddress(validClusterIP, validClusterPort)).ClusterStateResponse;
-                if (!response.IsValid)
-                {
-                    Assert.Fail();
-                }
+                ClusterStateResponse response =
+                    new ClusterStatsWindowViewModel(new NetworkAddress(validClusterIp, validClusterPort),false)
+                        .ClusterStateResponse;
+                if (!response.IsValid) Assert.Fail();
             });
         }
 
@@ -150,6 +144,5 @@ namespace BO.Elastic.BLL.Test
                 }
             });
         }*/
-
     }
 }

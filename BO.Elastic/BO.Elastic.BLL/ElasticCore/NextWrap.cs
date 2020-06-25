@@ -1,38 +1,33 @@
-﻿using BO.Elastic.BLL.Exceptions;
-using BO.Elastic.BLL.Model;
-using Elasticsearch.Net;
-using Elasticsearch.Net.Specification.IndicesApi;
-using Nest;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Net.Sockets;
-using System.Text;
+using BO.Elastic.BLL.Exceptions;
+using BO.Elastic.BLL.Model;
+using Elasticsearch.Net;
+using Nest;
 
 namespace BO.Elastic.BLL.ElasticCore
 {
     public class NextWrap
     {
-        private ElasticClient elasticClient;
+        private readonly ElasticClient elasticClient;
 
         public NextWrap(NetworkAddress address)
         {
             try
             {
-                ConnectionSettings settings = new ConnectionSettings(new Uri(address.HTTPAddress));
+                ConnectionSettings settings = new ConnectionSettings(new Uri(address.HttpAddress));
                 settings.PingTimeout(TimeSpan.FromMilliseconds(1000));
                 settings.DeadTimeout(new TimeSpan(0, 0, 1));
                 settings.MaxDeadTimeout(TimeSpan.FromMilliseconds(1000));
                 settings.MaxRetryTimeout(new TimeSpan(0, 0, 1));
                 settings.MaximumRetries(1);
                 elasticClient = new ElasticClient(settings);
-                if (PingHost(address.IP)){
+                if (PingHost(address.Ip))
+                {
                     PingResponse pr = elasticClient.Ping();
-                    if (pr.ApiCall.HttpStatusCode != 200)
-                    {
-                        throw new Exception();
-                    }
+                    if (pr.ApiCall.HttpStatusCode != 200) throw new Exception();
                 }
                 else
                 {
@@ -41,7 +36,7 @@ namespace BO.Elastic.BLL.ElasticCore
             }
             catch (Exception)
             {
-                throw new ClusterNotConnectedException(address.IPPortMerge);
+                throw new ClusterNotConnectedException(address.IpPortMerge);
             }
         }
 
@@ -49,13 +44,9 @@ namespace BO.Elastic.BLL.ElasticCore
         public NodeInfo GetNodeInfo(NetworkAddress address)
         {
             NodeExists(address);
-            IEnumerable<KeyValuePair<string, NodeInfo>> nodeinfos = GetNodesFromIpAndPort(address);
-            if (nodeinfos == null || nodeinfos.Count() == 0)
-            {
-                throw new NodeNotConnectedException(address.IPPortMerge);
-            }
+            var nodeinfos = GetNodesFromIpAndPort(address);
+            if (nodeinfos == null || nodeinfos.Count() == 0) throw new NodeNotConnectedException(address.IpPortMerge);
             return GetNodesFromIpAndPort(address).First().Value;
-
         }
 
         public ClusterHealthResponse GetClusterHealth()
@@ -76,7 +67,7 @@ namespace BO.Elastic.BLL.ElasticCore
             {
                 return elasticClient.Cluster.State();
             }
-            catch(UnexpectedElasticsearchClientException)
+            catch (UnexpectedElasticsearchClientException)
             {
                 return new ClusterStateResponse();
             }
@@ -120,24 +111,18 @@ namespace BO.Elastic.BLL.ElasticCore
 
         private bool NodeExists(NetworkAddress address)
         {
-            IEnumerable<KeyValuePair<string, NodeInfo>> nodes = GetNodesFromIpAndPort(address);
-            if (nodes.Count() == 0)
-            {
-                throw new NodeNotConnectedException(address.IPPortMerge);
-            }
-            else if (nodes.Count() > 1)
-            {
+            var nodes = GetNodesFromIpAndPort(address);
+            var keyValuePairs = nodes.ToList();
+            if (!keyValuePairs.Any())
+                throw new NodeNotConnectedException(address.IpPortMerge);
+            if (keyValuePairs.Count() > 1)
                 throw new Exception("Znaleziono duplikat nodów, taka sytuacja nie powinna zaistnieć");
-            }
-            else
-            {
-                return true;
-            }
+            return true;
         }
 
         private IEnumerable<KeyValuePair<string, NodeInfo>> GetNodesFromIpAndPort(NetworkAddress address)
         {
-            return elasticClient.Nodes.Info().Nodes.Where(x => x.Value.Http.PublishAddress.Equals(address.IPPortMerge));
+            return elasticClient.Nodes.Info().Nodes.Where(x => x.Value.Http.PublishAddress.Equals(address.IpPortMerge));
         }
 
         public static bool PingHost(string hostUri)
@@ -146,12 +131,9 @@ namespace BO.Elastic.BLL.ElasticCore
             {
                 PingReply pingReply = new Ping().Send(hostUri, 1000);
 
-                if (pingReply.Status != IPStatus.Success)
-                {
-                    return false;
-                }
-                return true;
-            }catch(Exception)
+                return pingReply == null || pingReply.Status == IPStatus.Success;
+            }
+            catch (Exception)
             {
                 return false;
             }

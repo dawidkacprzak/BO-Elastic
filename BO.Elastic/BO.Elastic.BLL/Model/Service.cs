@@ -1,4 +1,4 @@
-﻿using System;
+﻿// ReSharper disable All
 using System.Collections.Generic;
 
 namespace BO.Elastic.BLL.Model
