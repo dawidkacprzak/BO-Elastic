@@ -8,10 +8,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
+using System.Windows;
 
 namespace BO.Elastic.Panel.ViewModels
 {
@@ -294,13 +296,17 @@ namespace BO.Elastic.Panel.ViewModels
                 ClusterHealthResponse = nextWrap.GetClusterHealth();
                 ClusterStatus = ClusterHealthResponse.Status.ToString();
                 ClusterName = GetNextWrapClusterData(EClusterAttributes.ClusterName);
-
                 var settings = new IndexSettings { NumberOfReplicas = 1, NumberOfShards = 2 };
                 var indexConfig = new IndexState
                 {
                     Settings = settings
                 };
-                CreateIndexResponse test = nextWrap.CreateIndex("test", indexConfig);
+
+                Nest.ElasticClient js = new ElasticClient();
+                CreateIndexResponse test = nextWrap.CreateIndex("test5", indexConfig, (dynamic)js);
+                int x = 123124;
+
+
             }
             catch (NodeNotConnectedException)
             {

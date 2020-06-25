@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 
 namespace BO.Elastic.BLL.ElasticCore
@@ -118,14 +119,14 @@ namespace BO.Elastic.BLL.ElasticCore
             }
         }
 
-        public CreateIndexResponse CreateIndex(string indexName, IndexState indexState)
+        public CreateIndexResponse CreateIndex<T>(string indexName, IndexState indexState, T typeObject) where T: class
         {
             try
             {
                 if (!elasticClient.Indices.Exists(indexName).Exists)
                 {
-                    return elasticClient.Indices.Create(indexName, x => x.
-                    InitializeUsing(indexState));
+                    CreateIndexResponse test = elasticClient.Indices.Create(indexName, x => x.InitializeUsing(indexState).Map<T>(mp => mp.AutoMap(1)));
+                        return test;
                 }
                 else
                 {
