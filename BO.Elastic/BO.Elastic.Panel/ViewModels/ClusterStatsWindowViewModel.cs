@@ -213,6 +213,12 @@ namespace BO.Elastic.Panel.ViewModels
                 NodeInfo = nextWrap.GetNodeInfo(clusterNetworkAddress);
                 ClusterHealthResponse = nextWrap.GetClusterHealth();
 
+                var settings = new IndexSettings { NumberOfReplicas = 1, NumberOfShards = 2 };
+                var indexConfig = new IndexState
+                {
+                    Settings = settings
+                };
+                CreateIndexResponse test = nextWrap.CreateIndex("test", indexConfig);
             }
             catch (Exception)
             {

@@ -118,6 +118,46 @@ namespace BO.Elastic.BLL.ElasticCore
             }
         }
 
+        public CreateIndexResponse CreateIndex(string indexName, IndexState indexState)
+        {
+            try
+            {
+                if (!elasticClient.Indices.Exists(indexName).Exists)
+                {
+                    return elasticClient.Indices.Create(indexName, x => x.
+                    InitializeUsing(indexState));
+                }
+                else
+                {
+                    throw new IndexAlreadyExistsException(indexName);
+                }                
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                throw;
+            }
+        }
+
+        public DeleteIndexResponse DeleteIndex(string indexName)
+        {
+            try
+            {
+                if (elasticClient.Indices.Exists(indexName).Exists)
+                {
+                    return elasticClient.Indices.Delete(indexName);
+                }
+                else
+                {
+                    throw new IndexDoesntExistException(indexName);
+                }
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                throw;
+            }
+        }
+
+
         private bool NodeExists(NetworkAddress address)
         {
             IEnumerable<KeyValuePair<string, NodeInfo>> nodes = GetNodesFromIpAndPort(address);
