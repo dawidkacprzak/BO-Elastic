@@ -277,8 +277,7 @@ namespace BO.Elastic.Panel.ViewModels
         private ObservableCollection<KeyValuePair<string, string>> clusterAttributes;
         private System.Timers.Timer myTimer = new System.Timers.Timer();
 
-
-        public ClusterStatsWindowViewModel(NetworkAddress networkAddress)
+        public ClusterStatsWindowViewModel(NetworkAddress networkAddress, bool startUpdateThread = false)
         {
             try
             {
@@ -291,9 +290,12 @@ namespace BO.Elastic.Panel.ViewModels
                 ClusterStatus = "Offline";
             }
 
-            myTimer.Elapsed += SetClusterStats; ;
-            myTimer.Interval = 1000;
-            myTimer.Start();
+            if (startUpdateThread)
+            {
+                myTimer.Elapsed += SetClusterStats;
+                myTimer.Interval = 1000;
+                myTimer.Start();
+            }
         }
 
         private void SetClusterStats(object sender, System.Timers.ElapsedEventArgs e)
