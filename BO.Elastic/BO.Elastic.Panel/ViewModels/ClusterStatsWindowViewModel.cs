@@ -1,6 +1,7 @@
 ﻿using BO.Elastic.BLL.ElasticCore;
 using BO.Elastic.BLL.Exceptions;
 using BO.Elastic.BLL.Model;
+using BO.Elastic.BLL.Types;
 using Elasticsearch.Net;
 using Nest;
 using System;
@@ -21,14 +22,11 @@ namespace BO.Elastic.Panel.ViewModels
         {
             get
             {
+
                 clusterAttributes = new ObservableCollection<KeyValuePair<string, string>>() {
                     new KeyValuePair<string, string>("Status",ClusterStatus),
-                    new KeyValuePair<string, string>("UUID",ClusterStatsResponse.ClusterUUID),
-                    new KeyValuePair<string, string>("HTTP URI",ClusterStateResponse.ApiCall.Uri.AbsoluteUri),
-                    new KeyValuePair<string, string>("CPU",ClusterStatsResponse.Nodes.Process.Cpu.Percent + "%"),
-                    new KeyValuePair<string, string>("MEM",ClusterStatsResponse.Nodes.Jvm.Memory.HeapUsedInBytes/1024 + "/" + ClusterStatsResponse.Nodes.Jvm.Memory.HeapMaxInBytes/1024),
-                    new KeyValuePair<string, string>("OS",NodeInfo.OperatingSystem.PrettyName),
-                    new KeyValuePair<string, string>("Roles","["+string.Join("] [",NodeInfo.Roles)+"]"),
+                    new KeyValuePair<string, string>("UUID",(string)GetNextWrapClusterData(EClusterAttributes.UUID)),
+
                     };
 
                 return clusterAttributes;
@@ -40,13 +38,57 @@ namespace BO.Elastic.Panel.ViewModels
             }
         }
 
+        private object GetValueIfNextWrapIsInitialized(EClusterAttributes value)
+        {
+            if(nextWrap == null)
+            {
+                return null;
+            }
+            switch (value)
+            {
+                case EClusterAttributes.Stats:
+                    return nextWrap.GetClusterStats();
+                case EClusterAttributes.State:
+                    return nextWrap.GetClusterState();
+                case EClusterAttributes.Health:
+                    return nextWrap.GetClusterHealth();
+                case EClusterAttributes.NodeInfo:
+                    return nextWrap.GetNodeInfo(clusterNetworkAddress);
+            }
+            return null;
+        }
+
+        private string GetNextWrapClusterData(EClusterAttributes value)
+        {
+            if (nextWrap == null)
+            {
+                return null;
+            }
+            switch (value)
+            {
+                case EClusterAttributes.UUID:
+                    if (clusterStatsResponse != null)
+                    {
+                        return clusterStateResponse.ClusterUUID;
+                    }
+                    else return "...";
+                case EClusterAttributes.ClusterName:
+                    if (clusterStatsResponse != null)
+                    {
+                        return clusterStateResponse.ClusterName;
+                    }
+                    else return string.Empty;
+            }
+            return null;
+        }
+
         public ClusterStatsResponse ClusterStatsResponse
         {
             get
             {
                 if (clusterStatsResponse == null)
                 {
-                    clusterStatsResponse = nextWrap.GetClusterStats();
+                    clusterStatsResponse = (ClusterStatsResponse)GetValueIfNextWrapIsInitialized(EClusterAttributes.Stats);
                 }
                 return clusterStatsResponse;
             }
@@ -63,7 +105,7 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (clusterStateResponse == null)
                 {
-                    clusterStateResponse = nextWrap.GetClusterState();
+                    clusterStateResponse = (ClusterStateResponse)GetValueIfNextWrapIsInitialized(EClusterAttributes.State);
                 }
                 return clusterStateResponse;
             }
@@ -82,7 +124,7 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (nodeInfo == null)
                 {
-                    nodeInfo = nextWrap.GetNodeInfo(clusterNetworkAddress);
+                    nodeInfo = (NodeInfo)GetValueIfNextWrapIsInitialized(EClusterAttributes.NodeInfo);
                 }
                 return nodeInfo;
             }
@@ -96,6 +138,7 @@ namespace BO.Elastic.Panel.ViewModels
             }
         }
 
+        private string clusterStatus;
         public string ClusterStatus
         {
             get
@@ -106,8 +149,16 @@ namespace BO.Elastic.Panel.ViewModels
                 }
                 else
                 {
-                    return ClusterHealthResponse.Status.ToString();
+                    if (clusterStatus == null)
+                    {
+                        clusterStatus = ClusterHealthResponse.Status.ToString();
+                    }
+                    return clusterStatus;
                 }
+            }
+            set
+            {
+                clusterStatus = value;
             }
         }
         public ClusterHealthResponse ClusterHealthResponse
@@ -116,7 +167,7 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (clusterHealthResponse == null)
                 {
-                    clusterHealthResponse = nextWrap.GetClusterHealth();
+                    clusterHealthResponse = (ClusterHealthResponse)GetValueIfNextWrapIsInitialized(EClusterAttributes.Health);
                 }
                 return clusterHealthResponse;
             }
@@ -159,6 +210,22 @@ namespace BO.Elastic.Panel.ViewModels
                 }
             }
         }
+        private string clusterName;
+        public string ClusterName
+        {
+            get
+            {
+                return clusterName;
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    clusterName = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
 
         private NextWrap nextWrap;
         private NetworkAddress clusterNetworkAddress;
@@ -173,9 +240,16 @@ namespace BO.Elastic.Panel.ViewModels
 
         public ClusterStatsWindowViewModel(NetworkAddress networkAddress)
         {
-            clusterNetworkAddress = networkAddress;
-            nextWrap = new NextWrap(networkAddress);
-            RefreshData();
+            try
+            {
+                clusterNetworkAddress = networkAddress;
+                nextWrap = new NextWrap(networkAddress);
+                RefreshData();
+            }
+            catch (ClusterNotConnectedException)
+            {
+                ClusterStatus = "Offline";
+            }
 
             myTimer.Elapsed += SetClusterStats; ;
             myTimer.Interval = 1000;
@@ -190,13 +264,15 @@ namespace BO.Elastic.Panel.ViewModels
                 {
                     RefreshData();
                 }
-                catch (ClusterNotConnectedException ex)
+                catch (ClusterNotConnectedException)
                 {
-
+                    ClusterStatus = "Offline";
                 }
                 finally
                 {
                     NotifyPropertyChanged("ClusterAttributes");
+                    NotifyPropertyChanged("PublishPort");
+                    NotifyPropertyChanged("TransportPort");
                 }
             }).Start();
         }
@@ -204,6 +280,10 @@ namespace BO.Elastic.Panel.ViewModels
         {
             try
             {
+                if (nextWrap == null)
+                {
+                    nextWrap = new NextWrap(clusterNetworkAddress);
+                }
                 //GetCatIndices zwraca podsumowane info o wszystkich indexach:nazwy, health, status, primaries/replicas, docs count 
                 catResponse = nextWrap.GetCatIndices();
                 //getMappingResponse.Indices zwraca KeyValuePair ze wszystkimi indexami. Key - Nazwa indexu, Value ->Mappings->Properties-> mamy KeyValuePair, gdzie w Value mamy no Type: date, Name: DataDnia
@@ -212,6 +292,8 @@ namespace BO.Elastic.Panel.ViewModels
                 ClusterStateResponse = nextWrap.GetClusterState();
                 NodeInfo = nextWrap.GetNodeInfo(clusterNetworkAddress);
                 ClusterHealthResponse = nextWrap.GetClusterHealth();
+                ClusterStatus = ClusterHealthResponse.Status.ToString();
+                ClusterName = GetNextWrapClusterData(EClusterAttributes.ClusterName);
 
                 var settings = new IndexSettings { NumberOfReplicas = 1, NumberOfShards = 2 };
                 var indexConfig = new IndexState
@@ -220,9 +302,10 @@ namespace BO.Elastic.Panel.ViewModels
                 };
                 CreateIndexResponse test = nextWrap.CreateIndex("test", indexConfig);
             }
-            catch (Exception)
+            catch (NodeNotConnectedException)
             {
-                throw;
+                ClusterStatus = "Offline";
+                nodeInfo = null;
             }
         }
         public event PropertyChangedEventHandler PropertyChanged;

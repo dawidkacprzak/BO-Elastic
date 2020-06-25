@@ -80,6 +80,7 @@ namespace BO.Elastic.BLL.Extension
                         {
                             addionalParameters.ServiceStatus = addionalParameters.GetProperFailServiceStatus();
                             addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
+                            addionalParameters.ActionList.Add(EServiceAction.Information);
                             addionalParameters.ActionList.Add(EServiceAction.Start);
                         }
                     }
@@ -88,6 +89,7 @@ namespace BO.Elastic.BLL.Extension
 
                         addionalParameters.ServiceStatus = addionalParameters.GetProperFailServiceStatus();
                         addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
+                        addionalParameters.ActionList.Add(EServiceAction.Information);
                         addionalParameters.ActionList.Add(EServiceAction.Start);
                     }
 

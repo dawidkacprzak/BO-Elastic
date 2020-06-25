@@ -63,11 +63,6 @@ namespace BO.Elastic.Panel.ClassExtensions
                     case EServiceAction.Information:
                         return new Action(() =>
                         {
-                            NextWrap nextWrap = new NextWrap(parameters.GetSSHNetworkAddress());
-                            ClusterStateResponse test = nextWrap.GetClusterState();
-                            ClusterStatsResponse test2 = nextWrap.GetClusterStats();
-                            int percentageMemoryUsage = test2.Nodes.OperatingSystem.Memory.UsedPercent;
-                            int percentageCpuUsage = test2.Nodes.Process.Cpu.Percent;
                             ClusterStatsWindow csw = new ClusterStatsWindow(parameters.GetSSHNetworkAddress());
                             csw.Show();
                         });
