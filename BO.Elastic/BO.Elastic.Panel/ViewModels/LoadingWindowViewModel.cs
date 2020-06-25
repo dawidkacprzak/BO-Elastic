@@ -63,34 +63,7 @@ namespace BO.Elastic.Panel.ViewModels
 
         public void RunApplication(Action<string> changeStatusEvent, Action loadingCallback)
         {
-#if DEBUG
-                App.Current.Dispatcher.Invoke(loadingCallback);
-#endif
-#if RELEASE
-            Thread.Sleep(1000);
-            if (IsUpdateAvailable())
-            {
-                DeleteOldFiles();
-                try
-                {
-                    changeStatusEvent("Aktualizacja dostępna - trwa pobieranie.");
-                    UpdateApplication(changeStatusEvent);
-                    changeStatusEvent("Restart aplikacji...");
-                    ForceRestartApplication();
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Błąd podczasz aktualizacji aplikacji " + ex.Message);
-                }
-
-            }
-            else
-            {
-                changeStatusEvent("Aplikacja jest aktualna. Trwa uruchamianie.");
-                App.Current.Dispatcher.Invoke(loadingCallback);
-            }
-#endif
-
+            App.Current.Dispatcher.Invoke(loadingCallback);
         }
 
         public void CloseApplication()
