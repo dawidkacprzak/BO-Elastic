@@ -8,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
+using BO.Elastic.BLL.Extension;
 
 namespace BO.Elastic.Panel
 {
@@ -52,7 +53,7 @@ namespace BO.Elastic.Panel
                     {
                         ClusterNodes[item.Id].Add(new ServiceAddionalParameters()
                         {
-                            IP = clusterFk.Node.Ip,
+                            Ip = clusterFk.Node.Ip,
                             Port = clusterFk.Node.Port,
                             ServiceStatus = EServiceStatus.Initializing,
                             ServiceType = (EServiceType)clusterFk.Node.ServiceType,
@@ -64,7 +65,7 @@ namespace BO.Elastic.Panel
                         ClusterNodes[item.Id] = new List<ServiceAddionalParameters>();
                         ClusterNodes[item.Id].Add(new ServiceAddionalParameters()
                         {
-                            IP = clusterFk.Node.Ip,
+                            Ip = clusterFk.Node.Ip,
                             Port = clusterFk.Node.Port,
                             ServiceStatus = EServiceStatus.Initializing,
                             ServiceType = (EServiceType)clusterFk.Node.ServiceType,
@@ -134,7 +135,6 @@ namespace BO.Elastic.Panel
                     blockedNodesUpdate = blockedNodesUpdate.Where(x => x != foundNode.Service.Id).ToList();
                 }
                 updateCallback.Invoke();
-                System.Diagnostics.Debug.WriteLine("Update task: remove block service:" + foundNode.Service.Id);
             });
         }
 

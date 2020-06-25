@@ -1,114 +1,43 @@
-﻿
-using System.Windows.Input;
-using System.Windows;
-using BO.Elastic.Panel.Command;
-using System;
-using System.Collections.ObjectModel;
-using BO.Elastic.BLL.Model;
-using BO.Elastic.BLL;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
+﻿using System;
 using System.Collections.Generic;
-using BO.Elastic.BLL.ServiceExtenstionModel;
-using BO.Elastic.BLL.Extension;
-using System.Threading;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using BO.Elastic.BLL.Types;
-using System.Windows.Threading;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Threading;
+using BO.Elastic.BLL;
+using BO.Elastic.BLL.Extension;
+using BO.Elastic.BLL.Model;
+using BO.Elastic.BLL.ServiceExtenstionModel;
+using BO.Elastic.BLL.Types;
+using BO.Elastic.Panel.Command;
 using BO.Elastic.Panel.Helpers;
 
 namespace BO.Elastic.Panel.ViewModels
 {
     public class MainPageWindowViewModel : INotifyPropertyChanged
     {
+        public static readonly object SaveConfigurationLock = new object();
+
+        private static bool refreshState;
         private ObservableCollection<ServiceAddionalParameters> clusters;
         private ConfigurationController configurationController;
         private List<Service> downloadedConfiguration;
 
-        public List<Service> DownloadedConfiguration
-        {
-            get
-            {
-                if (downloadedConfiguration == null)
-                {
-                    return new List<Service>();
-                }
-                else
-                {
-                    return downloadedConfiguration;
-                }
-            }
-            private set
-            {
-                downloadedConfiguration = value;
-                LoadedNodeController = new LoadedNodeController(DownloadedConfiguration, new Action(()=>
-                {
-                    NotifyPropertyChanged("LoadedNodeController");
-                }));
-            }
-        }
-        public ObservableCollection<ServiceAddionalParameters> Clusters
-        {
-            get => clusters;
-            set
-            {
-                if ((this.clusters != null && this.clusters.SequenceEqual(value) && value != null) || (clusters == null || value != null))
-                {
-                    this.clusters = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-
         private LoadedNodeController loadedNodeController;
-        public LoadedNodeController LoadedNodeController
-        {
-            get
-            {
-                return loadedNodeController;
-            }
-            set
-            {
-                loadedNodeController = value;
-                NotifyPropertyChanged();
-            }
-        }
 
         private int progressValue;
-        public int ProgressValue
-        {
-            get => progressValue;
-            set
-            {
-                if (value != progressValue)
-                {
-                    this.progressValue = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
 
-        public static readonly object saveConfigurationLock = new object();
-        public ICommand CloseAppEvent => new BasicCommand(new Action(() =>
-        {
-            CloseApplication();
-        }));
-
-        public ICommand RefreshConfiguration => new BasicCommand(new Action(() =>
-        {
-            RefreshAndSaveConfiguration();
-        }));
-
-        private static bool refreshState = false;
-
-        Task updateTask1;
-        Task updateTask2;
-        Task updateTask3;
+        private Task updateTask1;
+        private Task updateTask2;
+        private Task updateTask3;
 
         public MainPageWindowViewModel()
         {
@@ -121,30 +50,87 @@ namespace BO.Elastic.Panel.ViewModels
                 SetCachedConfiguration();
                 SetProgressBarPercent(50);
                 Clusters = new ObservableCollection<ServiceAddionalParameters>();
-                foreach (var item in DownloadedConfiguration)
-                {
-                    App.Current.Dispatcher.Invoke(() =>
+                foreach (Service item in DownloadedConfiguration)
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        Clusters.Add(new ServiceAddionalParameters()
+                        Clusters.Add(new ServiceAddionalParameters
                         {
-                            IP = item.Ip,
+                            Ip = item.Ip,
                             Port = item.Port,
                             ServiceStatus = EServiceStatus.Initializing,
-                            ServiceType = (EServiceType)item.ServiceType
+                            ServiceType = (EServiceType) item.ServiceType
                         });
                     });
-                }
-                SSHLoginDataContainer.LoginData = LoginDataHelper.GetCachedLoginData();
+                SshLoginDataContainer.LoginData = LoginDataHelper.GetCachedLoginData();
                 SetProgressBarPercent(70);
                 SetProgressBarPercent(0);
                 PrepareUpdateThreads();
                 RefreshTimerTick(null, null);
             }).Start();
-            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            DispatcherTimer dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += RefreshTimerTick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 2);
             dispatcherTimer.Start();
         }
+
+        public List<Service> DownloadedConfiguration
+        {
+            get
+            {
+                if (downloadedConfiguration == null)
+                    return new List<Service>();
+                return downloadedConfiguration;
+            }
+            private set
+            {
+                downloadedConfiguration = value;
+                LoadedNodeController = new LoadedNodeController(DownloadedConfiguration,
+                    () => { NotifyPropertyChanged("LoadedNodeController"); });
+            }
+        }
+
+        public ObservableCollection<ServiceAddionalParameters> Clusters
+        {
+            get => clusters;
+            set
+            {
+                if (clusters != null && clusters.SequenceEqual(value) && value != null || clusters == null ||
+                    value != null)
+                {
+                    clusters = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public LoadedNodeController LoadedNodeController
+        {
+            get => loadedNodeController;
+            set
+            {
+                loadedNodeController = value;
+                NotifyPropertyChanged();
+            }
+        }
+
+        public int ProgressValue
+        {
+            get => progressValue;
+            set
+            {
+                if (value != progressValue)
+                {
+                    progressValue = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public ICommand CloseAppEvent => new BasicCommand(() => { CloseApplication(); });
+
+        public ICommand RefreshConfiguration => new BasicCommand(() => { RefreshAndSaveConfiguration(); });
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         private void PrepareUpdateThreads()
         {
@@ -175,20 +161,19 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (!refreshState)
                     for (int i = startIndex; i < endIndex; i++)
-                    {
                         if (i < DownloadedConfiguration.Count)
                         {
-                            ServiceAddionalParameters tempParam = GetAddionalClusterParameters(new List<Service>() { DownloadedConfiguration.ElementAt(i) }).First();
+                            ServiceAddionalParameters tempParam =
+                                GetAddionalClusterParameters(new List<Service> {DownloadedConfiguration.ElementAt(i)})
+                                    .First();
                             if (!refreshState)
 
-                                App.Current.Dispatcher.Invoke(() =>
+                                Application.Current.Dispatcher.Invoke(() =>
                                 {
                                     if (!refreshState && i < Clusters.Count)
                                         Clusters[i] = tempParam;
                                 });
                         }
-
-                    }
             });
         }
 
@@ -201,16 +186,14 @@ namespace BO.Elastic.Panel.ViewModels
                 DownloadedConfiguration = configurationController.DownloadClustersConfiguration();
                 Clusters = new ObservableCollection<ServiceAddionalParameters>();
                 PrepareUpdateThreads();
-                foreach (var item in DownloadedConfiguration)
-                {
-                    Clusters.Add(new ServiceAddionalParameters()
+                foreach (Service item in DownloadedConfiguration)
+                    Clusters.Add(new ServiceAddionalParameters
                     {
-                        IP = item.Ip,
+                        Ip = item.Ip,
                         Port = item.Port,
                         ServiceStatus = EServiceStatus.Initializing,
-                        ServiceType = (EServiceType)item.ServiceType
+                        ServiceType = (EServiceType) item.ServiceType
                     });
-                }
                 SetProgressBarPercent(60);
                 SaveConfiguration();
                 refreshState = false;
@@ -224,10 +207,11 @@ namespace BO.Elastic.Panel.ViewModels
             SetProgressBarPercent(30);
             try
             {
-                using (FileStream fs = new FileStream(Path.Combine(Path.GetTempPath(), "boElasticConfiguration.dat"), FileMode.Open))
+                using (FileStream fs = new FileStream(Path.Combine(Path.GetTempPath(), "boElasticConfiguration.dat"),
+                    FileMode.Open))
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
-                    DownloadedConfiguration = (List<Service>)formatter.Deserialize(fs);
+                    DownloadedConfiguration = (List<Service>) formatter.Deserialize(fs);
                 }
             }
             catch (SerializationException)
@@ -254,28 +238,24 @@ namespace BO.Elastic.Panel.ViewModels
         private void SaveConfiguration()
         {
             if (DownloadedConfiguration != null)
-            {
                 try
                 {
                     SetProgressBarPercent(80);
-                    lock (saveConfigurationLock)
+                    lock (SaveConfigurationLock)
                     {
-                        using (FileStream fs = new FileStream(Path.Combine(Path.GetTempPath(), "boElasticConfiguration.dat"), FileMode.Create))
+                        using (FileStream fs =
+                            new FileStream(Path.Combine(Path.GetTempPath(), "boElasticConfiguration.dat"),
+                                FileMode.Create))
                         {
                             BinaryFormatter formatter = new BinaryFormatter();
                             formatter.Serialize(fs, DownloadedConfiguration);
                         }
                     }
                 }
-                catch (Exception)
-                {
-                    throw;
-                }
                 finally
                 {
                     SetProgressBarPercent(0);
                 }
-            }
         }
 
         private void SetProgressBarPercent(int value)
@@ -292,13 +272,15 @@ namespace BO.Elastic.Panel.ViewModels
                     PrepareUpdateThreads();
                     updateTask1.Start();
                 }
-                else if (DownloadedConfiguration.Count == 2 && CheckTaskIsNotRunning(updateTask1) && CheckTaskIsNotRunning(updateTask2))
+                else if (DownloadedConfiguration.Count == 2 && CheckTaskIsNotRunning(updateTask1) &&
+                         CheckTaskIsNotRunning(updateTask2))
                 {
                     PrepareUpdateThreads();
                     updateTask1.Start();
                     updateTask2.Start();
                 }
-                else if (DownloadedConfiguration.Count > 2 && CheckTaskIsNotRunning(updateTask1) && CheckTaskIsNotRunning(updateTask2) && CheckTaskIsNotRunning(updateTask3))
+                else if (DownloadedConfiguration.Count > 2 && CheckTaskIsNotRunning(updateTask1) &&
+                         CheckTaskIsNotRunning(updateTask2) && CheckTaskIsNotRunning(updateTask3))
                 {
                     PrepareUpdateThreads();
                     updateTask1.Start();
@@ -316,26 +298,19 @@ namespace BO.Elastic.Panel.ViewModels
 
         private IEnumerable<ServiceAddionalParameters> GetAddionalClusterParameters(List<Service> services)
         {
-            foreach (var item in services)
-            {
-                yield return item.GetServiceAddionalParameters();
-            }
+            foreach (Service item in services) yield return item.GetServiceAddionalParameters();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public void CloseApplication()
         {
-            ThreadStart ts = delegate ()
+            ThreadStart ts = delegate
             {
-                Application.Current.Dispatcher.Invoke((Action)delegate ()
-                {
-                    Application.Current.Shutdown();
-                });
+                Application.Current.Dispatcher.Invoke(delegate { Application.Current.Shutdown(); });
             };
             Thread t = new Thread(ts);
             t.Start();
