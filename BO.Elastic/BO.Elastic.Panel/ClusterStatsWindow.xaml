@@ -55,7 +55,23 @@
                 <DataGrid HorizontalScrollBarVisibility="Disabled" Grid.Column="0" ItemsSource="{Binding ClusterAttributes}"  Name="Clusters" CanUserAddRows="False" AutoGenerateColumns="False">
                     <DataGrid.Columns>
                         <DataGridTextColumn MinWidth="120" FontWeight="Bold" Header="Attribute" Binding="{Binding Key}" />
-                        <DataGridTextColumn MinWidth="300" Header="Value" Binding="{Binding Value}"/>
+                        <DataGridTextColumn MinWidth="300" Header="Value" Binding="{Binding Value}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Style.Triggers>
+                                    <Trigger Property="Text" Value="Green">
+                                        <Setter Property="Foreground" Value="LightGreen"/>
+                                    </Trigger>
+                                    <Trigger Property="Text" Value="Yellow">
+                                        <Setter Property="Foreground" Value="Yellow"/>
+                                    </Trigger>
+                                    <Trigger Property="Text" Value="Red">
+                                        <Setter Property="Foreground" Value="Red"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
 
                     </DataGrid.Columns>
 

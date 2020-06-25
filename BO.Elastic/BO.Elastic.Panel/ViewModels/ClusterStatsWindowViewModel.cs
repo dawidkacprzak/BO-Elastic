@@ -165,6 +165,8 @@ namespace BO.Elastic.Panel.ViewModels
         private ClusterStatsResponse clusterStatsResponse;
         private ClusterStateResponse clusterStateResponse;
         private ClusterHealthResponse clusterHealthResponse;
+        private GetMappingResponse getMappingResponse;
+        private CatResponse<CatIndicesRecord> catResponse;
         private ObservableCollection<KeyValuePair<string, string>> clusterAttributes;
         private System.Timers.Timer myTimer = new System.Timers.Timer();
 
@@ -202,10 +204,15 @@ namespace BO.Elastic.Panel.ViewModels
         {
             try
             {
+                //GetCatIndices zwraca podsumowane info o wszystkich indexach:nazwy, health, status, primaries/replicas, docs count 
+                catResponse = nextWrap.GetCatIndices();
+                //getMappingResponse.Indices zwraca KeyValuePair ze wszystkimi indexami. Key - Nazwa indexu, Value ->Mappings->Properties-> mamy KeyValuePair, gdzie w Value mamy no Type: date, Name: DataDnia
+                getMappingResponse = nextWrap.GetAllIndicesMapping();
                 ClusterStatsResponse = nextWrap.GetClusterStats();
                 ClusterStateResponse = nextWrap.GetClusterState();
                 NodeInfo = nextWrap.GetNodeInfo(clusterNetworkAddress);
                 ClusterHealthResponse = nextWrap.GetClusterHealth();
+
             }
             catch (Exception)
             {

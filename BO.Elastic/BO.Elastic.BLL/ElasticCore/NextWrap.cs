@@ -1,6 +1,7 @@
 ﻿using BO.Elastic.BLL.Exceptions;
 using BO.Elastic.BLL.Model;
 using Elasticsearch.Net;
+using Elasticsearch.Net.Specification.IndicesApi;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -90,6 +91,30 @@ namespace BO.Elastic.BLL.ElasticCore
             catch (UnexpectedElasticsearchClientException)
             {
                 return new ClusterStatsResponse();
+            }
+        }
+
+        public CatResponse<CatIndicesRecord> GetCatIndices()
+        {
+            try
+            {
+                return elasticClient.Cat.Indices();
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                return new CatResponse<CatIndicesRecord>();
+            }
+        }
+
+        public GetMappingResponse GetAllIndicesMapping()
+        {
+            try
+            {
+                return elasticClient.Indices.GetMapping(new GetMappingRequest(Indices.AllIndices));
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                return new GetMappingResponse();
             }
         }
 
