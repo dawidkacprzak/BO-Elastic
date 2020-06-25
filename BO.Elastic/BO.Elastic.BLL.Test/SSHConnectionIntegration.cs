@@ -2,84 +2,63 @@
 using BO.Elastic.BLL.Model;
 using BO.Elastic.BLL.ServiceConnection;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BO.Elastic.BLL.Test
 {
-    public class SSHConnectionIntegration
+    public class SshConnectionIntegration
     {
         [Test]
-        public void InvokeSSHActionWithInvalidLoginData()
+        public void InvokeSshActionWithInvalidLoginData()
         {
-            SSHConnectionInfo info = new SSHConnectionInfo("10.10.1.216","",new LoginData()
+            SshConnectionInfo info = new SshConnectionInfo("10.10.1.216", "", new LoginData
             {
                 Login = "test",
                 Password = "test1923"
             });
             ServiceRemoteManager manager = new ServiceRemoteManager(info);
 
-            Assert.Throws<SSHCommandExecuteException>(() =>
-            {
-                manager.StartElasticService(info);
-            });
-            Assert.Throws<SSHCommandExecuteException>(() =>
-            {
-                manager.StopElasticService(info);
-            });
-            Assert.Throws<SSHCommandExecuteException>(() =>
-            {
-                manager.RestartElasticService(info);
-            });
+            Assert.Throws<SshCommandExecuteException>(() => { manager.StartElasticService(info); });
+            Assert.Throws<SshCommandExecuteException>(() => { manager.StopElasticService(info); });
+            Assert.Throws<SshCommandExecuteException>(() => { manager.RestartElasticService(info); });
         }
 
         [Test]
-        public void InvokeSSHStartWithInvalidAddress()
+        public void InvokeSshStartWithInvalidAddress()
         {
-            SSHConnectionInfo info = new SSHConnectionInfo("10.10.1.116", "", new LoginData()
+            SshConnectionInfo info = new SshConnectionInfo("10.10.1.116", "", new LoginData
             {
                 Login = "test",
                 Password = "test123"
             });
             ServiceRemoteManager manager = new ServiceRemoteManager(info);
 
-            Assert.Throws<SSHCommandExecuteException>(() =>
-            {
-                manager.StartElasticService(info);
-            });
+            Assert.Throws<SshCommandExecuteException>(() => { manager.StartElasticService(info); });
         }
 
         [Test]
-        public void InvokeSSHStopWithInvalidAddress()
+        public void InvokeSshStopWithInvalidAddress()
         {
-            SSHConnectionInfo info = new SSHConnectionInfo("10.10.1.116", "", new LoginData()
+            SshConnectionInfo info = new SshConnectionInfo("10.10.1.116", "", new LoginData
             {
                 Login = "test",
                 Password = "test123"
             });
             ServiceRemoteManager manager = new ServiceRemoteManager(info);
 
-            Assert.Throws<SSHCommandExecuteException>(() =>
-            {
-                manager.StopElasticService(info);
-            });
+            Assert.Throws<SshCommandExecuteException>(() => { manager.StopElasticService(info); });
         }
 
         [Test]
-        public void InvokeSSHRestartWithInvalidAddress()
+        public void InvokeSshRestartWithInvalidAddress()
         {
-            SSHConnectionInfo info = new SSHConnectionInfo("10.10.1.116", "", new LoginData()
+            SshConnectionInfo info = new SshConnectionInfo("10.10.1.116", "", new LoginData
             {
                 Login = "test",
                 Password = "test123"
             });
             ServiceRemoteManager manager = new ServiceRemoteManager(info);
 
-            Assert.Throws<SSHCommandExecuteException>(() =>
-            {
-                manager.RestartElasticService(info);
-            });
+            Assert.Throws<SshCommandExecuteException>(() => { manager.RestartElasticService(info); });
         }
     }
 }

@@ -1,30 +1,25 @@
-﻿using BO.Elastic.BLL.Model;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
 using System.Windows;
+using BO.Elastic.BLL.Model;
 
 namespace BO.Elastic.Panel.Helpers
 {
     public static class LoginDataHelper
     {
-        public static readonly object saveLoginDataLock = new object();
-        public static string FilePath = Path.Combine(System.IO.Path.GetTempPath(), "boElasticLoginData.dat");
+        public static readonly object SaveLoginDataLock = new object();
+        public static string FilePath = Path.Combine(Path.GetTempPath(), "boElasticLoginData.dat");
 
         public static void SaveLoginData(LoginData loginData)
         {
             if (!string.IsNullOrWhiteSpace(loginData.Login))
             {
-                if (string.IsNullOrEmpty(loginData.Password))
-                {
-                    loginData.Password = "";
-                }
+                if (string.IsNullOrEmpty(loginData.Password)) loginData.Password = "";
                 try
                 {
-                    lock (saveLoginDataLock)
+                    lock (SaveLoginDataLock)
                     {
                         using (FileStream fs = new FileStream(FilePath, FileMode.Create))
                         {
@@ -52,7 +47,7 @@ namespace BO.Elastic.Panel.Helpers
                 using (FileStream fs = new FileStream(FilePath, FileMode.Open))
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
-                    loginData = (LoginData)formatter.Deserialize(fs);
+                    loginData = (LoginData) formatter.Deserialize(fs);
                 }
             }
             catch (SerializationException)
@@ -81,6 +76,7 @@ namespace BO.Elastic.Panel.Helpers
                     File.Delete(FilePath);
                     return true;
                 }
+
                 return false;
             }
             catch (Exception ex)

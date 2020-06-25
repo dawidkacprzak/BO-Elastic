@@ -1,42 +1,26 @@
-﻿using BO.Elastic.BLL.Extension;
-using BO.Elastic.BLL.Model;
-using BO.Elastic.BLL.ServiceExtenstionModel;
-using BO.Elastic.BLL.Types;
-using Nest;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
+using BO.Elastic.BLL.Extension;
+using BO.Elastic.BLL.Model;
+using BO.Elastic.BLL.ServiceExtenstionModel;
+using BO.Elastic.BLL.Types;
 
 namespace BO.Elastic.BLL
 {
     public class LoadedNodeController
     {
-        public Dictionary<int, List<ServiceAddionalParameters>> ClusterNodes { get; private set; }
-        private System.Timers.Timer myTimer = new System.Timers.Timer();
-        private List<Task> updateTasks = new List<Task>();
         private const int updateTaskCount = 5;
-        private List<int> blockedNodesUpdate = new List<int>();
         private static readonly object updateLock = new object();
-        private int setSelectedClusterId = 0;
-        private Action updateCallback;
-        public ObservableCollection<ServiceAddionalParameters> SelectedNodes
-        {
-            get
-            {
-                if (ClusterNodes.ContainsKey(setSelectedClusterId)){
-                    return new ObservableCollection<ServiceAddionalParameters>(ClusterNodes[setSelectedClusterId]);
-                }
-                else
-                {
-                    return new ObservableCollection<ServiceAddionalParameters>();
-                }
-            }
-        }
+        private List<int> blockedNodesUpdate = new List<int>();
+        private readonly Timer myTimer = new Timer();
+        private int setSelectedClusterId;
+        private readonly Action updateCallback;
+        private readonly List<Task> updateTasks = new List<Task>();
+
         public LoadedNodeController()
         {
             ClusterNodes = new Dictionary<int, List<ServiceAddionalParameters>>();
@@ -46,45 +30,51 @@ namespace BO.Elastic.BLL
         {
             updateCallback = notifyCallback;
             ClusterNodes = new Dictionary<int, List<ServiceAddionalParameters>>();
-            foreach (var item in clusters)
-            {
-                foreach (var clusterFK in item.ClusterNodeCluster)
+            foreach (Service item in clusters)
+            foreach (ClusterNode clusterFk in item.ClusterNodeCluster)
+                if (ClusterNodes.ContainsKey(item.Id))
                 {
-                    if (ClusterNodes.ContainsKey(item.Id))
+                    ClusterNodes[item.Id].Add(new ServiceAddionalParameters
                     {
-                        ClusterNodes[item.Id].Add(new ServiceAddionalParameters()
-                        {
-                            IP = clusterFK.Node.Ip,
-                            Port = clusterFK.Node.Port,
-                            ServiceStatus = EServiceStatus.Initializing,
-                            ServiceType = (EServiceType)clusterFK.Node.ServiceType,
-                            Service = clusterFK.Node
-                        });
-                    }
-                    else
-                    {
-                        ClusterNodes[item.Id] = new List<ServiceAddionalParameters>();
-                        ClusterNodes[item.Id].Add(new ServiceAddionalParameters()
-                        {
-                            IP = clusterFK.Node.Ip,
-                            Port = clusterFK.Node.Port,
-                            ServiceStatus = EServiceStatus.Initializing,
-                            ServiceType = (EServiceType)clusterFK.Node.ServiceType,
-                            Service = clusterFK.Node
-                        });
-                    }
+                        Ip = clusterFk.Node.Ip,
+                        Port = clusterFk.Node.Port,
+                        ServiceStatus = EServiceStatus.Initializing,
+                        ServiceType = (EServiceType) clusterFk.Node.ServiceType,
+                        Service = clusterFk.Node
+                    });
                 }
-            }
-            if(ClusterNodes.Count > 0)
+                else
+                {
+                    ClusterNodes[item.Id] = new List<ServiceAddionalParameters>();
+                    ClusterNodes[item.Id].Add(new ServiceAddionalParameters
+                    {
+                        Ip = clusterFk.Node.Ip,
+                        Port = clusterFk.Node.Port,
+                        ServiceStatus = EServiceStatus.Initializing,
+                        ServiceType = (EServiceType) clusterFk.Node.ServiceType,
+                        Service = clusterFk.Node
+                    });
+                }
+
+            if (ClusterNodes.Count > 0)
                 setSelectedClusterId = ClusterNodes.First().Key;
 
-            for (int i = 0; i < updateTaskCount; i++)
-            {
-                AddUpdateTask();
-            }
+            for (int i = 0; i < updateTaskCount; i++) AddUpdateTask();
             myTimer.Elapsed += StartUpdate;
             myTimer.Interval = 1000;
             myTimer.Start();
+        }
+
+        public Dictionary<int, List<ServiceAddionalParameters>> ClusterNodes { get; }
+
+        public ObservableCollection<ServiceAddionalParameters> SelectedNodes
+        {
+            get
+            {
+                if (ClusterNodes.ContainsKey(setSelectedClusterId))
+                    return new ObservableCollection<ServiceAddionalParameters>(ClusterNodes[setSelectedClusterId]);
+                return new ObservableCollection<ServiceAddionalParameters>();
+            }
         }
 
         public void SetSelectedClusterId(int id)
@@ -104,18 +94,19 @@ namespace BO.Elastic.BLL
                 Random r = new Random();
                 if (ClusterNodes.Count == 0) return;
                 int rand = r.Next(0, ClusterNodes.Count - 1);
-                if (blockedNodesUpdate.Contains(rand)) return;
-
-                var item = ClusterNodes.ElementAt(rand);
-                int nodeIndex = -1;
-                ServiceAddionalParameters foundNode = null;
                 lock (updateLock)
                 {
-                    foundNode = item.Value.OrderBy(x => x.Service.LastUpdateTime).Where(x => !blockedNodesUpdate.Contains(x.Service.Id)).FirstOrDefault();
-                    if (foundNode == null)
-                    {
-                        return;
-                    }
+                    if (blockedNodesUpdate.Contains(rand)) return;
+                }
+
+                var item = ClusterNodes.ElementAt(rand);
+                int nodeIndex;
+                ServiceAddionalParameters foundNode;
+                lock (updateLock)
+                {
+                    foundNode = item.Value
+                        .OrderBy(x => x.Service.LastUpdateTime).FirstOrDefault(x => !blockedNodesUpdate.Contains(x.Service.Id));
+                    if (foundNode == null) return;
 
                     nodeIndex = ClusterNodes.ElementAt(rand).Value.IndexOf(foundNode);
                     blockedNodesUpdate.Add(foundNode.Service.Id);
@@ -123,7 +114,10 @@ namespace BO.Elastic.BLL
 
                 foundNode = foundNode.Service.GetServiceAddionalParameters();
                 ClusterNodes.ElementAt(rand).Value[nodeIndex] = foundNode;
-                blockedNodesUpdate = blockedNodesUpdate.Where(x => x != foundNode.Service.Id).ToList();
+                lock (updateLock)
+                {
+                    blockedNodesUpdate = blockedNodesUpdate.Where(x => x != foundNode.Service.Id).ToList();
+                }
                 updateCallback.Invoke();
             });
         }
@@ -131,14 +125,12 @@ namespace BO.Elastic.BLL
         private void StartUpdate(object sender, ElapsedEventArgs e)
         {
             for (int i = 0; i < updateTaskCount; i++)
-            {
                 if (updateTasks.ElementAt(i) != null &&
-                    updateTasks.ElementAt(i).Status != System.Threading.Tasks.TaskStatus.Running)
+                    updateTasks.ElementAt(i).Status != TaskStatus.Running)
                 {
                     updateTasks[i] = GetNewUpdateJob();
                     updateTasks[i].Start();
                 }
-            }
         }
     }
 }

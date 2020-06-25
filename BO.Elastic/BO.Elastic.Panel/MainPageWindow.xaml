@@ -5,14 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         AllowsTransparency="False"
-        mc:Ignorable="d" 
-        Height="480" Width="640" 
+        mc:Ignorable="d"
+        Height="480" Width="640"
         MinWidth="350"
         MinHeight="60"
-        ResizeMode="CanResize" 
-        WindowState="Normal" 
+        ResizeMode="CanResize"
+        WindowState="Normal"
         WindowStartupLocation="CenterScreen"
-        Visibility="Visible" 
+        Visibility="Visible"
         WindowStyle="None">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="5" />
@@ -21,43 +21,54 @@
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="30"/>
-            <RowDefinition Height="400*"/>
-            <RowDefinition Height="5"/>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="400*" />
+            <RowDefinition Height="5" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" Grid.ColumnSpan="2" Background="#262626">
+        <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" Grid.ColumnSpan="2"
+              Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Image Margin="5,5,5,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png"/>
-                <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White" FontWeight="Bold">Bo.Elastic.Panel</Label>
+                <Image Margin="5,5,5,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png" />
+                <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White"
+                       FontWeight="Bold">
+                    Bo.Elastic.Panel
+                </Label>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-                <Button x:Name="BtnMinimize" BorderThickness="0" Width="50" Height="50" Background="Transparent" Foreground="White" Click="BtnMinimize_Click">
-                    <materialDesign:PackIcon Kind="WindowMinimize"/>
+                <Button x:Name="BtnMinimize" BorderThickness="0" Width="50" Height="50" Background="Transparent"
+                        Foreground="White" Click="BtnMinimize_Click">
+                    <materialDesign:PackIcon Kind="WindowMinimize" />
                 </Button>
-                <Button x:Name="BtnResize" BorderThickness="0" Width="50" Height="50" Background="Transparent" Foreground="White" Click="BtnResize_Click">
-                    <materialDesign:PackIcon Kind="ImageFilterNone"/>
+                <Button x:Name="BtnResize" BorderThickness="0" Width="50" Height="50" Background="Transparent"
+                        Foreground="White" Click="BtnResize_Click">
+                    <materialDesign:PackIcon Kind="ImageFilterNone" />
                 </Button>
-                <Button x:Name="BtnPower" BorderThickness="0" Width="50" Height="50" Background="Transparent" Foreground="White" Command="{Binding CloseAppEvent}">
-                    <materialDesign:PackIcon Kind="Power"/>
+                <Button x:Name="BtnPower" BorderThickness="0" Width="50" Height="50" Background="Transparent"
+                        Foreground="White" Command="{Binding CloseAppEvent}">
+                    <materialDesign:PackIcon Kind="Power" />
                 </Button>
             </StackPanel>
         </Grid>
 
         <Grid x:Name="GridOfMenu" Grid.Row="1" Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Button x:Name="Add" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White" Click="BtnLogs_Click">
-                    <materialDesign:PackIcon Kind="Add"/>
+                <Button x:Name="Add" BorderThickness="0" Width="30" Height="30" Background="Transparent"
+                        Foreground="White" Click="BtnLogs_Click">
+                    <materialDesign:PackIcon Kind="Add" />
                 </Button>
-                <Button x:Name="Delete" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White" Click="BtnLogs_Click">
-                    <materialDesign:PackIcon Kind="Minus"/>
+                <Button x:Name="Delete" BorderThickness="0" Width="30" Height="30" Background="Transparent"
+                        Foreground="White" Click="BtnLogs_Click">
+                    <materialDesign:PackIcon Kind="Minus" />
                 </Button>
-                <Button x:Name="Download" Command="{Binding RefreshConfiguration}" BorderThickness="0"  Width="30" Height="30" Background="Transparent" Foreground="White">
-                    <materialDesign:PackIcon Kind="Download"/>
+                <Button x:Name="Download" Command="{Binding RefreshConfiguration}" BorderThickness="0" Width="30"
+                        Height="30" Background="Transparent" Foreground="White">
+                    <materialDesign:PackIcon Kind="Download" />
                 </Button>
-                <Button x:Name="SavePassword" BorderThickness="0"  Width="30" Height="30" Background="Transparent" Foreground="White" Click="SavePassword_Click">
-                    <materialDesign:PackIcon Kind="Key"/>
+                <Button x:Name="SavePassword" BorderThickness="0" Width="30" Height="30" Background="Transparent"
+                        Foreground="White" Click="SavePassword_Click">
+                    <materialDesign:PackIcon Kind="Key" />
                 </Button>
             </StackPanel>
         </Grid>
@@ -68,25 +79,28 @@
                     <ColumnDefinition Width="240" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <DataGrid HorizontalScrollBarVisibility="Disabled" Grid.Column="0"  PreviewMouseRightButtonUp="OnClusterRightclick" PreviewMouseLeftButtonUp="Clusters_PreviewMouseLeftButtonUp" Name="Clusters" CanUserAddRows="False" ItemsSource="{Binding Clusters}" AutoGenerateColumns="False">
+                <DataGrid HorizontalScrollBarVisibility="Disabled" Grid.Column="0"
+                          PreviewMouseRightButtonUp="OnClusterRightclick"
+                          PreviewMouseLeftButtonUp="Clusters_PreviewMouseLeftButtonUp" Name="Clusters"
+                          CanUserAddRows="False" ItemsSource="{Binding Clusters}" AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn  Header="Cluser Ip" Binding="{Binding IP}"/>
-                        <DataGridTextColumn Header="Cluser Port" Binding="{Binding Port}"/>
+                        <DataGridTextColumn Header="Cluser Ip" Binding="{Binding Ip}" />
+                        <DataGridTextColumn Header="Cluser Port" Binding="{Binding Port}" />
                         <DataGridTextColumn Header="Status" Binding="{Binding ServiceStatus}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Style.Triggers>
                                         <Trigger Property="Text" Value="Online">
-                                            <Setter Property="Foreground" Value="LightGreen"/>
+                                            <Setter Property="Foreground" Value="LightGreen" />
                                         </Trigger>
                                         <Trigger Property="Text" Value="Offline">
-                                            <Setter Property="Foreground" Value="#FFCDCDCD"/>
+                                            <Setter Property="Foreground" Value="#FFCDCDCD" />
                                         </Trigger>
                                         <Trigger Property="Text" Value="Moderate">
-                                            <Setter Property="Foreground" Value="#FFFBC637"/>
+                                            <Setter Property="Foreground" Value="#FFFBC637" />
                                         </Trigger>
                                         <Trigger Property="Text" Value="Moderate">
-                                            <Setter Property="Foreground" Value="#FFFF4646"/>
+                                            <Setter Property="Foreground" Value="#FFFF4646" />
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -95,25 +109,26 @@
                     </DataGrid.Columns>
 
                 </DataGrid>
-                <DataGrid Grid.Column="2" ItemsSource="{Binding LoadedNodeController.SelectedNodes}" CanUserAddRows="False" AutoGenerateColumns="False">
+                <DataGrid Grid.Column="1" ItemsSource="{Binding LoadedNodeController.SelectedNodes}"
+                          CanUserAddRows="False" AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn  Header="Service Ip" Binding="{Binding IP}"/>
-                        <DataGridTextColumn Header="Service Port" Binding="{Binding Port}"/>
+                        <DataGridTextColumn Header="Service Ip" Binding="{Binding Ip}" />
+                        <DataGridTextColumn Header="Service Port" Binding="{Binding Port}" />
                         <DataGridTextColumn Header="Status" Binding="{Binding ServiceStatus}">
                             <DataGridTextColumn.ElementStyle>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Style.Triggers>
                                         <Trigger Property="Text" Value="Online">
-                                            <Setter Property="Foreground" Value="LightGreen"/>
+                                            <Setter Property="Foreground" Value="LightGreen" />
                                         </Trigger>
                                         <Trigger Property="Text" Value="Offline">
-                                            <Setter Property="Foreground" Value="#FFCDCDCD"/>
+                                            <Setter Property="Foreground" Value="#FFCDCDCD" />
                                         </Trigger>
                                         <Trigger Property="Text" Value="Moderate">
-                                            <Setter Property="Foreground" Value="#FFFBC637"/>
+                                            <Setter Property="Foreground" Value="#FFFBC637" />
                                         </Trigger>
                                         <Trigger Property="Text" Value="Moderate">
-                                            <Setter Property="Foreground" Value="#FFFF4646"/>
+                                            <Setter Property="Foreground" Value="#FFFF4646" />
                                         </Trigger>
                                     </Style.Triggers>
                                 </Style>
@@ -121,12 +136,11 @@
                         </DataGridTextColumn>
                     </DataGrid.Columns>
                 </DataGrid>
-                <GridSplitter Margin="10,0,0,10" Background="#FF2B2B2B" Grid.Column="0" Width="3"/>
+                <GridSplitter Margin="10,0,0,10" Background="#FF2B2B2B" Grid.Column="0" Width="3" />
             </Grid>
 
         </Grid>
-        <ProgressBar Background="#FF2B2B2B" Foreground="White" Grid.Row="3" Minimum="0" Maximum="100" Value="{Binding ProgressValue}" HorizontalAlignment="Stretch" BorderThickness="0" >
-
-        </ProgressBar>
+        <ProgressBar Background="#FF2B2B2B" Foreground="White" Grid.Row="3" Minimum="0" Maximum="100"
+                     Value="{Binding ProgressValue}" HorizontalAlignment="Stretch" BorderThickness="0" />
     </Grid>
 </Window>

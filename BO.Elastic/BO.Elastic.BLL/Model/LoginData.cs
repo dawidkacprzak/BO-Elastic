@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿// ReSharper disable All
 namespace BO.Elastic.BLL.Model
 {
     public partial class LoginData
