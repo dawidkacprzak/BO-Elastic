@@ -1,10 +1,12 @@
 ﻿using BO.Elastic.BLL.Model;
+using BO.Elastic.Panel.Command;
 using BO.Elastic.Panel.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Windows.Input;
 
 namespace BO.Elastic.Panel.ViewModels
 {
@@ -27,6 +29,11 @@ namespace BO.Elastic.Panel.ViewModels
                 NotifyPropertyChanged();
             }
         }
+
+        public ICommand ClearCachedLoginDataCommand => new BasicCommand(new Action(() =>
+        {
+            LoginDataHelper.ClearCachedLoginData();
+        }));
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void NotifyPropertyChanged([CallerMemberName] String propertyName = "")

@@ -41,8 +41,16 @@ namespace BO.Elastic.Panel
             LoginData loginData = new LoginData();
             loginData.Login = tbLogin.Text;
             loginData.Password = tbPassword.Password.ToString();
-            LoginDataHelper.SaveLoginData(loginData);
-            this.Close();
+            try
+            {
+                LoginDataHelper.SaveLoginData(loginData);
+                SSHLoginDataContainer.LoginData = LoginDataHelper.GetCachedLoginData();
+                this.Close();
+            }
+            catch
+            {
+                MessageBox.Show("Błąd podczas zapisu danych. Sprawdź czy wypełniono login.");
+            }
         }
     }
 }
