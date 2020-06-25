@@ -1,4 +1,5 @@
-﻿using BO.Elastic.BLL.Extension;
+﻿using BO.Elastic.BLL.ElasticCore;
+using BO.Elastic.BLL.Extension;
 using BO.Elastic.BLL.Model;
 using BO.Elastic.BLL.ServiceConnection;
 using BO.Elastic.BLL.ServiceExtenstionModel;
@@ -6,6 +7,7 @@ using BO.Elastic.BLL.Types;
 using BO.Elastic.Panel.Helpers;
 using BO.Elastic.Panel.ViewModels;
 using Microsoft.Extensions.Options;
+using Nest;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -62,8 +64,8 @@ namespace BO.Elastic.Panel.ClassExtensions
                     case EServiceAction.Information:
                         return new Action(() =>
                         {
-                            InformationWindow window = new InformationWindow();
-                            window.Show();
+                            ClusterStatsWindow csw = new ClusterStatsWindow(parameters.GetSSHNetworkAddress());
+                            csw.Show();
                         });
 
                     case EServiceAction.Restart:

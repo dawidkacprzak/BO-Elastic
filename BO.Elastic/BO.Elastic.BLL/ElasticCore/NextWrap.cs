@@ -1,6 +1,7 @@
 ﻿using BO.Elastic.BLL.Exceptions;
 using BO.Elastic.BLL.Model;
 using Elasticsearch.Net;
+using Elasticsearch.Net.Specification.IndicesApi;
 using Nest;
 using System;
 using System.Collections.Generic;
@@ -69,6 +70,54 @@ namespace BO.Elastic.BLL.ElasticCore
             }
         }
 
+        public ClusterStateResponse GetClusterState()
+        {
+            try
+            {
+                return elasticClient.Cluster.State();
+            }
+            catch(UnexpectedElasticsearchClientException)
+            {
+                return new ClusterStateResponse();
+            }
+        }
+
+        public ClusterStatsResponse GetClusterStats()
+        {
+            try
+            {
+                return elasticClient.Cluster.Stats();
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                return new ClusterStatsResponse();
+            }
+        }
+
+        public CatResponse<CatIndicesRecord> GetCatIndices()
+        {
+            try
+            {
+                return elasticClient.Cat.Indices();
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                return new CatResponse<CatIndicesRecord>();
+            }
+        }
+
+        public GetMappingResponse GetAllIndicesMapping()
+        {
+            try
+            {
+                return elasticClient.Indices.GetMapping(new GetMappingRequest(Indices.AllIndices));
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                return new GetMappingResponse();
+            }
+        }
+
         private bool NodeExists(NetworkAddress address)
         {
             IEnumerable<KeyValuePair<string, NodeInfo>> nodes = GetNodesFromIpAndPort(address);
@@ -89,7 +138,6 @@ namespace BO.Elastic.BLL.ElasticCore
         private IEnumerable<KeyValuePair<string, NodeInfo>> GetNodesFromIpAndPort(NetworkAddress address)
         {
             return elasticClient.Nodes.Info().Nodes.Where(x => x.Value.Http.PublishAddress.Equals(address.IPPortMerge));
-
         }
 
         public static bool PingHost(string hostUri)

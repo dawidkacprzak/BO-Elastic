@@ -63,6 +63,7 @@ namespace BO.Elastic.BLL.Extension
                                 addionalParameters.ServiceStatus = EServiceStatus.Danger;
                                 addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
                                 addionalParameters.ActionList.Add(EServiceAction.Restart);
+                                addionalParameters.ActionList.Add(EServiceAction.Information);
                                 addionalParameters.ActionList.Add(EServiceAction.Stop);
                             }
                             else if (clusterHealth.Status == Elasticsearch.Net.Health.Yellow)
@@ -70,6 +71,7 @@ namespace BO.Elastic.BLL.Extension
                                 addionalParameters.ServiceStatus = EServiceStatus.Moderate;
                                 addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
                                 addionalParameters.ActionList.Add(EServiceAction.Restart);
+                                addionalParameters.ActionList.Add(EServiceAction.Information);
                                 addionalParameters.ActionList.Add(EServiceAction.Stop);
                             }
                             else throw new Exception("Błąd podczas pobrania statusu zdrowia klastra");
@@ -78,6 +80,7 @@ namespace BO.Elastic.BLL.Extension
                         {
                             addionalParameters.ServiceStatus = addionalParameters.GetProperFailServiceStatus();
                             addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
+                            addionalParameters.ActionList.Add(EServiceAction.Information);
                             addionalParameters.ActionList.Add(EServiceAction.Start);
                         }
                     }
@@ -86,6 +89,7 @@ namespace BO.Elastic.BLL.Extension
 
                         addionalParameters.ServiceStatus = addionalParameters.GetProperFailServiceStatus();
                         addionalParameters.ActionList.Add(EServiceAction.ConnectBySSH);
+                        addionalParameters.ActionList.Add(EServiceAction.Information);
                         addionalParameters.ActionList.Add(EServiceAction.Start);
                     }
 
