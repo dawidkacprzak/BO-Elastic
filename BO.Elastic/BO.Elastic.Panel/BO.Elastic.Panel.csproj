@@ -9,8 +9,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\cluster.png" />
     <None Remove="Assets\elastic.png" />
     <None Remove="Assets\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\cluster.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

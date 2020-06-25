@@ -113,7 +113,6 @@ namespace BO.Elastic.BLL.ElasticCore
         private IEnumerable<KeyValuePair<string, NodeInfo>> GetNodesFromIpAndPort(NetworkAddress address)
         {
             return elasticClient.Nodes.Info().Nodes.Where(x => x.Value.Http.PublishAddress.Equals(address.IPPortMerge));
-
         }
 
         public static bool PingHost(string hostUri)

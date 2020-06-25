@@ -68,6 +68,8 @@ namespace BO.Elastic.Panel.ClassExtensions
                             ClusterStatsResponse test2 = nextWrap.GetClusterStats();
                             int percentageMemoryUsage = test2.Nodes.OperatingSystem.Memory.UsedPercent;
                             int percentageCpuUsage = test2.Nodes.Process.Cpu.Percent;
+                            ClusterStatsWindow csw = new ClusterStatsWindow(parameters.GetSSHNetworkAddress());
+                            csw.Show();
                         });
 
                     case EServiceAction.Restart:
