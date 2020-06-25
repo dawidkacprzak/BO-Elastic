@@ -65,7 +65,7 @@ namespace BO.Elastic.Panel
 
         private void BtnMinimize_Click(object sender, RoutedEventArgs e)
         {
-
+            WindowState = WindowState.Minimized;
         }
 
         private void BtnDeleteCluster_Click(object sender, RoutedEventArgs e)
@@ -75,7 +75,7 @@ namespace BO.Elastic.Panel
 
         private void BtnAddCluster_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Eloooo Ławki bloki klatki");
+
         }
 
         private void Clusters_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
