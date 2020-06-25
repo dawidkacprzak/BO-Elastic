@@ -1,10 +1,8 @@
-﻿using BO.Elastic.BLL.Model;
+﻿using System;
+using System.IO;
+using BO.Elastic.BLL.Model;
 using BO.Elastic.Panel.Helpers;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
 
 namespace BO.Elastic.BLL.Test
 {
@@ -13,16 +11,13 @@ namespace BO.Elastic.BLL.Test
         [Test]
         public void InvokeSaveLoginDataWithInvalidLogin()
         {
-            LoginData loginData = new LoginData()
+            LoginData loginData = new LoginData
             {
                 Login = string.Empty,
-                Password = string.Empty            
+                Password = string.Empty
             };
 
-            Assert.Throws<ArgumentException>(() =>
-            {
-                LoginDataHelper.SaveLoginData(loginData);
-            });
+            Assert.Throws<ArgumentException>(() => { LoginDataHelper.SaveLoginData(loginData); });
         }
 
         [Test]
@@ -40,10 +35,10 @@ namespace BO.Elastic.BLL.Test
         public void InvokeClearCachedLoginDataWithExistingFile()
         {
             LoginDataHelper.FilePath = Path.Combine(Path.GetTempPath(), "testV2.dat");
-            LoginDataHelper.SaveLoginData(new LoginData()
+            LoginDataHelper.SaveLoginData(new LoginData
             {
                 Login = "testoweoponeo",
-                Password ="oponeo123"
+                Password = "oponeo123"
             });
             Assert.IsTrue(LoginDataHelper.ClearCachedLoginData());
         }
@@ -59,7 +54,7 @@ namespace BO.Elastic.BLL.Test
         public void CompareLoginDataAfterSaving()
         {
             LoginDataHelper.FilePath = Path.Combine(Path.GetTempPath(), "testV4.dat");
-            LoginData loginData = new LoginData()
+            LoginData loginData = new LoginData
             {
                 Login = "testV4",
                 Password = "testV4"
@@ -70,7 +65,5 @@ namespace BO.Elastic.BLL.Test
             Assert.AreEqual(loginData.Login, savedLoginData.Login);
             Assert.AreEqual(loginData.Password, savedLoginData.Password);
         }
-
-
     }
 }

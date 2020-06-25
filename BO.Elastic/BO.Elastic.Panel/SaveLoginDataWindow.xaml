@@ -6,14 +6,14 @@
         xmlns:local="clr-namespace:BO.Elastic.Panel"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         AllowsTransparency="False"
-        mc:Ignorable="d" 
-        Height="250" Width="200" 
+        mc:Ignorable="d"
+        Height="250" Width="200"
         MinWidth="100"
         MinHeight="60"
-        ResizeMode="NoResize" 
-        WindowState="Normal" 
-        WindowStartupLocation="CenterOwner"
-        Visibility="Visible" 
+        ResizeMode="NoResize"
+        WindowState="Normal"
+        WindowStartupLocation="CenterScreen"
+        Visibility="Visible"
         WindowStyle="None">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="5" />
@@ -21,34 +21,42 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="200"/>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="200" />
         </Grid.RowDefinitions>
 
         <Grid x:Name="GridOfToolbar" Grid.ColumnSpan="2" Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Image Margin="10,10,5,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png" Height="30" Width="30"/>
+                <Image Margin="10,10,5,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png"
+                       Height="30" Width="30" />
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-                <Button x:Name="BtnPower" BorderThickness="0" Width="50" Height="50" Background="Transparent" Foreground="White" IsCancel="True">
-                    <materialDesign:PackIcon Kind="Power"/>
+                <Button x:Name="BtnPower" BorderThickness="0" Width="50" Height="50" Background="Transparent"
+                        Foreground="White" IsCancel="True">
+                    <materialDesign:PackIcon Kind="Power" />
                 </Button>
             </StackPanel>
         </Grid>
-        <Grid x:Name="GridOfLogin" Grid.Row="1" Background="#FF343434">
-            <TextBlock HorizontalAlignment="Center" Height="25" Text="Login" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="top" Width="100" Margin="20" FontSize="14" Foreground="White"/>
+        <Grid x:Name="GridOfLogin" Grid.Row="1" Background="#FF233334">
+            <TextBlock HorizontalAlignment="Center" Height="25" Text="Login" TextAlignment="Center" TextWrapping="Wrap"
+                       VerticalAlignment="top" Width="100" Margin="20" FontSize="14" Foreground="White" />
             <StackPanel VerticalAlignment="Top" Margin="40,50,40,40" DataContext="{Binding LoginData}">
-                <TextBox x:Name="tbLogin" Text="{Binding Login}"></TextBox>
+                <TextBox x:Name="tbLogin" Text="{Binding Login}" />
             </StackPanel>
-            <TextBlock HorizontalAlignment="Center" Height="25" Text="Password" TextAlignment="Center" TextWrapping="Wrap" VerticalAlignment="top" Width="100" Margin="0,80" FontSize="14" Foreground="White"/>
+            <TextBlock HorizontalAlignment="Center" Height="25" Text="Password" TextAlignment="Center"
+                       TextWrapping="Wrap" VerticalAlignment="top" Width="100" Margin="0,80" FontSize="14"
+                       Foreground="White" />
             <StackPanel VerticalAlignment="Top" Margin="40,110,40,0">
-                <PasswordBox x:Name="tbPassword"></PasswordBox>
+                <PasswordBox x:Name="tbPassword" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,140,0,0">
-                <Button x:Name="BtnClear" Width="60" BorderThickness="0" Height="30" Foreground="White" Content="CLEAR" Background="#262626" Command="{Binding ClearCachedLoginDataCommand}" Click="BtnClear_Click"></Button>
-                <Button x:Name="BtnSave" Width="60" BorderThickness="0" Height="30" Foreground="White" Content="SAVE" Background="#262626" Click="BtnSave_Click"></Button>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top"
+                        Margin="0,140,0,0">
+                <Button x:Name="BtnClear" Width="60" BorderThickness="0" Height="30" Foreground="White" Content="CLEAR"
+                        Background="#262626" Command="{Binding ClearCachedLoginDataCommand}" Click="BtnClear_Click" />
+                <Button x:Name="BtnSave" Width="60" BorderThickness="0" Height="30" Foreground="White" Content="SAVE"
+                        Background="#262626" Click="BtnSave_Click" />
             </StackPanel>
-            
+
 
         </Grid>
 

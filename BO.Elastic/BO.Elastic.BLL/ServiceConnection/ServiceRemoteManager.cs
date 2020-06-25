@@ -1,25 +1,22 @@
-﻿using BO.Elastic.BLL.Exceptions;
+﻿using System;
+using BO.Elastic.BLL.Exceptions;
 using BO.Elastic.BLL.Model;
 using Renci.SshNet;
-using Renci.SshNet.Common;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BO.Elastic.BLL.ServiceConnection
 {
     public class ServiceRemoteManager
     {
-        private ConnectionInfo SSHNETConnectionInfo;
-        private SSHConnectionInfo connectionInfo;
+        private readonly SshConnectionInfo connectionInfo;
+        private readonly ConnectionInfo sshnetConnectionInfo;
 
-        public ServiceRemoteManager(SSHConnectionInfo connectionInfo)
+        public ServiceRemoteManager(SshConnectionInfo connectionInfo)
         {
             this.connectionInfo = connectionInfo;
-            SSHNETConnectionInfo = new ConnectionInfo(connectionInfo.IP,
-                connectionInfo.SSHLoginData.Login,
-                new PasswordAuthenticationMethod(connectionInfo.SSHLoginData.Login,
-                connectionInfo.SSHLoginData.Password));
+            sshnetConnectionInfo = new ConnectionInfo(connectionInfo.Ip,
+                connectionInfo.SshLoginData.Login,
+                new PasswordAuthenticationMethod(connectionInfo.SshLoginData.Login,
+                    connectionInfo.SshLoginData.Password));
         }
 
         public void StopElasticService(NetworkAddress serviceAddress)
@@ -30,7 +27,7 @@ namespace BO.Elastic.BLL.ServiceConnection
             }
             catch (Exception ex)
             {
-                throw new SSHCommandExecuteException(ex.Message);
+                throw new SshCommandExecuteException(ex.Message);
             }
         }
 
@@ -42,7 +39,7 @@ namespace BO.Elastic.BLL.ServiceConnection
             }
             catch (Exception ex)
             {
-                throw new SSHCommandExecuteException(ex.Message);
+                throw new SshCommandExecuteException(ex.Message);
             }
         }
 
@@ -54,7 +51,7 @@ namespace BO.Elastic.BLL.ServiceConnection
             }
             catch (Exception ex)
             {
-                throw new SSHCommandExecuteException(ex.Message);
+                throw new SshCommandExecuteException(ex.Message);
             }
         }
 
@@ -65,15 +62,12 @@ namespace BO.Elastic.BLL.ServiceConnection
                 if (!client.IsConnected)
                     client.Connect();
 
-                var sh = client.RunCommand($"echo {connectionInfo.SSHLoginData.Password} | sudo -S -k {command}");
+                SshCommand sh =
+                    client.RunCommand($"echo {connectionInfo.SshLoginData.Password} | sudo -S -k {command}");
                 if (sh.ExitStatus != 0)
-                {
-                    throw new SSHCommandExecuteException(sh.Error.Replace(connectionInfo.SSHLoginData.Password, "<password>"));
-                }
-                else
-                {
-                    return sh.Result;
-                }
+                    throw new SshCommandExecuteException(sh.Error.Replace(connectionInfo.SshLoginData.Password,
+                        "<password>"));
+                return sh.Result;
             }
             catch (Exception ex)
             {
@@ -83,10 +77,10 @@ namespace BO.Elastic.BLL.ServiceConnection
 
         private string RunSudoCommand(string command)
         {
-            using (var SSHConnection = new SshClient(SSHNETConnectionInfo))
+            using (SshClient sshConnection = new SshClient(sshnetConnectionInfo))
             {
-                SSHConnection.ConnectionInfo.Timeout = TimeSpan.FromSeconds(2);
-                return RunSudoCommand(command, SSHConnection);
+                sshConnection.ConnectionInfo.Timeout = TimeSpan.FromSeconds(2);
+                return RunSudoCommand(command, sshConnection);
             }
         }
     }

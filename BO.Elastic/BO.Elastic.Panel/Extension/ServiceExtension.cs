@@ -1,94 +1,97 @@
-﻿using BO.Elastic.BLL.ElasticCore;
+﻿using System;
+using System.Windows;
 using BO.Elastic.BLL.Extension;
 using BO.Elastic.BLL.Model;
 using BO.Elastic.BLL.ServiceConnection;
 using BO.Elastic.BLL.ServiceExtenstionModel;
 using BO.Elastic.BLL.Types;
 using BO.Elastic.Panel.Helpers;
-using BO.Elastic.Panel.ViewModels;
-using Microsoft.Extensions.Options;
-using Nest;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
-using System.Windows;
 
-namespace BO.Elastic.Panel.ClassExtensions
+namespace BO.Elastic.Panel.Extension
 {
     public static class ServiceExtension
     {
-        public static Action GetActionParameters(this ServiceAddionalParameters parameters, EServiceAction eServiceAction)
+        public static Action GetActionParameters(this ServiceAddionalParameters parameters,
+            EServiceAction eServiceAction)
         {
-            ServiceRemoteManager manager = new ServiceRemoteManager(
-                new SSHConnectionInfo(
-                    new NetworkAddress(parameters.IP, ""),
-                    SSHLoginDataContainer.LoginData)
-                );
+            ServiceRemoteManager manager;
+            switch (eServiceAction)
+            {
+                case EServiceAction.ConnectBySsh:
+                    break;
 
+                case EServiceAction.Start:
+                    return () =>
+                    {
+                        try
+                        {
+                            manager = GetServiceManager(parameters.Ip, parameters.Port);
+                            manager.StartElasticService(parameters.GetSshNetworkAddress());
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                    };
+
+                case EServiceAction.Stop:
+                    return () =>
+                    {
+                        try
+                        {
+                            manager = GetServiceManager(parameters.Ip, parameters.Port);
+                            manager.StopElasticService(parameters.GetSshNetworkAddress());
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                    };
+
+                case EServiceAction.Information:
+                    return () =>
+                    {
+                        ClusterStatsWindow csw = new ClusterStatsWindow(parameters.GetSshNetworkAddress());
+                        csw.Show();
+                    };
+
+                case EServiceAction.Restart:
+                    return () =>
+                    {
+                        try
+                        {
+                            manager = GetServiceManager(parameters.Ip, parameters.Port);
+                            manager.RestartElasticService(parameters.GetSshNetworkAddress());
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                    };
+                default: throw new NotImplementedException();
+            }
+
+            return () => { MessageBox.Show("Akcja usługi nie została zaimplementowana"); };
+        }
+
+        private static ServiceRemoteManager GetServiceManager(string ip, string port)
+        {
             try
             {
-                switch (eServiceAction)
-                {
-                    case EServiceAction.ConnectBySSH:
-                        break;
-
-                    case EServiceAction.Start:
-                        return new Action(() =>
-                            {
-                                try
-                                {
-                                    manager.StartElasticService(parameters.GetSSHNetworkAddress());
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show(ex.Message);
-                                }
-                            }
-                        );
-
-                    case EServiceAction.Stop:
-                        return new Action(() =>
-                        {
-                            try
-                            {
-                                manager.StopElasticService(parameters.GetSSHNetworkAddress());
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
-                        }
-                        );
-
-                    case EServiceAction.Information:
-                        return new Action(() =>
-                        {
-                            ClusterStatsWindow csw = new ClusterStatsWindow(parameters.GetSSHNetworkAddress());
-                            csw.Show();
-                        });
-
-                    case EServiceAction.Restart:
-                        return new Action(() =>
-                        {
-                            try
-                            {
-                                manager.RestartElasticService(parameters.GetSSHNetworkAddress());
-                            }
-                            catch (Exception ex)
-                            {
-                                MessageBox.Show(ex.Message);
-                            }
-                        }
-                    );
-                    default: throw new NotImplementedException();
-                }
+                return new ServiceRemoteManager(
+                    new SshConnectionInfo(
+                        new NetworkAddress(ip, port),
+                        SshLoginDataContainer.LoginData)
+                );
             }
-            catch (Exception)
+            catch (ArgumentException ex)
             {
-                throw;
+                throw new ArgumentException(
+                    $@"Błąd podczas łączenia się przez SSH z usługą.
+Upewnij się że dane logowania do ssh są uzupełnione w zakładce konfiguracyjnej.
+                            
+{ex.StackTrace}");
             }
-            return new Action(() => { MessageBox.Show("Nie znaleziono akcji parametru usługi"); });
         }
     }
 }

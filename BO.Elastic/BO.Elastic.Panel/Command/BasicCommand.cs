@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows.Input;
 
 namespace BO.Elastic.Panel.Command
 {
     public class BasicCommand : ICommand
     {
-        private readonly Action _execute;
+        private readonly Action execute;
 
         public BasicCommand(Action execute)
         {
-            _execute = execute;
+            this.execute = execute;
         }
 
         public event EventHandler CanExecuteChanged
@@ -27,7 +25,7 @@ namespace BO.Elastic.Panel.Command
 
         public void Execute(object parameter)
         {
-            _execute();
+            execute();
         }
     }
 }

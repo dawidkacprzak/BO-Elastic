@@ -1,8 +1,4 @@
-﻿using BO.Elastic.Panel.Command;
-using BO.Elastic.Panel.Exceptions;
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -11,59 +7,80 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using BO.Elastic.Panel.Command;
+using BO.Elastic.Panel.Exceptions;
 
 namespace BO.Elastic.Panel.ViewModels
 {
     public class LoadingWindowViewModel : INotifyPropertyChanged
     {
-        public string LoadingStatus
-        {
-            get => loadingStatus;
-            set
-            {
-                if (value != this.loadingStatus)
-                {
-                    this.loadingStatus = value;
-                    NotifyPropertyChanged();
-                }
-            }
-        }
-
-        public ICommand CloseAppEvent => new BasicCommand(new Action(() =>
-        {
-            CloseApplication();
-        }));
-
         private string loadingStatus;
-        private Action<string> updateStatusThreadSafeUI;
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        private readonly Action<string> updateStatusThreadSafeUi;
 
         public LoadingWindowViewModel(Action loadingCallback)
         {
             loadingStatus = "Sprawdzanie dostępnych aktualizacji";
 
-            updateStatusThreadSafeUI += new Action<string>((parameter) =>
-            {
-                LoadingStatus = parameter;
-            });
+            updateStatusThreadSafeUi += parameter => { LoadingStatus = parameter; };
 
-            new Thread(() => RunApplication(updateStatusThreadSafeUI, loadingCallback)).Start();
+            new Thread(() => RunApplication(updateStatusThreadSafeUi, loadingCallback)).Start();
+        }
+
+        public string LoadingStatus
+        {
+            get => loadingStatus;
+            set
+            {
+                if (value != loadingStatus)
+                {
+                    loadingStatus = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public ICommand CloseAppEvent => new BasicCommand(() => { CloseApplication(); });
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
         public void RunApplication(Action<string> changeStatusEvent, Action loadingCallback)
         {
+#if DEBUG
             App.Current.Dispatcher.Invoke(loadingCallback);
+#endif
+#if RELEASE
+            Thread.Sleep(1000);
+            if (IsUpdateAvailable())
+            {
+                DeleteOldFiles();
+                try
+                {
+                    changeStatusEvent("Aktualizacja dostępna - trwa pobieranie.");
+                    UpdateApplication(changeStatusEvent);
+                    changeStatusEvent("Restart aplikacji...");
+                    ForceRestartApplication();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Błąd podczasz aktualizacji aplikacji " + ex.Message);
+                }
+
+            }
+            else
+            {
+                changeStatusEvent("Aplikacja jest aktualna. Trwa uruchamianie.");
+                App.Current.Dispatcher.Invoke(loadingCallback);
+            }
+#endif
+
         }
 
         public void CloseApplication()
@@ -73,60 +90,46 @@ namespace BO.Elastic.Panel.ViewModels
 
         private void ForceRestartApplication()
         {
-            System.Diagnostics.Process p = new System.Diagnostics.Process();
+            Process p = new Process();
             p.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), "BO.Elastic.Panel.exe");
             if (!p.Start()) MessageBox.Show("Błąd podczas restartu aktualizacji");
-            App.Current.Dispatcher.Invoke(new Action(() =>
-            {
-                System.Windows.Application.Current.Shutdown();
-            }));
+            Application.Current.Dispatcher.Invoke(() => { Application.Current.Shutdown(); });
         }
 
         private void DeleteOldFiles()
         {
-            string[] filesInAppDirectory = Directory.GetFiles(Directory.GetCurrentDirectory());
-            string[] directoriesInAppDirectory = Directory.GetDirectories(Directory.GetCurrentDirectory());
+            var filesInAppDirectory = Directory.GetFiles(Directory.GetCurrentDirectory());
+            var directoriesInAppDirectory = Directory.GetDirectories(Directory.GetCurrentDirectory());
 
-            foreach (string file in filesInAppDirectory.Where(x => x.EndsWith(".old")).ToArray<string>())
-            {
+            foreach (string file in filesInAppDirectory.Where(x => x.EndsWith(".old")).ToArray())
                 try
                 {
-                    if (File.Exists(file))
-                    {
-                        File.Delete(file);
-                    }
+                    if (File.Exists(file)) File.Delete(file);
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Błąd podczas usuwania plików tymczasowych starej aktualizacji " + ex.Message);
                 }
-            }
 
-            foreach (string file in directoriesInAppDirectory.Where(x => x.EndsWith(".old")).ToArray<string>())
-            {
+            foreach (string file in directoriesInAppDirectory.Where(x => x.EndsWith(".old")).ToArray())
                 try
                 {
-                    if (Directory.Exists(file))
-                    {
-                        Directory.Delete(file, true);
-                    }
+                    if (Directory.Exists(file)) Directory.Delete(file, true);
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Błąd podczas usuwania folderów tymczasowych starej aktualizacji " + ex.Message);
                 }
-            }
         }
 
         private void UpdateApplication(Action<string> changeStatusEvent)
         {
-            string downloadedFileName = Guid.NewGuid().ToString() + ".zip";
+            string downloadedFileName = Guid.NewGuid() + ".zip";
             string downloadedFileFullPath = Path.Join(Path.GetTempPath(), downloadedFileName);
-            string[] filesInAppDirectory = Directory.GetFiles(Directory.GetCurrentDirectory());
-            string[] directoriesInAppDirectory = Directory.GetDirectories(Directory.GetCurrentDirectory());
+            var filesInAppDirectory = Directory.GetFiles(Directory.GetCurrentDirectory());
+            var directoriesInAppDirectory = Directory.GetDirectories(Directory.GetCurrentDirectory());
 
             string[] filesInDownloadedBuild;
-            string[] directoriesInDownloadedBuild;
 
             using (WebClient webClient = new WebClient())
             {
@@ -144,31 +147,25 @@ namespace BO.Elastic.Panel.ViewModels
                 Directory.Delete(tempUpdateDirectory);
                 Directory.CreateDirectory(tempUpdateDirectory);
             }
+
             ZipFile.ExtractToDirectory(downloadedFileFullPath, tempUpdateDirectory);
 
             filesInDownloadedBuild = Directory.GetFiles(tempUpdateDirectory);
-            directoriesInDownloadedBuild = Directory.GetDirectories(tempUpdateDirectory);
+            Directory.GetDirectories(tempUpdateDirectory);
 
             foreach (string file in filesInAppDirectory)
-            {
                 if (File.Exists(file))
                 {
-                    if (File.Exists(file + ".old"))
-                    {
-                        File.Delete(file + ".old");
-                    }
+                    if (File.Exists(file + ".old")) File.Delete(file + ".old");
 
                     File.Move(file, file + ".old");
                 }
-            }
 
             foreach (string file in filesInDownloadedBuild)
             {
                 changeStatusEvent("Aktualizacja pliku " + file);
                 if (File.Exists(file))
-                {
                     File.Move(file, Path.Join(Directory.GetCurrentDirectory(), Path.GetFileName(file)));
-                }
             }
         }
 
@@ -177,76 +174,52 @@ namespace BO.Elastic.Panel.ViewModels
             try
             {
                 HttpClient client = new HttpClient();
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create("http://213.32.122.228:81/Bo.Elastic.Panel/version");
+                HttpWebRequest request =
+                    (HttpWebRequest) WebRequest.Create("http://213.32.122.228:81/Bo.Elastic.Panel/version");
 
                 int version;
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                using (HttpWebResponse response = (HttpWebResponse) request.GetResponse())
                 using (Stream stream = response.GetResponseStream())
                 using (StreamReader reader = new StreamReader(stream))
                 {
                     version = int.Parse(reader.ReadToEnd());
                 }
+
                 try
                 {
                     int currentVersion = GetAppVersion();
-                    if (version > currentVersion)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    return version > currentVersion;
                 }
                 catch (VersionNotFoundException)
                 {
                     MessageBox.Show("Nie znaleziono pliku z wersją aplikacji. Nastąpi wymuszona aktualizacja.");
-                    try
-                    {
-                        using (StreamWriter writer = File.CreateText(Path.Combine(Directory.GetCurrentDirectory(), "version")))
-                        {
-                            writer.Write("0");
-                        }
-                        return true;
-                    }
-                    catch (Exception ex)
-                    {
-                        throw ex;
-                    }
+                    using StreamWriter writer =
+                        File.CreateText(Path.Combine(Directory.GetCurrentDirectory(), "version"));
+                    writer.Write("0");
+
+                    return true;
                 }
             }
             catch (WebException)
             {
                 throw new Exception("Błąd podczas komunikacji z serwerem.");
             }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
         }
 
         private int GetAppVersion()
         {
             if (!File.Exists(Path.Combine(Directory.GetCurrentDirectory(), "version")))
-            {
                 throw new VersionNotFoundException();
-            }
-            else
+
+            string content = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "version"));
+            try
             {
-                string content = File.ReadAllText(Path.Combine(Directory.GetCurrentDirectory(), "version"));
-                try
-                {
-                    int version = int.Parse(content);
-                    return version;
-                }
-                catch (FormatException)
-                {
-                    throw new FormatException("Wystąpił błąd podczas odczytu wersji aplikacji z serwera.");
-                }
-                catch (Exception ex)
-                {
-                    throw ex;
-                }
+                int version = int.Parse(content);
+                return version;
+            }
+            catch (FormatException)
+            {
+                throw new FormatException("Wystąpił błąd podczas odczytu wersji aplikacji z serwera.");
             }
         }
     }

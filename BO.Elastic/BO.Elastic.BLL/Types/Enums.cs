@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace BO.Elastic.BLL.Types
+﻿namespace BO.Elastic.BLL.Types
 {
     public enum EServiceType
     {
@@ -23,7 +19,7 @@ namespace BO.Elastic.BLL.Types
 
     public enum EServiceAction
     {
-        ConnectBySSH,
+        ConnectBySsh,
         Start,
         Stop,
         Restart,
@@ -32,16 +28,16 @@ namespace BO.Elastic.BLL.Types
 
     public enum EClusterAttributes
     {
-        UUID = 0,
+        Uuid = 0,
         Stats = 1,
         Health = 2,
         State = 3,
         NodeInfo = 4,
         ClusterName = 5,
-        HTTPUri = 6,
-        CPU = 7,
-        RAM = 8,
-        OS = 9,
+        HttpUri = 6,
+        Cpu = 7,
+        Ram = 8,
+        Os = 9,
         Roles = 10
     }
 }

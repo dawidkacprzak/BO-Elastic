@@ -10,27 +10,29 @@
     <Grid>
         <Grid.Background>
             <LinearGradientBrush EndPoint="0.474,0.017" StartPoint="0.481,1.002">
-                <GradientStop Color="#FF98C7D4" Offset="0"/>
-                <GradientStop Color="#FFE1EEF1" Offset="1"/>
+                <GradientStop Color="#FF98C7D4" Offset="0" />
+                <GradientStop Color="#FFE1EEF1" Offset="1" />
             </LinearGradientBrush>
         </Grid.Background>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0"/>
-            <RowDefinition Height="110"/>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="25"/>
+            <RowDefinition Height="0" />
+            <RowDefinition Height="110" />
+            <RowDefinition Height="35" />
+            <RowDefinition Height="25" />
         </Grid.RowDefinitions>
 
-        <Button Command="{Binding CloseAppEvent}" HorizontalAlignment="Right" VerticalAlignment="Top" Content="X"  Grid.RowSpan="2" Padding="8" Width="25" Height="25" FontFamily="Candara Light" FontWeight="Bold" FontSize="16">
+        <Button Command="{Binding CloseAppEvent}" HorizontalAlignment="Right" VerticalAlignment="Top" Content="X"
+                Grid.RowSpan="2" Padding="8" Width="25" Height="25" FontFamily="Candara Light" FontWeight="Bold"
+                FontSize="16">
             <Button.Template>
                 <ControlTemplate TargetType="{x:Type Button}">
-                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                 </ControlTemplate>
             </Button.Template>
         </Button>
-        <Image Margin="0,20,0,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png"/>
+        <Image Margin="0,20,0,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png" />
         <Label Grid.Row="2" HorizontalAlignment="Center" FontSize="20" FontWeight="Bold">Bo.Elastic.Panel</Label>
-        <Label Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{Binding LoadingStatus}"/>
+        <Label Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center" Content="{Binding LoadingStatus}" />
     </Grid>
 
 </Window>

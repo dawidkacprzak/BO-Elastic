@@ -1,18 +1,16 @@
-﻿using BO.Elastic.BLL.Model;
+﻿using System;
+using BO.Elastic.BLL.Model;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BO.Elastic.BLL.Test
 {
-    public class IPAddressModel
+    public class IpAddressModel
     {
         [Test]
         public void CreateNetworkAddress()
         {
             NetworkAddress address = new NetworkAddress("192.168.1.1", "25565");
-            Assert.AreEqual(address.IP, "192.168.1.1");
+            Assert.AreEqual(address.Ip, "192.168.1.1");
             Assert.AreEqual(address.Port, "25565");
             Assert.AreEqual(address.NumerPort, 25565);
 
@@ -65,21 +63,21 @@ namespace BO.Elastic.BLL.Test
             Assert.Throws<ArgumentException>(() =>
             {
                 NetworkAddress addressWithValidData = new NetworkAddress("192.168.1.1", "");
-                string ipPort = addressWithValidData.IPPortMerge;
+                string ipPort = addressWithValidData.IpPortMerge;
             });
 
             Assert.DoesNotThrow(() =>
             {
                 NetworkAddress addressWithValidData = new NetworkAddress("192.168.1.1", "3");
-                string ipPort = addressWithValidData.IPPortMerge;
+                string ipPort = addressWithValidData.IpPortMerge;
             });
         }
 
         [Test]
-        public void CreateSSHConnectionInfo()
+        public void CreateSshConnectionInfo()
         {
             NetworkAddress addressWithoutPort = new NetworkAddress("192.168.1.1", "");
-            LoginData testData = new LoginData()
+            LoginData testData = new LoginData
             {
                 Login = "test",
                 Password = "test"
@@ -87,41 +85,42 @@ namespace BO.Elastic.BLL.Test
 
             Assert.DoesNotThrow(() =>
             {
-                SSHConnectionInfo info = new SSHConnectionInfo(addressWithoutPort, testData);
+                SshConnectionInfo info = new SshConnectionInfo(addressWithoutPort, testData);
             });
 
             Assert.Throws<ArgumentException>(() =>
             {
-                SSHConnectionInfo addressWithinvalidData = new SSHConnectionInfo("192.168.1.1", "abc", testData);
+                SshConnectionInfo addressWithinvalidData = new SshConnectionInfo("192.168.1.1", "abc", testData);
             });
 
             Assert.DoesNotThrow(() =>
             {
-                SSHConnectionInfo validData = new SSHConnectionInfo("192.1.1.1", "123", testData);
+                SshConnectionInfo validData = new SshConnectionInfo("192.1.1.1", "123", testData);
             });
 
             Assert.DoesNotThrow(() =>
             {
-                SSHConnectionInfo validData = new SSHConnectionInfo("192.1.1.1", 4, testData);
+                SshConnectionInfo validData = new SshConnectionInfo("192.1.1.1", 4, testData);
             });
 
             Assert.DoesNotThrow(() =>
             {
-                SSHConnectionInfo validData = new SSHConnectionInfo("192.1.1.1", "4", testData);
+                SshConnectionInfo validData = new SshConnectionInfo("192.1.1.1", "4", testData);
             });
         }
 
         [Test]
-        [TestCase("192.168.1.1","2")]
+        [TestCase("192.168.1.1", "2")]
         [TestCase("192.168.1.4", "24")]
         [TestCase("192.168.1.78", "2")]
         [TestCase("1.2.3.4", "242")]
-        public void HttpHttpsConvertWithPort(string ip,string port)
+        public void HttpHttpsConvertWithPort(string ip, string port)
         {
-            NetworkAddress addressWithValidData = new NetworkAddress(ip,port);
+            NetworkAddress addressWithValidData = new NetworkAddress(ip, port);
 
-            Assert.AreEqual(addressWithValidData.HTTPAddress, "http://" + ip + ":" + port);
+            Assert.AreEqual(addressWithValidData.HttpAddress, "http://" + ip + ":" + port);
         }
+
         [Test]
         [TestCase("192.168.1.1", 2)]
         [TestCase("192.168.1.4", 24)]
@@ -131,7 +130,7 @@ namespace BO.Elastic.BLL.Test
         {
             NetworkAddress addressWithValidData = new NetworkAddress(ip, port);
 
-            Assert.AreEqual(addressWithValidData.HTTPAddress, "http://" + ip + ":" + port);
+            Assert.AreEqual(addressWithValidData.HttpAddress, "http://" + ip + ":" + port);
         }
 
         [Test]
@@ -143,7 +142,7 @@ namespace BO.Elastic.BLL.Test
         {
             NetworkAddress addressWithValidData = new NetworkAddress(ip, port);
 
-            Assert.AreEqual(addressWithValidData.HTTPAddress, "http://" + ip);
+            Assert.AreEqual(addressWithValidData.HttpAddress, "http://" + ip);
         }
     }
 }
