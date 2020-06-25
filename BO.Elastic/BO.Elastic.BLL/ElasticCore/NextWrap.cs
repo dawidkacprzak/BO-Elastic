@@ -1,12 +1,14 @@
 ﻿using BO.Elastic.BLL.Exceptions;
 using BO.Elastic.BLL.Model;
 using Elasticsearch.Net;
+using Elasticsearch.Net.Specification.IndicesApi;
 using Nest;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 
 namespace BO.Elastic.BLL.ElasticCore
@@ -69,6 +71,94 @@ namespace BO.Elastic.BLL.ElasticCore
             }
         }
 
+        public ClusterStateResponse GetClusterState()
+        {
+            try
+            {
+                return elasticClient.Cluster.State();
+            }
+            catch(UnexpectedElasticsearchClientException)
+            {
+                return new ClusterStateResponse();
+            }
+        }
+
+        public ClusterStatsResponse GetClusterStats()
+        {
+            try
+            {
+                return elasticClient.Cluster.Stats();
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                return new ClusterStatsResponse();
+            }
+        }
+
+        public CatResponse<CatIndicesRecord> GetCatIndices()
+        {
+            try
+            {
+                return elasticClient.Cat.Indices();
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                return new CatResponse<CatIndicesRecord>();
+            }
+        }
+
+        public GetMappingResponse GetAllIndicesMapping()
+        {
+            try
+            {
+                return elasticClient.Indices.GetMapping(new GetMappingRequest(Indices.AllIndices));
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                return new GetMappingResponse();
+            }
+        }
+
+        public CreateIndexResponse CreateIndex<T>(string indexName, IndexState indexState, T typeObject) where T: class
+        {
+            try
+            {
+                if (!elasticClient.Indices.Exists(indexName).Exists)
+                {
+                    CreateIndexResponse test = elasticClient.Indices.Create(indexName, x => x.InitializeUsing(indexState).Map<T>(mp => mp.AutoMap(1)));
+                        return test;
+                }
+                else
+                {
+                    throw new IndexAlreadyExistsException(indexName);
+                }                
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                throw;
+            }
+        }
+
+        public DeleteIndexResponse DeleteIndex(string indexName)
+        {
+            try
+            {
+                if (elasticClient.Indices.Exists(indexName).Exists)
+                {
+                    return elasticClient.Indices.Delete(indexName);
+                }
+                else
+                {
+                    throw new IndexDoesntExistException(indexName);
+                }
+            }
+            catch (UnexpectedElasticsearchClientException)
+            {
+                throw;
+            }
+        }
+
+
         private bool NodeExists(NetworkAddress address)
         {
             IEnumerable<KeyValuePair<string, NodeInfo>> nodes = GetNodesFromIpAndPort(address);
@@ -89,7 +179,6 @@ namespace BO.Elastic.BLL.ElasticCore
         private IEnumerable<KeyValuePair<string, NodeInfo>> GetNodesFromIpAndPort(NetworkAddress address)
         {
             return elasticClient.Nodes.Info().Nodes.Where(x => x.Value.Http.PublishAddress.Equals(address.IPPortMerge));
-
         }
 
         public static bool PingHost(string hostUri)

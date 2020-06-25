@@ -29,4 +29,19 @@ namespace BO.Elastic.BLL.Types
         Restart,
         Information
     }
+
+    public enum EClusterAttributes
+    {
+        UUID = 0,
+        Stats = 1,
+        Health = 2,
+        State = 3,
+        NodeInfo = 4,
+        ClusterName = 5,
+        HTTPUri = 6,
+        CPU = 7,
+        RAM = 8,
+        OS = 9,
+        Roles = 10
+    }
 }

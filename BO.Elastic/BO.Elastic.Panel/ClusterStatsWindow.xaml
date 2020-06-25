@@ -1,0 +1,88 @@
+﻿<Window x:Class="BO.Elastic.Panel.ClusterStatsWindow"
+     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        AllowsTransparency="False"
+        mc:Ignorable="d" 
+        Height="480" Width="640" 
+        MinWidth="350"
+        MinHeight="60"
+        ResizeMode="CanResize" 
+        WindowState="Normal" 
+        WindowStartupLocation="CenterScreen"
+        Visibility="Visible" 
+        WindowStyle="None"
+        >
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="5" />
+    </WindowChrome.WindowChrome>
+    <Grid>
+        <Grid.ColumnDefinitions>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="400*"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="GridOfToolbar" Grid.ColumnSpan="2" Background="#262626" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+                <Image Margin="0,2.5,0,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/cluster.png"/>
+                <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Foreground="White" FontWeight="Bold" Content="{Binding ClusterStatsResponse.ClusterName}"></Label>
+                <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                    <Label HorizontalAlignment="Center" Height="25"  Padding="0" Margin="0,0,0,0" VerticalContentAlignment="Bottom"  FontSize="13" Foreground="White" FontWeight="Bold" Content="{Binding TransportPort}"></Label>
+                    <Label HorizontalAlignment="Center" Height="25"  Padding="0" Margin="0,0,0,0" VerticalContentAlignment="Top"  FontSize="13"  Foreground="White" FontWeight="Bold" Content="{Binding PublishPort}"></Label>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                    <Label HorizontalAlignment="Center" Height="25" Width="100"  Padding="0" Margin="0,0,0,0" VerticalContentAlignment="Bottom"  FontSize="13" Foreground="White" FontWeight="Bold">Transport</Label>
+                    <Label HorizontalAlignment="Center" Height="25" Width="100"   Padding="0" Margin="0,0,0,0" VerticalContentAlignment="Top" FontSize="13" HorizontalContentAlignment="Left"  Foreground="White" FontWeight="Bold">HTTP</Label>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
+                <Button x:Name="BtnPower" BorderThickness="0" Width="50" Height="50" Background="Transparent" Foreground="White" Command="{Binding CloseAppEvent}" Click="BtnPower_Click">
+                    <materialDesign:PackIcon Kind="Power"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <Grid x:Name="DataGridMenu" Grid.Row="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="420" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <DataGrid HorizontalScrollBarVisibility="Disabled" Grid.Column="0" ItemsSource="{Binding ClusterAttributes}"  Name="Clusters" CanUserAddRows="False" AutoGenerateColumns="False">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn MinWidth="120" FontWeight="Bold" Header="Attribute" Binding="{Binding Key}" />
+                        <DataGridTextColumn MinWidth="300" Header="Value" Binding="{Binding Value}">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Style.Triggers>
+                                    <Trigger Property="Text" Value="Green">
+                                        <Setter Property="Foreground" Value="LightGreen"/>
+                                    </Trigger>
+                                    <Trigger Property="Text" Value="Yellow">
+                                        <Setter Property="Foreground" Value="Yellow"/>
+                                    </Trigger>
+                                    <Trigger Property="Text" Value="Red">
+                                        <Setter Property="Foreground" Value="Red"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                    </DataGrid.Columns>
+
+                </DataGrid>
+                <Grid Grid.Column="1" Background="#262626">
+
+                </Grid>
+
+                <GridSplitter Margin="10,0,0,0" Background="#FF2B2B2B" Grid.Column="0" Width="3"/>
+            </Grid>
+
+        </Grid>
+    </Grid>
+</Window>
