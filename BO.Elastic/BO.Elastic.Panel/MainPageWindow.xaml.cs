@@ -5,6 +5,7 @@ using BO.Elastic.Panel.ClassExtensions;
 using BO.Elastic.Panel.Helpers;
 using BO.Elastic.Panel.ViewModels;
 using Elasticsearch.Net;
+using Microsoft.EntityFrameworkCore.Storage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +68,12 @@ namespace BO.Elastic.Panel
             WindowState = WindowState.Minimized;
         }
 
-        private void BtnLogs_Click(object sender, RoutedEventArgs e)
+        private void BtnDeleteCluster_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void BtnAddCluster_Click(object sender, RoutedEventArgs e)
         {
 
         }

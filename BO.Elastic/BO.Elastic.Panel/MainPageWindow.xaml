@@ -47,10 +47,10 @@
 
         <Grid x:Name="GridOfMenu" Grid.Row="1" Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
-                <Button x:Name="Add" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White" Click="BtnLogs_Click">
+                <Button x:Name="Add" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White" Click="BtnAddCluster_Click">
                     <materialDesign:PackIcon Kind="Add"/>
                 </Button>
-                <Button x:Name="Delete" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White" Click="BtnLogs_Click">
+                <Button x:Name="Delete" BorderThickness="0" Width="30" Height="30" Background="Transparent" Foreground="White" Click="BtnDeleteCluster_Click">
                     <materialDesign:PackIcon Kind="Minus"/>
                 </Button>
                 <Button x:Name="Download" Command="{Binding RefreshConfiguration}" BorderThickness="0"  Width="30" Height="30" Background="Transparent" Foreground="White">

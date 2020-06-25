@@ -86,7 +86,7 @@ namespace BO.Elastic.Panel.ClassExtensions
             {
                 throw;
             }
-            return new Action(() => { MessageBox.Show("Oj oj, coś poszło nie tak :/"); });
+            return new Action(() => { MessageBox.Show("Nie znaleziono akcji parametru usługi"); });
         }
     }
 }
