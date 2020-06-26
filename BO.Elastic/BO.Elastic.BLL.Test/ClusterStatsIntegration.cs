@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using BO.Elastic.BLL.Exceptions;
 using BO.Elastic.BLL.Model;
 using BO.Elastic.Panel.ViewModels;
 using Nest;
@@ -103,46 +106,67 @@ namespace BO.Elastic.BLL.Test
             });
         }
 
-/*
         [Test]
         public void GetInvalidClusterState()
         {
             Assert.DoesNotThrow(() =>
             {
-                ClusterHealthResponse response = new ClusterStatsWindowViewModel(new NetworkAddress(invalidClusterIP, invalidClusterPort)).ClusterStateResponse;
-                if (response != null)
+                ClusterStateResponse response =
+                    new ClusterStatsWindowViewModel(new NetworkAddress(invalidClusterIp, invalidClusterPort), false)
+                        .ClusterStateResponse;
+                if (response != null) Assert.Fail();
+            });
+        }
+
+        [Test]
+        public void GetInvalidNodeInfo()
+        {
+            Assert.DoesNotThrow(() =>
+            {
+                NodeInfo response =
+                    new ClusterStatsWindowViewModel(new NetworkAddress(invalidClusterIp, invalidClusterPort), false)
+                        .NodeInfo;
+                if(response != null)
                 {
                     Assert.Fail();
                 }
             });
         }
 
-
         [Test]
-        public void GetValidClusterHealth()
+        public void GetValidNodeInfo()
         {
             Assert.DoesNotThrow(() =>
             {
-                ClusterHealthResponse response = new ClusterStatsWindowViewModel(new NetworkAddress(validClusterIP, validClusterPort)).ClusterHealthResponse;
-                if (!response.IsValid)
+                NodeInfo response =
+                    new ClusterStatsWindowViewModel(new NetworkAddress(validClusterIp, validClusterPort), false)
+                        .NodeInfo;
+                if (response == null)
                 {
                     Assert.Fail();
                 }
             });
         }
 
-
         [Test]
-        public void GetInvalidClusterHealth()
+        [TestCase(validClusterIp,validClusterPort)]
+        [TestCase(invalidClusterIp, invalidClusterPort)]
+        public void GetClusterAttributes(string ip,string port)
         {
             Assert.DoesNotThrow(() =>
             {
-                ClusterHealthResponse response = new ClusterStatsWindowViewModel(new NetworkAddress(invalidClusterIP, invalidClusterPort)).ClusterHealthResponse;
+                ObservableCollection<KeyValuePair<string, string>> response =
+                    new ClusterStatsWindowViewModel(new NetworkAddress(validClusterIp, validClusterPort), false)
+                        .ClusterAttributes;
                 if (response != null)
+                {
+                    Assert.IsInstanceOf<ObservableCollection<KeyValuePair<string, string>>>(response);
+                }
+                else
                 {
                     Assert.Fail();
                 }
             });
-        }*/
+        }
     }
 }
