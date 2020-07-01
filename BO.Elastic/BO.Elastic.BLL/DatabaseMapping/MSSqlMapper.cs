@@ -22,9 +22,9 @@ namespace BO.Elastic.BLL.DatabaseMapping
             this.connectionString = new ConnectionString(DBMSSystem.MSSQL, ip, port, database, username, password);
         }
 
-        public IEnumerable<KeyValuePair<string, ESqlDatatypes>> GetTableColumns(SqlTableNamespace tableNamespace)
+        public IEnumerable<KeyValuePair<string, EDBDataType>> GetTableColumns(SqlTableNamespace tableNamespace)
         {
-            List<KeyValuePair<string, ESqlDatatypes>> columns = new List<KeyValuePair<string, ESqlDatatypes>>();
+            List<KeyValuePair<string, EDBDataType>> columns = new List<KeyValuePair<string, EDBDataType>>();
             using (SqlConnection connection = new SqlConnection(connectionString.GetConnectionString()))
             {
                 try
@@ -41,7 +41,7 @@ namespace BO.Elastic.BLL.DatabaseMapping
                     {
                         while (reader.Read())
                         {
-                            columns.Add(new KeyValuePair<string,ESqlDatatypes>(reader.GetString(3),ESqlDatatypes.Integer));
+                            columns.Add(new KeyValuePair<string,EDBDataType>(reader.GetString(3),EDBDataType.Int));
                         }
                     }
                     return columns;

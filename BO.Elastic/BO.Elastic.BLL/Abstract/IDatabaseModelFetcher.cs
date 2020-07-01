@@ -9,7 +9,7 @@ namespace BO.Elastic.BLL.Abstract
     public interface IDatabaseModelFetcher
     {
         public IEnumerable<SqlTableNamespace> GetTables();
-        public IEnumerable<KeyValuePair<string, ESqlDatatypes>> GetTableColumns(SqlTableNamespace tableNamespace);
+        public IEnumerable<KeyValuePair<string, EDBDataType>> GetTableColumns(SqlTableNamespace tableNamespace);
         public bool IsConnectionValid();
     }
 }

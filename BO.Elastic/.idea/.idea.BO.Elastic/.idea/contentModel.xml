@@ -14,10 +14,17 @@
     <e p="C:\Users\Rekurencja\AppData\Local\JetBrains\Rider2020.1\resharper-host\Local\Transient\ReSharperHost\v201\SolutionCaches\_BO.Elastic.-352731778.00" t="ExcludeRecursive" />
     <e p="C:\Users\Rekurencja\RiderProjects\BO-Elastic\BO.Elastic" t="IncludeFlat">
       <e p="BO.Elastic.BLL" t="IncludeRecursive">
+        <e p="Abstract" t="Include">
+          <e p="IDatabaseModelFetcher.cs" t="Include" />
+        </e>
         <e p="bin" t="ExcludeRecursive" />
         <e p="BO.Elastic.BLL.csproj" t="IncludeRecursive" />
         <e p="ConfigurationController.cs" t="Include" />
+        <e p="DatabaseMapping" t="Include">
+          <e p="MSSqlMapper.cs" t="Include" />
+        </e>
         <e p="ElasticCore" t="Include">
+          <e p="DataTypeParser.cs" t="Include" />
           <e p="NextWrap.cs" t="Include" />
         </e>
         <e p="Exceptions" t="Include">
@@ -26,19 +33,24 @@
           <e p="IndexAlreadyExistsException.cs" t="Include" />
           <e p="IndexDoesntExistException .cs" t="Include" />
           <e p="NodeNotConnectedException.cs" t="Include" />
+          <e p="SqlMappingException.cs" t="Include" />
           <e p="SSHCommandExecuteException.cs" t="Include" />
         </e>
         <e p="Extension" t="Include">
+          <e p="IDatabaseModelFetcherIntanceManager.cs" t="Include" />
           <e p="ServiceExtension.cs" t="Include" />
         </e>
         <e p="LoadedNodeController.cs" t="Include" />
         <e p="Model" t="Include">
           <e p="ClusterNode.cs" t="Include" />
+          <e p="ConnectionString.cs" t="Include" />
           <e p="ElasticContext.cs" t="Include" />
           <e p="LoginData.cs" t="Include" />
+          <e p="MappingDatagridRow.cs" t="Include" />
           <e p="NetworkAddress.cs" t="Include" />
           <e p="Service.cs" t="Include" />
           <e p="ServiceType.cs" t="Include" />
+          <e p="SqlTableNamespace.cs" t="Include" />
           <e p="SSHConnectionInfo.cs" t="Include" />
         </e>
         <e p="obj" t="ExcludeRecursive">
@@ -65,6 +77,7 @@
         <e p="bin" t="ExcludeRecursive" />
         <e p="BO.Elastic.BLL.Test.csproj" t="IncludeRecursive" />
         <e p="ClusterStatsIntegration.cs" t="Include" />
+        <e p="DatabaseMappingIntegration.cs" t="Include" />
         <e p="DbContentIntegration.cs" t="Include" />
         <e p="IPAddressModel.cs" t="Include" />
         <e p="LoginDataIntegrationTests.cs" t="Include" />
@@ -120,6 +133,7 @@
               <e p="App.g.cs" t="Include" />
               <e p="BO.Elastic.Panel.AssemblyInfo.cs" t="Include" />
               <e p="ClusterStatsWindow.g.cs" t="Include" />
+              <e p="InformationWindow.g.cs" t="Include" />
               <e p="LoadingWindow.g.cs" t="Include" />
               <e p="MainPageWindow.g.cs" t="Include" />
               <e p="SaveLoginDataWindow.g.cs" t="Include" />

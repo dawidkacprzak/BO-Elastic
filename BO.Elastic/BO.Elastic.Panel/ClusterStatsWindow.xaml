@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:core="clr-namespace:System;assembly=System.Runtime"
         AllowsTransparency="False"
         mc:Ignorable="d"
         Height="480" Width="640"
@@ -93,23 +94,34 @@
                 </DataGrid>
                 <Grid Grid.Column="0" Visibility="Hidden" x:Name="index_mapping">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        <TextBox IsEnabled="false" Text="{Binding MappingHost, Mode=OneWay}"></TextBox>
-                        <TextBox Text="{Binding MappingPort}"></TextBox>
-                        <TextBox Text="{Binding MappingDatabase}"></TextBox>
-                        <TextBox Text="{Binding MappingUsername}"></TextBox>
-                        <TextBox Text="{Binding MappingPassword}"></TextBox>
-                        <ComboBox SelectedIndex="0" SelectedItem="{Binding MappingDBMS}" ItemsSource="{Binding PossibleDBMSSystems}"></ComboBox>
-                        <Button Command="{Binding ConnectToDatabase}" Content="connect"></Button>
-                        <Label Visibility="{Binding MappingConnectedElementsVisibility}">Po zaladowaniu</Label>
-                        <ComboBox SelectedItem="{Binding FetchedTableSelected}" Visibility="{Binding MappingConnectedElementsVisibility}" ItemsSource="{Binding FetchedTables}" DisplayMemberPath="ReadableTable"></ComboBox>
-                            <Button Command="{Binding MapTable}" Content="generate mapping"></Button>
-                            <DataGrid ItemsSource="{Binding TempSel}" AutoGenerateColumns="False">
+                        <StackPanel>
+                            <TextBox IsEnabled="false" Text="{Binding MappingHost, Mode=OneWay}" />
+                            <TextBox Text="{Binding MappingPort}" />
+                            <TextBox Text="{Binding MappingDatabase}" />
+                            <TextBox Text="{Binding MappingUsername}" />
+                            <TextBox Text="{Binding MappingPassword}" />
+                            <ComboBox SelectedIndex="0" SelectedItem="{Binding MappingDBMS}"
+                                      ItemsSource="{Binding PossibleDBMSSystems}" />
+                            <Button Command="{Binding ConnectToDatabase}" Content="connect" />
+                            <Label Visibility="{Binding MappingConnectedElementsVisibility}">Po zaladowaniu</Label>
+                            <ComboBox SelectedItem="{Binding FetchedTableSelected}"
+                                      Visibility="{Binding MappingConnectedElementsVisibility}"
+                                      ItemsSource="{Binding FetchedTables}" DisplayMemberPath="ReadableTable" />
+                            <Button Command="{Binding MapTable}" Content="generate mapping" />
+                            <DataGrid ItemsSource="{Binding MappingRows}" AutoGenerateColumns="False">
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding Key}"></DataGridTextColumn>
-                                    <DataGridTextColumn Binding="{Binding Value}"></DataGridTextColumn>
+                                    <DataGridTextColumn Header="Column name" Binding="{Binding ColumnName}" />
+                                    <DataGridTextColumn Header="Database type" Binding="{Binding DBDataType}" />
+                                    <DataGridTemplateColumn Header="Log" MinWidth="150">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <ComboBox SelectedItem="{Binding SelectedMapping}" SelectedIndex="0"
+                                                          ItemsSource="{Binding PossibleDataMappings}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
                                 </DataGrid.Columns>
-                                
+
                             </DataGrid>
                         </StackPanel>
                     </ScrollViewer>
@@ -117,8 +129,11 @@
                 <Grid Grid.Column="1" Background="#262626">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel>
-                            <Button x:Name="btn_show_status" VerticalAlignment="Top" Height="50" Margin="10,10,10,5" Content="Status" Click="btn_show_status_Click"></Button>
-                            <Button x:Name="btn_index_mapping" IsEnabled="{Binding ContextMenuEnabled}" VerticalAlignment="Top" Height="50" Margin="10,5,10,5" Content="Index Mapping" Click="btn_index_mapping_Click"></Button>
+                            <Button x:Name="btn_show_status" VerticalAlignment="Top" Height="50" Margin="10,10,10,5"
+                                    Content="Status" Click="btn_show_status_Click" />
+                            <Button x:Name="btn_index_mapping" IsEnabled="{Binding ContextMenuEnabled}"
+                                    VerticalAlignment="Top" Height="50" Margin="10,5,10,5" Content="Index Mapping"
+                                    Click="btn_index_mapping_Click" />
                         </StackPanel>
 
                     </ScrollViewer>

@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Timers;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using BO.Elastic.BLL.Abstract;
 using BO.Elastic.BLL.ElasticCore;
@@ -46,29 +47,25 @@ namespace BO.Elastic.Panel.ViewModels
         private string mappingDatabase;
         private ObservableCollection<SqlTableNamespace> fetchedTables;
         private bool databaseValidConnection;
-        private DBMSSystem mappingDBMS;
+        private DBMSSystem mappingDbms;
         private IDatabaseModelFetcher modelFetcher;
+
         public DBMSSystem MappingDBMS
         {
-            get
-            {
-                return mappingDBMS;
-            }
+            get { return mappingDbms; }
             set
             {
-                if (!mappingDBMS.Equals(value))
+                if (!mappingDbms.Equals(value))
                 {
-                    mappingDBMS = value;
+                    mappingDbms = value;
                     NotifyPropertyChanged();
                 }
             }
         }
+
         public string MappingHost
         {
-            get
-            {
-                return clusterNetworkAddress.Ip;
-            }
+            get { return clusterNetworkAddress.Ip; }
         }
 
         public ObservableCollection<SqlTableNamespace> FetchedTables
@@ -79,6 +76,7 @@ namespace BO.Elastic.Panel.ViewModels
                 {
                     return new ObservableCollection<SqlTableNamespace>();
                 }
+
                 return fetchedTables;
             }
             set
@@ -96,6 +94,7 @@ namespace BO.Elastic.Panel.ViewModels
                 }
             }
         }
+
         public Visibility MappingConnectedElementsVisibility
         {
             get
@@ -110,12 +109,10 @@ namespace BO.Elastic.Panel.ViewModels
                 }
             }
         }
+
         public bool DatabaseValidConnection
         {
-            get
-            {
-                return databaseValidConnection;
-            }
+            get { return databaseValidConnection; }
             set
             {
                 if (!databaseValidConnection.Equals(value))
@@ -126,12 +123,10 @@ namespace BO.Elastic.Panel.ViewModels
                 }
             }
         }
+
         public string MappingPort
         {
-            get
-            {
-                return mappingPort;
-            }
+            get { return mappingPort; }
             set
             {
                 if (mappingPort == null)
@@ -146,12 +141,10 @@ namespace BO.Elastic.Panel.ViewModels
                 }
             }
         }
+
         public string MappingUsername
         {
-            get
-            {
-                return mappingUsername;
-            }
+            get { return mappingUsername; }
             set
             {
                 if (string.IsNullOrEmpty(mappingUsername) || !mappingUsername.Equals(value))
@@ -161,12 +154,10 @@ namespace BO.Elastic.Panel.ViewModels
                 }
             }
         }
+
         public string MappingPassword
         {
-            get
-            {
-                return mappingPassword;
-            }
+            get { return mappingPassword; }
             set
             {
                 if (string.IsNullOrEmpty(mappingPassword) || !mappingPassword.Equals(value))
@@ -176,12 +167,10 @@ namespace BO.Elastic.Panel.ViewModels
                 }
             }
         }
+
         public string MappingDatabase
         {
-            get
-            {
-                return mappingDatabase;
-            }
+            get { return mappingDatabase; }
             set
             {
                 if (string.IsNullOrEmpty(mappingDatabase) || !mappingDatabase.Equals(value))
@@ -194,17 +183,12 @@ namespace BO.Elastic.Panel.ViewModels
 
         public List<DBMSSystem> PossibleDBMSSystems
         {
-            get
-            {
-                return Enum.GetValues(typeof(DBMSSystem)).Cast<DBMSSystem>().ToList();
-            }
+            get { return Enum.GetValues(typeof(DBMSSystem)).Cast<DBMSSystem>().ToList(); }
         }
+
         public bool ContextMenuEnabled
         {
-            get
-            {
-                return contextMenuEnabled;
-            }
+            get { return contextMenuEnabled; }
             set
             {
                 if (contextMenuEnabled != value)
@@ -219,7 +203,8 @@ namespace BO.Elastic.Panel.ViewModels
         {
             try
             {
-                modelFetcher = IDatabaseModelFetcherIntanceManager.GetInstance(MappingDBMS, MappingHost, MappingPort, MappingDatabase, MappingUsername, MappingPassword);
+                modelFetcher = IDatabaseModelFetcherIntanceManager.GetInstance(MappingDBMS, MappingHost, MappingPort,
+                    MappingDatabase, MappingUsername, MappingPassword);
                 bool isValid = modelFetcher.IsConnectionValid();
                 FetchedTables = new ObservableCollection<SqlTableNamespace>(modelFetcher.GetTables());
                 DatabaseValidConnection = isValid;
@@ -233,6 +218,7 @@ namespace BO.Elastic.Panel.ViewModels
         });
 
         private SqlTableNamespace fetchedTableSelected;
+
         public SqlTableNamespace FetchedTableSelected
         {
             get
@@ -241,6 +227,7 @@ namespace BO.Elastic.Panel.ViewModels
                 {
                     fetchedTableSelected = FetchedTables.FirstOrDefault();
                 }
+
                 return fetchedTableSelected;
             }
             set
@@ -249,18 +236,40 @@ namespace BO.Elastic.Panel.ViewModels
                 NotifyPropertyChanged();
             }
         }
-        public ObservableCollection<KeyValuePair<string, ESqlDatatypes>> TempSel { get; set; }
+
+        private ObservableCollection<MappingDatagridRow> mappingRows;
+
+        public ObservableCollection<MappingDatagridRow> MappingRows
+        {
+            get
+            {
+                if (mappingRows == null)
+                    mappingRows = new ObservableCollection<MappingDatagridRow>();
+                return mappingRows;
+            }
+            set
+            {
+                mappingRows = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public ObservableCollection<EElasticDataTypes> XX = new ObservableCollection<EElasticDataTypes>()
+        {
+            EElasticDataTypes.Boolean
+        };
         public ICommand MapTable => new BasicCommand(() =>
         {
             try
             {
                 if (FetchedTableSelected != null)
                 {
-                    if(FetchedTableSelected != null)
+                    if (FetchedTableSelected != null)
                     {
-                        var mapping = modelFetcher.GetTableColumns(FetchedTableSelected);
-                        TempSel = new ObservableCollection<KeyValuePair<string, ESqlDatatypes>>(mapping);
-                        NotifyPropertyChanged("TempSel");
+                        List<KeyValuePair<string, EDBDataType>> mapping =
+                            modelFetcher.GetTableColumns(FetchedTableSelected).ToList();
+
+                        MappingRows = new ObservableCollection<MappingDatagridRow>(mapping
+                            .Select(x => new MappingDatagridRow(x.Key, x.Value)).ToList());
                     }
                 }
             }
@@ -327,7 +336,7 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (clusterStatsResponse == null)
                     clusterStatsResponse =
-                        (ClusterStatsResponse)GetValueIfNextWrapIsInitialized(EClusterAttributes.Stats);
+                        (ClusterStatsResponse) GetValueIfNextWrapIsInitialized(EClusterAttributes.Stats);
                 return clusterStatsResponse;
             }
             set
@@ -343,7 +352,7 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (clusterStateResponse == null)
                     clusterStateResponse =
-                        (ClusterStateResponse)GetValueIfNextWrapIsInitialized(EClusterAttributes.State);
+                        (ClusterStateResponse) GetValueIfNextWrapIsInitialized(EClusterAttributes.State);
                 return clusterStateResponse;
             }
             set
@@ -358,7 +367,7 @@ namespace BO.Elastic.Panel.ViewModels
             get
             {
                 if (nodeInfo == null)
-                    nodeInfo = (NodeInfo)GetValueIfNextWrapIsInitialized(EClusterAttributes.NodeInfo);
+                    nodeInfo = (NodeInfo) GetValueIfNextWrapIsInitialized(EClusterAttributes.NodeInfo);
                 return nodeInfo;
             }
             set
@@ -389,7 +398,7 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (clusterHealthResponse == null)
                     clusterHealthResponse =
-                        (ClusterHealthResponse)GetValueIfNextWrapIsInitialized(EClusterAttributes.Health);
+                        (ClusterHealthResponse) GetValueIfNextWrapIsInitialized(EClusterAttributes.Health);
                 return clusterHealthResponse;
             }
             set
@@ -405,6 +414,7 @@ namespace BO.Elastic.Panel.ViewModels
                     {
                         ContextMenuEnabled = false;
                     }
+
                     NotifyPropertyChanged();
                 }
             }
@@ -462,7 +472,7 @@ namespace BO.Elastic.Panel.ViewModels
                         return nextWrap.GetNodeInfo(clusterNetworkAddress);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
