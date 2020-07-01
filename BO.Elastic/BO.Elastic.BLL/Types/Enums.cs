@@ -43,11 +43,14 @@
 
     public enum ESqlDatatypes
     {
-        //todo
+        Integer = 0
     }
 
     public enum DBMSSystem
     {
-        MSSQL = 1
+        MSSQL = 1,
+        MySQL = 2,
+        PostgreSQL = 3,
+        MongoDB = 4
     }
 }

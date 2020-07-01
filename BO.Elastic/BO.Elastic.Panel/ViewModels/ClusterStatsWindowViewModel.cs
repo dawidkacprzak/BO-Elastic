@@ -2,13 +2,19 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Timers;
+using System.Windows;
+using System.Windows.Input;
+using BO.Elastic.BLL.Abstract;
 using BO.Elastic.BLL.ElasticCore;
 using BO.Elastic.BLL.Exceptions;
+using BO.Elastic.BLL.Extension;
 using BO.Elastic.BLL.Model;
 using BO.Elastic.BLL.Types;
+using BO.Elastic.Panel.Command;
 using Nest;
 using Timer = System.Timers.Timer;
 
@@ -30,11 +36,250 @@ namespace BO.Elastic.Panel.ViewModels
         private NextWrap nextWrap;
 
         private NodeInfo nodeInfo;
+        private bool contextMenuEnabled;
+
+        #region Mapping
+
+        private string mappingPort;
+        private string mappingUsername;
+        private string mappingPassword;
+        private string mappingDatabase;
+        private ObservableCollection<SqlTableNamespace> fetchedTables;
+        private bool databaseValidConnection;
+        private DBMSSystem mappingDBMS;
+        private IDatabaseModelFetcher modelFetcher;
+        public DBMSSystem MappingDBMS
+        {
+            get
+            {
+                return mappingDBMS;
+            }
+            set
+            {
+                if (!mappingDBMS.Equals(value))
+                {
+                    mappingDBMS = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public string MappingHost
+        {
+            get
+            {
+                return clusterNetworkAddress.Ip;
+            }
+        }
+
+        public ObservableCollection<SqlTableNamespace> FetchedTables
+        {
+            get
+            {
+                if (fetchedTables == null)
+                {
+                    return new ObservableCollection<SqlTableNamespace>();
+                }
+                return fetchedTables;
+            }
+            set
+            {
+                if (value == null)
+                {
+                    fetchedTables = new ObservableCollection<SqlTableNamespace>();
+                    NotifyPropertyChanged();
+                }
+                else if (fetchedTables != value)
+                {
+                    fetchedTables = value;
+                    FetchedTableSelected = fetchedTables.FirstOrDefault();
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public Visibility MappingConnectedElementsVisibility
+        {
+            get
+            {
+                if (DatabaseValidConnection)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Hidden;
+                }
+            }
+        }
+        public bool DatabaseValidConnection
+        {
+            get
+            {
+                return databaseValidConnection;
+            }
+            set
+            {
+                if (!databaseValidConnection.Equals(value))
+                {
+                    databaseValidConnection = value;
+                    NotifyPropertyChanged();
+                    NotifyPropertyChanged("MappingConnectedElementsVisibility");
+                }
+            }
+        }
+        public string MappingPort
+        {
+            get
+            {
+                return mappingPort;
+            }
+            set
+            {
+                if (mappingPort == null)
+                {
+                    mappingPort = string.Empty;
+                }
+
+                if (!mappingPort.Equals(value))
+                {
+                    mappingPort = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public string MappingUsername
+        {
+            get
+            {
+                return mappingUsername;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(mappingUsername) || !mappingUsername.Equals(value))
+                {
+                    mappingUsername = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public string MappingPassword
+        {
+            get
+            {
+                return mappingPassword;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(mappingPassword) || !mappingPassword.Equals(value))
+                {
+                    mappingPassword = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+        public string MappingDatabase
+        {
+            get
+            {
+                return mappingDatabase;
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(mappingDatabase) || !mappingDatabase.Equals(value))
+                {
+                    mappingDatabase = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public List<DBMSSystem> PossibleDBMSSystems
+        {
+            get
+            {
+                return Enum.GetValues(typeof(DBMSSystem)).Cast<DBMSSystem>().ToList();
+            }
+        }
+        public bool ContextMenuEnabled
+        {
+            get
+            {
+                return contextMenuEnabled;
+            }
+            set
+            {
+                if (contextMenuEnabled != value)
+                {
+                    contextMenuEnabled = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
+
+        public ICommand ConnectToDatabase => new BasicCommand(() =>
+        {
+            try
+            {
+                modelFetcher = IDatabaseModelFetcherIntanceManager.GetInstance(MappingDBMS, MappingHost, MappingPort, MappingDatabase, MappingUsername, MappingPassword);
+                bool isValid = modelFetcher.IsConnectionValid();
+                FetchedTables = new ObservableCollection<SqlTableNamespace>(modelFetcher.GetTables());
+                DatabaseValidConnection = isValid;
+            }
+            catch (Exception ex)
+            {
+                DatabaseValidConnection = false;
+                FetchedTables = null;
+                MessageBox.Show(ex.Message);
+            }
+        });
+
+        private SqlTableNamespace fetchedTableSelected;
+        public SqlTableNamespace FetchedTableSelected
+        {
+            get
+            {
+                if (fetchedTableSelected == null)
+                {
+                    fetchedTableSelected = FetchedTables.FirstOrDefault();
+                }
+                return fetchedTableSelected;
+            }
+            set
+            {
+                fetchedTableSelected = value;
+                NotifyPropertyChanged();
+            }
+        }
+        public ObservableCollection<KeyValuePair<string, ESqlDatatypes>> TempSel { get; set; }
+        public ICommand MapTable => new BasicCommand(() =>
+        {
+            try
+            {
+                if (FetchedTableSelected != null)
+                {
+                    if(FetchedTableSelected != null)
+                    {
+                        var mapping = modelFetcher.GetTableColumns(FetchedTableSelected);
+                        TempSel = new ObservableCollection<KeyValuePair<string, ESqlDatatypes>>(mapping);
+                        NotifyPropertyChanged("TempSel");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                DatabaseValidConnection = false;
+                FetchedTables = null;
+                MessageBox.Show(ex.Message);
+            }
+        });
+
+        #endregion
 
         public ClusterStatsWindowViewModel(NetworkAddress networkAddress, bool startUpdateThread = true)
         {
             try
             {
+                DatabaseValidConnection = false;
+                ContextMenuEnabled = false;
                 clusterNetworkAddress = networkAddress;
                 nextWrap = new NextWrap(networkAddress);
                 RefreshData();
@@ -82,7 +327,7 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (clusterStatsResponse == null)
                     clusterStatsResponse =
-                        (ClusterStatsResponse) GetValueIfNextWrapIsInitialized(EClusterAttributes.Stats);
+                        (ClusterStatsResponse)GetValueIfNextWrapIsInitialized(EClusterAttributes.Stats);
                 return clusterStatsResponse;
             }
             set
@@ -98,7 +343,7 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (clusterStateResponse == null)
                     clusterStateResponse =
-                        (ClusterStateResponse) GetValueIfNextWrapIsInitialized(EClusterAttributes.State);
+                        (ClusterStateResponse)GetValueIfNextWrapIsInitialized(EClusterAttributes.State);
                 return clusterStateResponse;
             }
             set
@@ -113,7 +358,7 @@ namespace BO.Elastic.Panel.ViewModels
             get
             {
                 if (nodeInfo == null)
-                    nodeInfo = (NodeInfo) GetValueIfNextWrapIsInitialized(EClusterAttributes.NodeInfo);
+                    nodeInfo = (NodeInfo)GetValueIfNextWrapIsInitialized(EClusterAttributes.NodeInfo);
                 return nodeInfo;
             }
             set
@@ -144,7 +389,7 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 if (clusterHealthResponse == null)
                     clusterHealthResponse =
-                        (ClusterHealthResponse) GetValueIfNextWrapIsInitialized(EClusterAttributes.Health);
+                        (ClusterHealthResponse)GetValueIfNextWrapIsInitialized(EClusterAttributes.Health);
                 return clusterHealthResponse;
             }
             set
@@ -152,6 +397,14 @@ namespace BO.Elastic.Panel.ViewModels
                 if (value != clusterHealthResponse)
                 {
                     clusterHealthResponse = value;
+                    if (clusterHealthResponse != null && clusterHealthResponse.IsValid)
+                    {
+                        ContextMenuEnabled = true;
+                    }
+                    else
+                    {
+                        ContextMenuEnabled = false;
+                    }
                     NotifyPropertyChanged();
                 }
             }
@@ -195,16 +448,23 @@ namespace BO.Elastic.Panel.ViewModels
         private object GetValueIfNextWrapIsInitialized(EClusterAttributes value)
         {
             if (nextWrap == null) return null;
-            switch (value)
+            try
             {
-                case EClusterAttributes.Stats:
-                    return nextWrap.GetClusterStats();
-                case EClusterAttributes.State:
-                    return nextWrap.GetClusterState();
-                case EClusterAttributes.Health:
-                    return nextWrap.GetClusterHealth();
-                case EClusterAttributes.NodeInfo:
-                    return nextWrap.GetNodeInfo(clusterNetworkAddress);
+                switch (value)
+                {
+                    case EClusterAttributes.Stats:
+                        return nextWrap.GetClusterStats();
+                    case EClusterAttributes.State:
+                        return nextWrap.GetClusterState();
+                    case EClusterAttributes.Health:
+                        return nextWrap.GetClusterHealth();
+                    case EClusterAttributes.NodeInfo:
+                        return nextWrap.GetNodeInfo(clusterNetworkAddress);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
             }
 
             return null;
@@ -226,17 +486,17 @@ namespace BO.Elastic.Panel.ViewModels
                     else return string.Empty;
 
                 case EClusterAttributes.HttpUri:
-                    if (ClusterStateResponse != null)
+                    if (ClusterStateResponse != null && ClusterStateResponse.ApiCall != null)
                         return ClusterStateResponse.ApiCall.Uri.AbsoluteUri;
                     else return string.Empty;
 
                 case EClusterAttributes.Cpu:
-                    if (ClusterStatsResponse != null)
+                    if (ClusterStatsResponse != null && ClusterStatsResponse.Nodes != null)
                         return ClusterStatsResponse.Nodes.Process.Cpu.Percent + "%";
                     else return string.Empty;
 
                 case EClusterAttributes.Ram:
-                    if (ClusterStatsResponse != null)
+                    if (ClusterStatsResponse != null && ClusterStatsResponse.Nodes != null)
                         return ClusterStatsResponse.Nodes.Jvm.Memory.HeapUsedInBytes / 1024 + "/" +
                                ClusterStatsResponse.Nodes.Jvm.Memory.HeapMaxInBytes / 1024;
                     else return string.Empty;
@@ -280,7 +540,7 @@ namespace BO.Elastic.Panel.ViewModels
         {
             try
             {
-                nextWrap ??= new NextWrap(clusterNetworkAddress);
+                nextWrap = new NextWrap(clusterNetworkAddress);
                 ClusterStatsResponse = nextWrap.GetClusterStats();
                 ClusterStateResponse = nextWrap.GetClusterState();
                 NodeInfo = nextWrap.GetNodeInfo(clusterNetworkAddress);
@@ -292,6 +552,7 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 ClusterStatus = "Offline";
                 nodeInfo = null;
+                ContextMenuEnabled = false;
             }
         }
 

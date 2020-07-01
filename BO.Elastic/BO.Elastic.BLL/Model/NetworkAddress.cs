@@ -54,7 +54,7 @@ namespace BO.Elastic.BLL.Model
 
         private void ValidateIp(string ip)
         {
-            if (ip.Length == 0) throw new ArgumentException("Adres IP jest nieprawidłowy");
+            if (string.IsNullOrEmpty(ip) || ip.Length == 0) throw new ArgumentException("Adres IP jest nieprawidłowy");
         }
 
         private void ValidatePort(string port)

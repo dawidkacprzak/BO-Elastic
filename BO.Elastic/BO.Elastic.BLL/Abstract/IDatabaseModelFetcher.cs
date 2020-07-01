@@ -10,5 +10,6 @@ namespace BO.Elastic.BLL.Abstract
     {
         public IEnumerable<SqlTableNamespace> GetTables();
         public IEnumerable<KeyValuePair<string, ESqlDatatypes>> GetTableColumns(SqlTableNamespace tableNamespace);
+        public bool IsConnectionValid();
     }
 }

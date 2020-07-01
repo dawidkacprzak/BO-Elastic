@@ -92,17 +92,33 @@
 
                 </DataGrid>
                 <Grid Grid.Column="0" Visibility="Hidden" x:Name="index_mapping">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
                     <StackPanel>
-                        <TextBox Text="Host ip"></TextBox>
-                        <TextBox Text="port (optional)"></TextBox>
-                        <TextBox Text=""></TextBox>
-                    </StackPanel>
+                        <TextBox IsEnabled="false" Text="{Binding MappingHost, Mode=OneWay}"></TextBox>
+                        <TextBox Text="{Binding MappingPort}"></TextBox>
+                        <TextBox Text="{Binding MappingDatabase}"></TextBox>
+                        <TextBox Text="{Binding MappingUsername}"></TextBox>
+                        <TextBox Text="{Binding MappingPassword}"></TextBox>
+                        <ComboBox SelectedIndex="0" SelectedItem="{Binding MappingDBMS}" ItemsSource="{Binding PossibleDBMSSystems}"></ComboBox>
+                        <Button Command="{Binding ConnectToDatabase}" Content="connect"></Button>
+                        <Label Visibility="{Binding MappingConnectedElementsVisibility}">Po zaladowaniu</Label>
+                        <ComboBox SelectedItem="{Binding FetchedTableSelected}" Visibility="{Binding MappingConnectedElementsVisibility}" ItemsSource="{Binding FetchedTables}" DisplayMemberPath="ReadableTable"></ComboBox>
+                            <Button Command="{Binding MapTable}" Content="generate mapping"></Button>
+                            <DataGrid ItemsSource="{Binding TempSel}" AutoGenerateColumns="False">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Binding="{Binding Key}"></DataGridTextColumn>
+                                    <DataGridTextColumn Binding="{Binding Value}"></DataGridTextColumn>
+                                </DataGrid.Columns>
+                                
+                            </DataGrid>
+                        </StackPanel>
+                    </ScrollViewer>
                 </Grid>
                 <Grid Grid.Column="1" Background="#262626">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <Button x:Name="btn_show_status" VerticalAlignment="Top" Height="50" Margin="10,10,10,5" Content="Status" Click="btn_show_status_Click"></Button>
-                            <Button x:Name="btn_index_mapping" VerticalAlignment="Top" Height="50" Margin="10,5,10,5" Content="Index Mapping" Click="btn_index_mapping_Click"></Button>
+                            <Button x:Name="btn_index_mapping" IsEnabled="{Binding ContextMenuEnabled}" VerticalAlignment="Top" Height="50" Margin="10,5,10,5" Content="Index Mapping" Click="btn_index_mapping_Click"></Button>
                         </StackPanel>
 
                     </ScrollViewer>

@@ -10,11 +10,19 @@ namespace BO.Elastic.BLL.Model
         public string Schema { get; set; }
         public string Name { get; set; }
 
+        public string ReadableTable
+        {
+            get
+            {
+                return Catalog + "." + Schema + "." + Name;
+            }
+        }
         public SqlTableNamespace(string catalog,string schema,string name)
         {
             this.Catalog = catalog;
             this.Schema = schema;
             this.Name = name;
         }
+
     }
 }

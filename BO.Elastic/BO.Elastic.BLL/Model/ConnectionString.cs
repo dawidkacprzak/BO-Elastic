@@ -32,7 +32,7 @@ namespace BO.Elastic.BLL.Model
             switch (DBMSSystem)
             {
                 case DBMSSystem.MSSQL:
-                    return $"Server={Ip},{Port};Database={Database}; User Id={Username}; Password={Password};";
+                    return $"Server={Ip},{Port};Database={Database}; User Id={Username}; Password={Password};Connection Timeout=3";
                 default: throw new NotImplementedException("Nie można pobrać connection stringu dla bazy danych: " + DBMSSystem.ToString() + ". Brak implementacji.");
             }
         }

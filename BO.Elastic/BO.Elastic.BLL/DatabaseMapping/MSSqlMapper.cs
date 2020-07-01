@@ -24,7 +24,33 @@ namespace BO.Elastic.BLL.DatabaseMapping
 
         public IEnumerable<KeyValuePair<string, ESqlDatatypes>> GetTableColumns(SqlTableNamespace tableNamespace)
         {
-            throw new NotImplementedException();
+            List<KeyValuePair<string, ESqlDatatypes>> columns = new List<KeyValuePair<string, ESqlDatatypes>>();
+            using (SqlConnection connection = new SqlConnection(connectionString.GetConnectionString()))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand getTableCommand = new SqlCommand(@$"
+                        SELECT * FROM INFORMATION_SCHEMA.COLUMNS
+                        WHERE
+                             TABLE_CATALOG = '{tableNamespace.Catalog}' AND
+                             TABLE_SCHEMA = '{tableNamespace.Schema}'  AND
+                             TABLE_NAME = '{tableNamespace.Name}'" 
+                    , connection);
+                    using (SqlDataReader reader = getTableCommand.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            columns.Add(new KeyValuePair<string,ESqlDatatypes>(reader.GetString(3),ESqlDatatypes.Integer));
+                        }
+                    }
+                    return columns;
+                }
+                catch (Exception ex)
+                {
+                    throw new SqlMappingException("Błąd podczas pobierania tabel z bazy danych.\n" + ex.Message);
+                }
+            }
         }
 
         public IEnumerable<SqlTableNamespace> GetTables()
@@ -49,6 +75,21 @@ namespace BO.Elastic.BLL.DatabaseMapping
                     throw new SqlMappingException("Błąd podczas pobierania tabel z bazy danych.\n" + ex.Message);
                 }
             }
+        }
+
+        public bool IsConnectionValid()
+        {
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString.GetConnectionString()))
+                {
+                    connection.Open();
+                }
+            }catch(Exception ex)
+            {
+                throw ex;
+            }
+            return true;
         }
     }
 }
