@@ -40,4 +40,14 @@
         Os = 9,
         Roles = 10
     }
+
+    public enum ESqlDatatypes
+    {
+        //todo
+    }
+
+    public enum DBMSSystem
+    {
+        MSSQL = 1
+    }
 }

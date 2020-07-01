@@ -31,5 +31,24 @@ namespace BO.Elastic.Panel
         {
             Close();
         }
+
+        private void HideAllContentElements()
+        {
+            Clusters.Visibility = Visibility.Hidden;
+            index_mapping.Visibility = Visibility.Hidden;
+        }
+
+        private void btn_show_status_Click(object sender, RoutedEventArgs e)
+        {
+            HideAllContentElements();
+            Clusters.Visibility = Visibility.Visible;
+        }
+
+        private void btn_index_mapping_Click(object sender, RoutedEventArgs e)
+        {
+            HideAllContentElements();
+            index_mapping.Visibility = Visibility.Visible;
+
+        }
     }
 }

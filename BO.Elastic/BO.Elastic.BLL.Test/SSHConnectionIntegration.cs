@@ -1,7 +1,13 @@
-﻿using BO.Elastic.BLL.Exceptions;
+﻿using BO.Elastic.BLL.Abstract;
+using BO.Elastic.BLL.DatabaseMapping;
+using BO.Elastic.BLL.Exceptions;
 using BO.Elastic.BLL.Model;
 using BO.Elastic.BLL.ServiceConnection;
+using Microsoft.Data.SqlClient;
 using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BO.Elastic.BLL.Test
 {
