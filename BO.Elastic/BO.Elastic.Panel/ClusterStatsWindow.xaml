@@ -66,7 +66,7 @@
                     <ColumnDefinition Width="420" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <DataGrid Visibility="Visible" HorizontalScrollBarVisibility="Disabled" Grid.Column="0"
+                <DataGrid Visibility="Hidden" HorizontalScrollBarVisibility="Disabled" Grid.Column="0"
                           ItemsSource="{Binding ClusterAttributes}" x:Name="Clusters" CanUserAddRows="False"
                           AutoGenerateColumns="False">
                     <DataGrid.Columns>
@@ -92,45 +92,99 @@
                     </DataGrid.Columns>
 
                 </DataGrid>
-                <Grid Grid.Column="0" Visibility="Hidden" x:Name="index_mapping">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
-                            <TextBox IsEnabled="false" Text="{Binding MappingHost, Mode=OneWay}" />
-                            <TextBox Text="{Binding MappingPort}" />
-                            <TextBox Text="{Binding MappingDatabase}" />
-                            <TextBox Text="{Binding MappingUsername}" />
-                            <TextBox Text="{Binding MappingPassword}" />
-                            <ComboBox SelectedIndex="0" SelectedItem="{Binding MappingDBMS}"
+                <Grid Grid.Column="0" Visibility="Visible" x:Name="index_mapping">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="120" />
+                        <RowDefinition Height="400*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="300*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <StackPanel>
+                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Host" TextAlignment="Center" TextWrapping="Wrap"
+                                            Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
+                                </Border>
+                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Port" TextAlignment="Center" TextWrapping="Wrap"
+                                            Width="100" Height="18"  FontSize="10" Foreground="White"  FontWeight="Bold" Background="#FF403C3C"  />
+                                </Border>
+                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Database" TextAlignment="Center" TextWrapping="Wrap"
+                                            Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
+                                </Border>
+                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Username" TextAlignment="Center" TextWrapping="Wrap"
+                                            Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
+                                </Border>
+                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Password" TextAlignment="Center" TextWrapping="Wrap"
+                                            Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
+                                </Border>
+                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Possible DBMS" TextAlignment="Center" TextWrapping="Wrap"
+                                            Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                        <Grid Grid.Column="1">
+                            <StackPanel>
+                                <TextBox IsEnabled="false" Height="20" Text="{Binding MappingHost, Mode=OneWay}" Foreground ="WhiteSmoke" BorderBrush="Black" SelectionTextBrush="Black" Background="#FF020000"/>
+                                <TextBox Height="20" Text="{Binding MappingPort}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF474747"/>
+                                <TextBox Height="20" Text="{Binding MappingDatabase}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF474747"/>
+                                <TextBox Height="20" Text="{Binding MappingUsername}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF474747"/>
+                                <TextBox Height="20" Text="{Binding MappingPassword}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF474747"/>
+                                <ComboBox Height="20" SelectedIndex="0" SelectedItem="{Binding MappingDBMS}"
                                       ItemsSource="{Binding PossibleDBMSSystems}" />
-                            <Button Command="{Binding ConnectToDatabase}" Content="connect" />
-                            <Label Visibility="{Binding MappingConnectedElementsVisibility}">Po zaladowaniu</Label>
-                            <ComboBox SelectedItem="{Binding FetchedTableSelected}"
+                            </StackPanel>
+
+                        </Grid>
+                        <StackPanel>
+
+
+
+                        </StackPanel>
+
+                    </Grid>
+                    <Grid Grid.Row="1">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel >
+
+
+                                <Button Command="{Binding ConnectToDatabase}" Content="connect" />
+                                <Label Visibility="{Binding MappingConnectedElementsVisibility}">Po zaladowaniu</Label>
+                                <ComboBox SelectedItem="{Binding FetchedTableSelected}"
                                       Visibility="{Binding MappingConnectedElementsVisibility}"
                                       ItemsSource="{Binding FetchedTables}" DisplayMemberPath="ReadableTable" />
-                            <Button Command="{Binding MapTable}" Content="generate mapping" />
-                            <DataGrid ItemsSource="{Binding MappingRows, Mode=TwoWay}" AutoGenerateColumns="False">
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Column name" Binding="{Binding ColumnName}" />
-                                    <DataGridTextColumn Header="Database type" Binding="{Binding DBDataType}" />
-                                    <DataGridTemplateColumn Header="Log" MinWidth="150">
-                                        <DataGridTemplateColumn.CellTemplate>
-                                            <DataTemplate>
-                                                <ComboBox
+                                <Button Command="{Binding MapTable}" Content="generate mapping" />
+                                <DataGrid ItemsSource="{Binding MappingRows, Mode=TwoWay}" AutoGenerateColumns="False">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Column name" Binding="{Binding ColumnName}" />
+                                        <DataGridTextColumn Header="Database type" Binding="{Binding DBDataType}" />
+                                        <DataGridTemplateColumn Header="Log" MinWidth="150">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <ComboBox
                                                             x:Name="mappingCB"
                                              
                                                            SelectedItem="{Binding SelectedMapping,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                           IsSynchronizedWithCurrentItem="True"
                                                           ItemsSource="{Binding PossibleDataMappings}" />
-                                            </DataTemplate>
-                                        </DataGridTemplateColumn.CellTemplate>
-                                    </DataGridTemplateColumn>
-                                </DataGrid.Columns>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
 
-                            </DataGrid>
-                            <TextBox Text="{Binding MappingIndexName}"></TextBox>
-                            <Button Command="{Binding MapIndex}">MAPUJ</Button>
-                        </StackPanel>
-                    </ScrollViewer>
+                                </DataGrid>
+                                <TextBox Text="{Binding MappingIndexName}"></TextBox>
+                                <Button Command="{Binding MapIndex}">MAPUJ</Button>
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Grid>
+
                 </Grid>
                 <Grid Grid.Column="1" Background="#262626">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
