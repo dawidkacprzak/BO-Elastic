@@ -108,14 +108,18 @@
                                       Visibility="{Binding MappingConnectedElementsVisibility}"
                                       ItemsSource="{Binding FetchedTables}" DisplayMemberPath="ReadableTable" />
                             <Button Command="{Binding MapTable}" Content="generate mapping" />
-                            <DataGrid ItemsSource="{Binding MappingRows}" AutoGenerateColumns="False">
+                            <DataGrid ItemsSource="{Binding MappingRows, Mode=TwoWay}" AutoGenerateColumns="False">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Column name" Binding="{Binding ColumnName}" />
                                     <DataGridTextColumn Header="Database type" Binding="{Binding DBDataType}" />
                                     <DataGridTemplateColumn Header="Log" MinWidth="150">
                                         <DataGridTemplateColumn.CellTemplate>
                                             <DataTemplate>
-                                                <ComboBox SelectedItem="{Binding SelectedMapping}" SelectedIndex="0"
+                                                <ComboBox
+                                                            x:Name="mappingCB"
+                                             
+                                                           SelectedItem="{Binding SelectedMapping,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                          IsSynchronizedWithCurrentItem="True"
                                                           ItemsSource="{Binding PossibleDataMappings}" />
                                             </DataTemplate>
                                         </DataGridTemplateColumn.CellTemplate>
@@ -123,6 +127,8 @@
                                 </DataGrid.Columns>
 
                             </DataGrid>
+                            <TextBox Text="{Binding MappingIndexName}"></TextBox>
+                            <Button Command="{Binding MapIndex}">MAPUJ</Button>
                         </StackPanel>
                     </ScrollViewer>
                 </Grid>

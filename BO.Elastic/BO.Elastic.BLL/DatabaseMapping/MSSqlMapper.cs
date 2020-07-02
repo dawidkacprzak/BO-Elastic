@@ -1,4 +1,5 @@
 ﻿using BO.Elastic.BLL.Abstract;
+using BO.Elastic.BLL.ElasticCore;
 using BO.Elastic.BLL.Exceptions;
 using BO.Elastic.BLL.Model;
 using BO.Elastic.BLL.Types;
@@ -41,7 +42,7 @@ namespace BO.Elastic.BLL.DatabaseMapping
                     {
                         while (reader.Read())
                         {
-                            columns.Add(new KeyValuePair<string,EDBDataType>(reader.GetString(3),EDBDataType.Int));
+                            columns.Add(new KeyValuePair<string,EDBDataType>(reader.GetString(3),DataTypeParser.GetDBDateTypeFromString(reader.GetString(7))));
                         }
                     }
                     return columns;

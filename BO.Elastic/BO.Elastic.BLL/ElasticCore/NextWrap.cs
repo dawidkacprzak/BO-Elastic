@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.NetworkInformation;
 using BO.Elastic.BLL.Exceptions;
 using BO.Elastic.BLL.Model;
+using BO.Elastic.BLL.Types;
 using Elasticsearch.Net;
+using EnumsNET;
 using Nest;
 
 namespace BO.Elastic.BLL.ElasticCore
@@ -109,24 +112,59 @@ namespace BO.Elastic.BLL.ElasticCore
             }
         }
 
-        public CreateIndexResponse CreateIndex<T>(string indexName, IndexState indexState, T typeObject) where T: class
+        public CreateIndexResponse CreateIndex<T>(string indexName, IndexState indexState, T typeObject) where T : class
         {
             try
             {
                 if (!elasticClient.Indices.Exists(indexName).Exists)
                 {
                     CreateIndexResponse test = elasticClient.Indices.Create(indexName, x => x.InitializeUsing(indexState).Map<T>(mp => mp.AutoMap(1)));
-                        return test;
+                    return test;
                 }
                 else
                 {
                     throw new IndexAlreadyExistsException(indexName);
-                }                
+                }
             }
             catch (UnexpectedElasticsearchClientException)
             {
                 throw;
             }
+        }
+
+        public bool IndexExists(string indexName)
+        {
+            if (elasticClient.Indices.Exists(indexName).Exists)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public void CreateIndex(string indexName, ObservableCollection<MappingDatagridRow> mappings)
+        {
+            string request = @"{
+                    ""settings"" : {
+                            ""number_of_shards"" : 1
+                        },
+                        ""mappings"" : {
+                            ""properties"" : {";
+            List<string> mappingFields = new List<string>();
+            foreach (var item in mappings)
+            {
+                string temp = $@" ""{item.ColumnName}"" : {{ ""type"" : ""{((EElasticDataTypes)item.SelectedMapping).AsString(EnumFormat.Description)}""}}";
+                mappingFields.Add(temp);
+            }
+            //     ""field1"" : { ""type"" : ""text"" }
+            request += string.Join(',', mappingFields.ToArray());
+            request += @"
+                            }
+                        }
+}
+";
+            var r = elasticClient.LowLevel.DoRequest<StringResponse>(
+                   HttpMethod.PUT, indexName, PostData.String(request));
+
         }
 
         public DeleteIndexResponse DeleteIndex(string indexName)

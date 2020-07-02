@@ -45,11 +45,28 @@ namespace BO.Elastic.Panel.ViewModels
         private string mappingUsername;
         private string mappingPassword;
         private string mappingDatabase;
+        private string mappingIndexName;
         private ObservableCollection<SqlTableNamespace> fetchedTables;
         private bool databaseValidConnection;
         private DBMSSystem mappingDbms;
         private IDatabaseModelFetcher modelFetcher;
 
+
+        public string MappingIndexName
+        {
+            get
+            {
+                return mappingIndexName;
+            }
+            set
+            {
+                if(value != mappingIndexName)
+                {
+                    mappingIndexName = value;
+                }
+                NotifyPropertyChanged();
+            }
+        }
         public DBMSSystem MappingDBMS
         {
             get { return mappingDbms; }
@@ -214,6 +231,18 @@ namespace BO.Elastic.Panel.ViewModels
                 DatabaseValidConnection = false;
                 FetchedTables = null;
                 MessageBox.Show(ex.Message);
+            }
+        });
+
+        public ICommand MapIndex => new BasicCommand(() =>
+        {
+            if (nextWrap.IndexExists(MappingIndexName))
+            {
+                MessageBox.Show("Indeks o tej nazwie już istnieje");
+            }
+            else
+            {
+                nextWrap.CreateIndex(MappingIndexName, MappingRows);
             }
         });
 
