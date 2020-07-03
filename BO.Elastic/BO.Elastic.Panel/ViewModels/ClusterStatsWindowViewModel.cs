@@ -46,12 +46,40 @@ namespace BO.Elastic.Panel.ViewModels
         private string mappingPassword;
         private string mappingDatabase;
         private string mappingIndexName;
+        private int mappingReplicas;
         private ObservableCollection<SqlTableNamespace> fetchedTables;
+        private int mappingShards;
         private bool databaseValidConnection;
         private DBMSSystem mappingDbms;
         private IDatabaseModelFetcher modelFetcher;
 
+        public int MappingReplicas
+        {
+            get
+            {
+                return mappingReplicas;
+            }
+            set
+            {
+                mappingReplicas = value;
+                NotifyPropertyChanged();
+            }
+        }
 
+        public int MappingShards
+        {
+            get
+            {
+                return mappingShards;
+            }set
+            {
+                if(value!=mappingShards)
+                {
+                    mappingShards = value;
+                    NotifyPropertyChanged();
+                }
+            }
+        }
         public string MappingIndexName
         {
             get
@@ -242,7 +270,17 @@ namespace BO.Elastic.Panel.ViewModels
             }
             else
             {
-                nextWrap.CreateIndex(MappingIndexName, MappingRows);
+                if(MappingShards <= 0)
+                {
+                    MessageBox.Show("Shards < 0");
+                }
+                else if (string.IsNullOrEmpty(MappingIndexName))
+                {
+                    MessageBox.Show("Mapping index cannot be empty");
+                }
+                else {
+                    nextWrap.CreateIndex(MappingIndexName, MappingRows, MappingShards,MappingReplicas);
+                }
             }
         });
 
@@ -320,6 +358,8 @@ namespace BO.Elastic.Panel.ViewModels
                 ContextMenuEnabled = false;
                 clusterNetworkAddress = networkAddress;
                 nextWrap = new NextWrap(networkAddress);
+                MappingShards = 5;
+                MappingReplicas = 2;
                 RefreshData();
             }
             catch (ClusterNotConnectedException)

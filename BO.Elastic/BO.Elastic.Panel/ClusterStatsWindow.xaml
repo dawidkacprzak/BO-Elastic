@@ -94,7 +94,7 @@
                 </DataGrid>
                 <Grid Grid.Column="0" Visibility="Visible" x:Name="index_mapping">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="120" />
+                        <RowDefinition Height="140" />
                         <RowDefinition Height="400*" />
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0">
@@ -125,9 +125,18 @@
                                             Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
                                 <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Shards" TextAlignment="Center" TextWrapping="Wrap"
+                                            Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
+                                </Border>
+                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                    <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Replicas" TextAlignment="Center" TextWrapping="Wrap"
+                                            Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
+                                </Border>
+                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Possible DBMS" TextAlignment="Center" TextWrapping="Wrap"
                                             Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
+
                             </StackPanel>
                         </Grid>
                         <Grid Grid.Column="1">
@@ -137,6 +146,9 @@
                                 <TextBox Height="20" Text="{Binding MappingDatabase}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF474747"/>
                                 <TextBox Height="20" Text="{Binding MappingUsername}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF474747"/>
                                 <TextBox Height="20" Text="{Binding MappingPassword}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF474747"/>
+                                <TextBox Height="20" Text="{Binding MappingShards}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF474747"/>
+                                <TextBox Height="20" Text="{Binding MappingReplicas}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF474747"/>
+
                                 <ComboBox Height="20" SelectedIndex="0" SelectedItem="{Binding MappingDBMS}"
                                       ItemsSource="{Binding PossibleDBMSSystems}" />
                             </StackPanel>

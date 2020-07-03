@@ -141,27 +141,26 @@ namespace BO.Elastic.BLL.ElasticCore
             return false;
         }
 
-        public void CreateIndex(string indexName, ObservableCollection<MappingDatagridRow> mappings)
+        public void CreateIndex(string indexName, ObservableCollection<MappingDatagridRow> mappings, int countOfShards, int countOfReplicas)
         {
+            indexName = indexName.ToLower();
             string request = @"{
                     ""settings"" : {
-                            ""number_of_shards"" : 1
+                            ""number_of_shards"" : " + countOfShards.ToString() + @",
+                            ""number_of_replicas"" : " + countOfReplicas.ToString() + @"
                         },
                         ""mappings"" : {
                             ""properties"" : {";
+
             List<string> mappingFields = new List<string>();
             foreach (var item in mappings)
             {
                 string temp = $@" ""{item.ColumnName}"" : {{ ""type"" : ""{((EElasticDataTypes)item.SelectedMapping).AsString(EnumFormat.Description)}""}}";
                 mappingFields.Add(temp);
             }
-            //     ""field1"" : { ""type"" : ""text"" }
             request += string.Join(',', mappingFields.ToArray());
-            request += @"
-                            }
-                        }
-}
-";
+            request += @"}}}
+            ";
             var r = elasticClient.LowLevel.DoRequest<StringResponse>(
                    HttpMethod.PUT, indexName, PostData.String(request));
 
