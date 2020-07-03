@@ -155,6 +155,21 @@ namespace BO.Elastic.Panel.ViewModels
             }
         }
 
+        public Visibility MappingGeneratedElementsVisibility
+        {
+            get
+            {
+                if (MappingRows.Count > 0)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Hidden;
+                }
+            }
+        }
+
         public bool DatabaseValidConnection
         {
             get { return databaseValidConnection; }
@@ -318,6 +333,7 @@ namespace BO.Elastic.Panel.ViewModels
             {
                 mappingRows = value;
                 NotifyPropertyChanged();
+                NotifyPropertyChanged("MappingGeneratedElementsVisibility");
             }
         }
         public ObservableCollection<EElasticDataTypes> XX = new ObservableCollection<EElasticDataTypes>()
