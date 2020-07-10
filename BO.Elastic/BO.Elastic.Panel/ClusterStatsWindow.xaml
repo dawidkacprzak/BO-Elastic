@@ -104,27 +104,27 @@
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0">
                             <StackPanel>
-                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                <Border BorderThickness="1" BorderBrush="#262626" Background="#FF403C3C">
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Host" TextAlignment="Center" TextWrapping="Wrap"
                                             Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
-                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                <Border BorderThickness="1" BorderBrush="#262626" Background="#FF403C3C">
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Port" TextAlignment="Center" TextWrapping="Wrap"
                                             Width="100" Height="18"  FontSize="10" Foreground="White"  FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
-                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                <Border BorderThickness="1" BorderBrush="#262626" Background="#FF403C3C">
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Database" TextAlignment="Center" TextWrapping="Wrap"
                                             Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
-                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                <Border BorderThickness="1" BorderBrush="#262626" Background="#FF403C3C">
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Username" TextAlignment="Center" TextWrapping="Wrap"
                                             Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
-                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                <Border BorderThickness="1" BorderBrush="#262626" Background="#FF403C3C">
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Password" TextAlignment="Center" TextWrapping="Wrap"
                                             Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
-                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                <Border BorderThickness="1" BorderBrush="#262626" Background="#FF403C3C">
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Possible DBMS" TextAlignment="Center" TextWrapping="Wrap"
                                             Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
@@ -132,11 +132,11 @@
                         </Grid>
                         <Grid Grid.Column="1">
                             <StackPanel>
-                                <TextBox IsEnabled="false" Height="20" Text="{Binding MappingHost, Mode=OneWay}" Foreground ="WhiteSmoke" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
-                                <TextBox Height="20" Text="{Binding MappingPort}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
-                                <TextBox Height="20" Text="{Binding MappingDatabase}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
-                                <TextBox Height="20" Text="{Binding MappingUsername}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
-                                <PasswordBox Height="20" PasswordChanged="PasswordBox_PasswordChanged" Foreground="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
+                                <TextBox Style="{StaticResource BOTextBox}" IsEnabled="false" Text="{Binding MappingHost, Mode=OneWay}" Foreground ="WhiteSmoke" BorderBrush="#FF424141" Background="#FF515151"/>
+                                <TextBox Style="{StaticResource BOTextBox}" Text="{Binding MappingPort}" />
+                                <TextBox Style="{StaticResource BOTextBox}" Text="{Binding MappingDatabase}" />
+                                <TextBox Style="{StaticResource BOTextBox}" Text="{Binding MappingUsername}" />
+                                <PasswordBox Style="{StaticResource BOPasswordBox}" PasswordChanged="PasswordBox_PasswordChanged"/>
                                 <ComboBox Height="20" SelectedIndex="0" SelectedItem="{Binding MappingDBMS}"
                                       ItemsSource="{Binding PossibleDBMSSystems}" >
                                 </ComboBox>
@@ -159,7 +159,7 @@
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
                         <Grid Grid.Row="0" Grid.ColumnSpan="2">
-                            <Button Command="{Binding ConnectToDatabase}" Content="CONNECT" />
+                            <Button Command="{Binding ConnectToDatabase}" Content="CONNECT" Background="#262626" Foreground="White" FontWeight="Bold" BorderThickness="0" />
                         </Grid>
                         <Grid Grid.Row="1" Visibility="{Binding MappingConnectedElementsVisibility}" Grid.ColumnSpan="2" >
 
@@ -168,7 +168,7 @@
                                 <ColumnDefinition Width="300*"/>
                             </Grid.ColumnDefinitions>
                             <Grid Grid.Column="0">
-                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                <Border BorderThickness="1" BorderBrush="#262626" Background="#FF403C3C">
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Fetched tables" TextAlignment="Center" TextWrapping="Wrap"
                                             Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
@@ -184,7 +184,7 @@
                                 <ColumnDefinition Width="147*"/>
                                 <ColumnDefinition Width="313*"/>
                             </Grid.ColumnDefinitions>
-                            <Button Command="{Binding MapTable}" Content="GENERATE MAPPING" Grid.ColumnSpan="2" />
+                            <Button Command="{Binding MapTable}" Content="GENERATE MAPPING" Grid.ColumnSpan="2" Background="#262626" Foreground="White" FontWeight="Bold" BorderThickness="0" />
                         </Grid>
                         <Grid Grid.Row="3" Visibility="{Binding MappingGeneratedElementsVisibility}" Grid.ColumnSpan="2">
                             <Grid.ColumnDefinitions>
@@ -192,13 +192,13 @@
                                 <ColumnDefinition Width="300*"/>
                             </Grid.ColumnDefinitions>
                             <Grid Grid.Column="0">
-                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                <Border BorderThickness="1" BorderBrush="#262626" Background="#FF403C3C">
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Index name" TextAlignment="Center" TextWrapping="Wrap"
                                             Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
                             </Grid>
                             <Grid Grid.Column="1">
-                                <TextBox Text="{Binding MappingIndexName}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"></TextBox>
+                                <TextBox Style="{StaticResource BOTextBox}" Text="{Binding MappingIndexName}"></TextBox>
                             </Grid>
                         </Grid>
                         <Grid Grid.Row="4" Visibility="{Binding MappingGeneratedElementsVisibility}" Grid.ColumnSpan="2">
@@ -207,13 +207,13 @@
                                 <ColumnDefinition Width="300*"/>
                             </Grid.ColumnDefinitions>
                             <Grid Grid.Column="0">
-                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                <Border BorderThickness="1" BorderBrush="#262626" Background="#FF403C3C">
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Shards" TextAlignment="Center" TextWrapping="Wrap"
                                             Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
                             </Grid>
                             <Grid Grid.Column="1">
-                                <TextBox Text="{Binding MappingShards}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"></TextBox>
+                                <TextBox Style="{StaticResource BOTextBox}" Text="{Binding MappingShards}"></TextBox>
                             </Grid>
                         </Grid>
                         <Grid Grid.Row="5" Visibility="{Binding MappingGeneratedElementsVisibility}" Grid.ColumnSpan="2">
@@ -222,18 +222,18 @@
                                 <ColumnDefinition Width="300*"/>
                             </Grid.ColumnDefinitions>
                             <Grid Grid.Column="0">
-                                <Border BorderThickness="1" BorderBrush="Black" Background="#FF403C3C">
+                                <Border BorderThickness="1" BorderBrush="#262626" Background="#FF403C3C">
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Replicas" TextAlignment="Center" TextWrapping="Wrap"
                                             Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
                             </Grid>
                             <Grid Grid.Column="1">
-                                <TextBox Text="{Binding MappingReplicas}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"></TextBox>
+                                <TextBox Style="{StaticResource BOTextBox}" Text="{Binding MappingReplicas}"></TextBox>
                             </Grid>
                         </Grid>
 
                         <Grid Grid.Row="6" Visibility="{Binding MappingGeneratedElementsVisibility}" Grid.ColumnSpan="2">
-                            <Button Command="{Binding MapIndex}">MAPUJ</Button>
+                            <Button Command="{Binding MapIndex}" Content="MAP INDEX" Grid.ColumnSpan="2" Background="#262626" Foreground="White" FontWeight="Bold" BorderThickness="0" />
                         </Grid>
                         <Grid Grid.Row="7" Visibility="{Binding MappingGeneratedElementsVisibility}" Grid.ColumnSpan="2">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
@@ -269,10 +269,10 @@
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
                         <StackPanel>
                             <Button x:Name="btn_show_status" VerticalAlignment="Top" Height="50" Margin="10,10,10,5"
-                                    Content="Status" Click="btn_show_status_Click" />
+                                    Content="STATUS" Click="btn_show_status_Click" FontWeight="Heavy" Background="#FF2C2C2C" Foreground="White" BorderThickness="0" FontSize="14"/>
                             <Button x:Name="btn_index_mapping" IsEnabled="{Binding ContextMenuEnabled}"
-                                    VerticalAlignment="Top" Height="50" Margin="10,5,10,5" Content="Index Mapping"
-                                    Click="btn_index_mapping_Click" />
+                                    VerticalAlignment="Top" Height="50" Margin="10,5,10,5" Content="INDEX MAPPING"
+                                    Click="btn_index_mapping_Click" FontWeight="Heavy" Background="#FF2C2C2C" Foreground="White" BorderThickness="0" FontSize="14"/>
                         </StackPanel>
 
                     </ScrollViewer>
