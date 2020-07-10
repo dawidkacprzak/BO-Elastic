@@ -50,5 +50,13 @@ namespace BO.Elastic.Panel
             index_mapping.Visibility = Visibility.Visible;
 
         }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if(this.DataContext != null)
+            {
+                ((ClusterStatsWindowViewModel)this.DataContext).MappingPassword = ((PasswordBox)sender).Password;
+            }
+        }
     }
 }

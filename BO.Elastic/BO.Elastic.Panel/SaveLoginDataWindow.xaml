@@ -15,6 +15,8 @@
         WindowStartupLocation="CenterScreen"
         Visibility="Visible"
         WindowStyle="None">
+    
+        
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="5" />
     </WindowChrome.WindowChrome>
@@ -47,7 +49,7 @@
                        TextWrapping="Wrap" VerticalAlignment="top" Width="100" Margin="0,80" FontSize="14"
                        Foreground="White" />
             <StackPanel VerticalAlignment="Top" Margin="40,110,40,0">
-                <PasswordBox x:Name="tbPassword" />
+                <PasswordBox x:Name="tbPassword"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top"
                         Margin="0,140,0,0">
