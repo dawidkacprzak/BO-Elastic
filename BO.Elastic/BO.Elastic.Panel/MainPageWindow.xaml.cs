@@ -41,10 +41,7 @@ namespace BO.Elastic.Panel
                 {
                     return;
                 }
-
-                WindowState = WindowState == WindowState.Maximized
-                    ? WindowState.Normal
-                    : WindowState.Maximized;
+                WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
             }
             else
             {
@@ -72,10 +69,7 @@ namespace BO.Elastic.Panel
 
         private void BtnResize_Click(object sender, RoutedEventArgs e)
         {
-            if (WindowState == WindowState.Normal)
-                WindowState = WindowState.Maximized;
-            else
-                WindowState = WindowState.Normal;
+            WindowState = WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
         }
 
         private void BtnMinimize_Click(object sender, RoutedEventArgs e)
@@ -90,31 +84,35 @@ namespace BO.Elastic.Panel
 
         private void BtnAddCluster_Click(object sender, RoutedEventArgs e)
         {
+
         }
 
         private void Clusters_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (sender != null)
+            {
                 if (sender.GetType() == typeof(DataGrid))
                 {
-                    DataGrid senderGrid = (DataGrid) sender;
+                    DataGrid senderGrid = (DataGrid)sender;
                     if (senderGrid.SelectedItem != null)
+                    {
                         if (senderGrid.SelectedItem.GetType() == typeof(ServiceAddionalParameters))
                         {
-                            ServiceAddionalParameters cluster = (ServiceAddionalParameters) senderGrid.SelectedItem;
+                            ServiceAddionalParameters cluster = (ServiceAddionalParameters)senderGrid.SelectedItem;
                             if (cluster.Service != null)
                             {
-                                ((MainPageWindowViewModel) DataContext).LoadedNodeController.SetSelectedClusterId(
-                                    cluster.Service.Id);
-                                ((MainPageWindowViewModel) DataContext).NotifyPropertyChanged("LoadedNodeController");
+                                ((MainPageWindowViewModel)DataContext).LoadedNodeController.SetSelectedClusterId(cluster.Service.Id);
+                                ((MainPageWindowViewModel)DataContext).NotifyPropertyChanged("LoadedNodeController");
                             }
                         }
+                    }
                 }
+            }
         }
 
         private void OnClusterRightclick(object sender, MouseButtonEventArgs e)
         {
-            HitTestResult hit = VisualTreeHelper.HitTest((Visual) sender, e.GetPosition((IInputElement) sender));
+            HitTestResult hit = VisualTreeHelper.HitTest((Visual)sender, e.GetPosition((IInputElement)sender));
             DependencyObject cell = VisualTreeHelper.GetParent(hit.VisualHit);
 
             while (cell != null && !(cell is DataGridCell)) cell = VisualTreeHelper.GetParent(cell);
@@ -123,7 +121,7 @@ namespace BO.Elastic.Panel
             if (targetCell != null && targetCell.DataContext != null &&
                 targetCell.DataContext.GetType() == typeof(ServiceAddionalParameters))
             {
-                ServiceAddionalParameters clickedCluster = (ServiceAddionalParameters) targetCell.DataContext;
+                ServiceAddionalParameters clickedCluster = (ServiceAddionalParameters)targetCell.DataContext;
                 ContextMenu context = new ContextMenu();
                 context.Items.Clear();
 
