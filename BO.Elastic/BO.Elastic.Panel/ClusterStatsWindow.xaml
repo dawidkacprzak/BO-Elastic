@@ -137,35 +137,32 @@
                                 <TextBox Height="20" Text="{Binding MappingPort}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
                                 <TextBox Height="20" Text="{Binding MappingDatabase}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
                                 <TextBox Height="20" Text="{Binding MappingUsername}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
-                                <TextBox Height="20" Text="{Binding MappingPassword}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
+                                <PasswordBox Height="20" ></PasswordBox>
                                 <ComboBox Height="20" SelectedIndex="0" SelectedItem="{Binding MappingDBMS}"
                                       ItemsSource="{Binding PossibleDBMSSystems}" >
                                 </ComboBox>
                             </StackPanel>
-
                         </Grid>
-                        <StackPanel>
-
-
-
-                        </StackPanel>
-
                     </Grid>
                     <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="27*"/>
+                            <ColumnDefinition Width="65*"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="25" />
+                            <RowDefinition Height="20" />
                             <RowDefinition Height="25" />
-                            <RowDefinition Height="25" />
-                            <RowDefinition Height="25" />
-                            <RowDefinition Height="25" />
-                            <RowDefinition Height="25" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
+                            <RowDefinition Height="20" />
                             <RowDefinition Height="25" />
                             <RowDefinition Height="*" />
                         </Grid.RowDefinitions>
-                        <Grid Grid.Row="0">
+                        <Grid Grid.Row="0" Grid.ColumnSpan="2">
                             <Button Command="{Binding ConnectToDatabase}" Content="CONNECT" />
                         </Grid>
-                        <Grid Grid.Row="1" Visibility="{Binding MappingConnectedElementsVisibility}" >
+                        <Grid Grid.Row="1" Visibility="{Binding MappingConnectedElementsVisibility}" Grid.ColumnSpan="2" >
 
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
@@ -183,10 +180,14 @@
                                       ItemsSource="{Binding FetchedTables}" DisplayMemberPath="ReadableTable" />
                             </Grid>
                         </Grid>
-                        <Grid Grid.Row="2" Visibility="{Binding MappingConnectedElementsVisibility}">
-                            <Button Command="{Binding MapTable}" Content="GENERATE MAPPING" />
+                        <Grid Grid.Row="2" Visibility="{Binding MappingConnectedElementsVisibility}" Grid.ColumnSpan="2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="147*"/>
+                                <ColumnDefinition Width="313*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Command="{Binding MapTable}" Content="GENERATE MAPPING" Grid.ColumnSpan="2" />
                         </Grid>
-                        <Grid Grid.Row="3" Visibility="{Binding MappingGeneratedElementsVisibility}">
+                        <Grid Grid.Row="3" Visibility="{Binding MappingGeneratedElementsVisibility}" Grid.ColumnSpan="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="300*"/>
@@ -199,9 +200,9 @@
                             </Grid>
                             <Grid Grid.Column="1">
                                 <TextBox Text="{Binding MappingIndexName}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"></TextBox>
-                            </Grid>                            
+                            </Grid>
                         </Grid>
-                        <Grid Grid.Row="4" Visibility="{Binding MappingGeneratedElementsVisibility}">
+                        <Grid Grid.Row="4" Visibility="{Binding MappingGeneratedElementsVisibility}" Grid.ColumnSpan="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="300*"/>
@@ -216,7 +217,7 @@
                                 <TextBox Text="{Binding MappingShards}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"></TextBox>
                             </Grid>
                         </Grid>
-                        <Grid Grid.Row="5" Visibility="{Binding MappingGeneratedElementsVisibility}">
+                        <Grid Grid.Row="5" Visibility="{Binding MappingGeneratedElementsVisibility}" Grid.ColumnSpan="2">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="300*"/>
@@ -232,10 +233,10 @@
                             </Grid>
                         </Grid>
 
-                        <Grid Grid.Row="6" Visibility="{Binding MappingGeneratedElementsVisibility}">
+                        <Grid Grid.Row="6" Visibility="{Binding MappingGeneratedElementsVisibility}" Grid.ColumnSpan="2">
                             <Button Command="{Binding MapIndex}">MAPUJ</Button>
                         </Grid>
-                        <Grid Grid.Row="7" Visibility="{Binding MappingGeneratedElementsVisibility}">
+                        <Grid Grid.Row="7" Visibility="{Binding MappingGeneratedElementsVisibility}" Grid.ColumnSpan="2">
                             <ScrollViewer VerticalScrollBarVisibility="Auto">
                                 <StackPanel >
 
