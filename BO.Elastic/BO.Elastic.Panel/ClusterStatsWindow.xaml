@@ -3,8 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        xmlns:core="clr-namespace:System;assembly=System.Runtime"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"  
         AllowsTransparency="False"
         mc:Ignorable="d"
         Height="480" Width="640"
@@ -15,6 +14,7 @@
         WindowStartupLocation="CenterScreen"
         Visibility="Visible"
         WindowStyle="None">
+
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="5" />
     </WindowChrome.WindowChrome>
@@ -128,7 +128,6 @@
                                     <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Text="Possible DBMS" TextAlignment="Center" TextWrapping="Wrap"
                                             Width="100" Height="18"  FontSize="10" Foreground="White" FontWeight="Bold" Background="#FF403C3C"  />
                                 </Border>
-
                             </StackPanel>
                         </Grid>
                         <Grid Grid.Column="1">
@@ -137,7 +136,7 @@
                                 <TextBox Height="20" Text="{Binding MappingPort}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
                                 <TextBox Height="20" Text="{Binding MappingDatabase}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
                                 <TextBox Height="20" Text="{Binding MappingUsername}" Foreground ="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
-                                <PasswordBox Height="20" ></PasswordBox>
+                                <PasswordBox Height="20" PasswordChanged="PasswordBox_PasswordChanged" Foreground="White" BorderBrush="#FF424141" SelectionTextBrush="Black" Background="#FF515151"/>
                                 <ComboBox Height="20" SelectedIndex="0" SelectedItem="{Binding MappingDBMS}"
                                       ItemsSource="{Binding PossibleDBMSSystems}" >
                                 </ComboBox>
