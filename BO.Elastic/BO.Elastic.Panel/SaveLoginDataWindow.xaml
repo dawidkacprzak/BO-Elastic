@@ -37,7 +37,7 @@
                 </Button>
             </StackPanel>
         </Grid>
-        <Grid x:Name="GridOfLogin" Grid.Row="1" Background="#FF233334">
+        <Grid x:Name="GridOfLogin" Grid.Row="1" Background="#343434">
             <TextBlock HorizontalAlignment="Center" Height="25" Text="Login" TextAlignment="Center" TextWrapping="Wrap"
                        VerticalAlignment="top" Width="100" Margin="20" FontSize="14" Foreground="White" />
             <StackPanel VerticalAlignment="Top" Margin="40,50,40,40" DataContext="{Binding LoginData}">
