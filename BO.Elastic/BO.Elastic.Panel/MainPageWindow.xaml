@@ -27,7 +27,7 @@
             <RowDefinition Height="5" />
         </Grid.RowDefinitions>
 
-        <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" Grid.ColumnSpan="2"
+        <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" MouseMove="GridOfToolbar_MouseMove" MouseLeftButtonUp="GridOfToolbar_MouseLeftButtonUp" Grid.ColumnSpan="2"
               Background="#262626">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <Image Margin="5,5,5,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png" />

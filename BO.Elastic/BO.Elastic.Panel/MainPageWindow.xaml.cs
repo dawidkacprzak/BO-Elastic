@@ -15,6 +15,8 @@ namespace BO.Elastic.Panel
     /// </summary>
     public partial class MainPageWindow : Window
     {
+        private bool mRestoreForDragMove;
+
         public MainPageWindow()
         {
             try
@@ -32,9 +34,40 @@ namespace BO.Elastic.Panel
 
         private void GridOfToolbar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            Grid move = sender as Grid;
-            Window window = GetWindow(move);
-            window.DragMove();
+            if (e.ClickCount == 2)
+            {
+                if (ResizeMode != ResizeMode.CanResize &&
+                    ResizeMode != ResizeMode.CanResizeWithGrip)
+                {
+                    return;
+                }
+
+                WindowState = WindowState == WindowState.Maximized
+                    ? WindowState.Normal
+                    : WindowState.Maximized;
+            }
+            else
+            {
+                mRestoreForDragMove = WindowState == WindowState.Maximized;
+                DragMove();
+            }
+        }
+
+        private void GridOfToolbar_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (mRestoreForDragMove)
+            {
+                mRestoreForDragMove = false;
+                var point = PointToScreen(e.MouseDevice.GetPosition(this));
+                Left = point.X - (RestoreBounds.Width * 0.5);
+                Top = point.Y;
+                WindowState = WindowState.Normal;
+                DragMove();
+            }
+        }
+        private void GridOfToolbar_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            mRestoreForDragMove = false;
         }
 
         private void BtnResize_Click(object sender, RoutedEventArgs e)
