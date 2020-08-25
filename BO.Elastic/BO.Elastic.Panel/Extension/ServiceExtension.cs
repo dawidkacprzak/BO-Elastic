@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection.Metadata;
 using System.Windows;
 using BO.Elastic.BLL.Extension;
 using BO.Elastic.BLL.Model;
@@ -18,7 +19,21 @@ namespace BO.Elastic.Panel.Extension
             switch (eServiceAction)
             {
                 case EServiceAction.ConnectBySsh:
-                    break;
+                    return () =>
+                    {
+                        try
+                        {
+                            string sshCommand = "/Q /C ssh " +
+                            $"-l {SshLoginDataContainer.LoginData.Login} " +
+                            $"{parameters.Ip}";
+
+                            System.Diagnostics.Process.Start("cmd.exe", sshCommand);
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show(ex.Message);
+                        }
+                    };
 
                 case EServiceAction.Start:
                     return () =>
