@@ -56,7 +56,7 @@
                 <Button x:Name="BtnClear" Width="60" BorderThickness="0" Height="30" Foreground="White" Content="CLEAR"
                         Background="#262626" Command="{Binding ClearCachedLoginDataCommand}" Click="BtnClear_Click" />
                 <Button x:Name="BtnSave" Width="60" BorderThickness="0" Height="30" Foreground="White" Content="SAVE"
-                        Background="#262626" Click="BtnSave_Click" />
+                        Background="#262626" Click="BtnSave_Click" IsDefault="True" />
             </StackPanel>
 
 
