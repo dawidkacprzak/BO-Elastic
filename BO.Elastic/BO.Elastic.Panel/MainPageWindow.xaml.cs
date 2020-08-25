@@ -156,5 +156,17 @@ namespace BO.Elastic.Panel
             SavePasswordWindow savePasswordWindow = new SavePasswordWindow();
             savePasswordWindow.ShowDialog();
         }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (WindowState == WindowState.Maximized)
+            {
+                BorderThickness = new Thickness(7);
+            }
+            else
+            {
+                BorderThickness = new Thickness(0);
+            }
+        }
     }
 }

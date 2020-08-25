@@ -13,7 +13,8 @@
         WindowState="Normal"
         WindowStartupLocation="CenterScreen"
         Visibility="Visible"
-        WindowStyle="None">
+        WindowStyle="None"
+        SizeChanged="Window_SizeChanged">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="0" ResizeBorderThickness="5" />
     </WindowChrome.WindowChrome>
@@ -29,7 +30,7 @@
 
         <Grid x:Name="GridOfToolbar" MouseLeftButtonDown="GridOfToolbar_MouseLeftButtonDown" MouseMove="GridOfToolbar_MouseMove" MouseLeftButtonUp="GridOfToolbar_MouseLeftButtonUp" Grid.ColumnSpan="2"
               Background="#262626">
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0">
                 <Image Margin="5,5,5,0" Grid.Row="1" Source="/Bo.Elastic.Panel;component/Assets/elastic.png" />
                 <Label HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Foreground="White"
                        FontWeight="Bold">
